@@ -35,7 +35,7 @@
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
+            <artifactId>mockito-core</artifactId>
             <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
@@ -58,6 +58,4 @@
             </plugin>
         </plugins>
     </build>
-
-
 </project>
