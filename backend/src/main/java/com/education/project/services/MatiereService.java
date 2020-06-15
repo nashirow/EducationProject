@@ -16,14 +16,17 @@
 package com.education.project.services;
 
 import com.education.project.exceptions.ArgumentException;
+import com.education.project.exceptions.DataBaseException;
 import com.education.project.model.Matiere;
 import com.education.project.persistence.MatiereRepository;
-import org.mockito.Mockito;
+import com.education.project.utils.ColorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * La classe permet d'utiliser les fonctionnalités liées à une matière.
@@ -40,12 +43,25 @@ public class MatiereService {
         this.matiereRepository = matiereRepository;
     }//MatiereService()
 
-    public Matiere createMatiere(Matiere matiere) throws ArgumentException {
+    /**
+     * Cette fonction permet de créer une matière.
+     * @param matiere la matière à créer.
+     * @return La matière créée.
+     * @throws ArgumentException
+     * @throws DataBaseException
+     */
+    public Optional<Matiere> createMatiere(Matiere matiere) throws ArgumentException, DataBaseException {
         checkBusinessForCreationAndUpdate(matiere);
-        matiere = matiereRepository.insert(matiere);
-        return matiere;
+        matiere.setCreationDate(new Date());
+        matiere.setModificationDate(new Date());
+        return matiereRepository.insert(matiere);
     }//createMatiere()
 
+    /**
+     * La fonction permet de vérifier les règles métiers.
+     * @param matiere La matière à vérifier.
+     * @throws ArgumentException
+     */
     public void checkBusinessForCreationAndUpdate(Matiere matiere) throws ArgumentException {
         List<String> erreurs = new ArrayList<>();
         if(matiere == null){
@@ -60,6 +76,21 @@ public class MatiereService {
             }
             if (matiere.getCouleurPolice() == null || matiere.getCouleurPolice().isEmpty()) {
                 erreurs.add("La couleur de fond est obligatoire");
+            }
+            if(matiere.getCouleurFond() != null && matiere.getCouleurPolice() != null && matiere.getCouleurFond().equals(matiere.getCouleurPolice())){
+                erreurs.add("La couleur du fond et de la police ne peuvent pas être la même");
+            }
+            if(matiere.getCouleurFond() != null && !matiere.getCouleurFond().isEmpty() && !ColorUtils.isHex(matiere.getCouleurFond())){
+                erreurs.add("La couleur de fond doit être au format hexadécimal");
+            }
+            if(matiere.getCouleurPolice() != null && !matiere.getCouleurPolice().isEmpty() && !ColorUtils.isHex(matiere.getCouleurPolice())){
+                erreurs.add("La couleur de la police doit être au format hexadécimal");
+            }
+            if(matiere.getDescription() != null && (matiere.getDescription().length() < 10 || matiere.getDescription().length() > 255)){
+                erreurs.add("La description doit être comprise entre 10 et 255 caractères");
+            }
+            if(matiere.getNom() != null && !matiere.getNom().isEmpty() && (matiere.getNom().length() < 3 || matiere.getNom().length() > 40)){
+                erreurs.add("Le nom d'une matière doit contenir entre 3 et 40 caractères");
             }
         }
         if(!erreurs.isEmpty()){

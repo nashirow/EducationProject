@@ -15,7 +15,6 @@
  */
 package com.education.project.exceptions;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

@@ -15,6 +15,8 @@
  */
 package com.education.project.model;
 
+import java.util.Date;
+
 /**
  * Cette classe représente une matière.
  */
@@ -48,7 +50,18 @@ public class Matiere {
     /**
      * C'est la description liée à la matière.
      */
-    private String descriptionMatiere;
+    private String description;
+
+    /**
+     * C'est la date de création de la matière.
+     */
+    private Date creationDate;
+
+    /**
+     * C'est la date de modification de la matière.
+     */
+    private Date modificationDate;
+
 
     public Matiere() {
     }//Matiere()
@@ -59,14 +72,14 @@ public class Matiere {
      * @param couleurFond C'est la couleur de fond de la matière.
      * @param couleurPolice C'est la couleur de la police de la matière.
      * @param volumeHoraire C'est le volume horaire de la matière.
-     * @param descriptionMatiere C'est la description liée à la matière.
+     * @param description C'est la description liée à la matière.
      */
-    public Matiere(String nom, String couleurFond, String couleurPolice, String volumeHoraire, String descriptionMatiere) {
+    public Matiere(String nom, String couleurFond, String couleurPolice, String volumeHoraire, String description) {
         this.nom = nom;
         this.couleurFond = couleurFond;
         this.couleurPolice = couleurPolice;
         this.volumeHoraire = volumeHoraire;
-        this.descriptionMatiere = descriptionMatiere;
+        this.description = description;
     }//Matiere()
 
     public String getNom() {
@@ -101,12 +114,12 @@ public class Matiere {
         this.volumeHoraire = volumeHoraire;
     }
 
-    public String getDescriptionMatiere() {
-        return descriptionMatiere;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescriptionMatiere(String descriptionMatiere) {
-        this.descriptionMatiere = descriptionMatiere;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Integer getId() {
@@ -115,5 +128,21 @@ public class Matiere {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public Date getModificationDate() {
+        return modificationDate;
+    }
+
+    public void setModificationDate(Date modificationDate) {
+        this.modificationDate = modificationDate;
     }
 }//Matiere

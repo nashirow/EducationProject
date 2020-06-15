@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.education.project;
+package com.education.project.exceptions;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
-
-@SpringBootApplication
-@ConfigurationPropertiesScan("application.properties")
-public class Application {
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class,args);
-    }//main()
-}//Application
+/**
+ * La classe permet de gérer les erreurs en lien avec la base de données.
+ */
+public class DataBaseException extends Throwable {
+    public DataBaseException(String s) {
+        super(s);
+    }//DataBaseException()
+}//DataBaseException
