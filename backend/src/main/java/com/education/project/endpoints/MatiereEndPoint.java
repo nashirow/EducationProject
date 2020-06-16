@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,9 +42,9 @@ public class MatiereEndPoint {
     }
 
     /**
-     *
-     * @param matiere
-     * @return
+     * Ce endpoint permet de créer une matière.
+     * @param matiere La matière à créer.
+     * @return Réponse HTTP.
      */
     @PostMapping("/matiere")
     public ResponseEntity<?> createMatiere(@RequestBody Matiere matiere){
@@ -61,7 +62,24 @@ public class MatiereEndPoint {
             e.printStackTrace();
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(resultat, HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseEndPoint(resultat,null), HttpStatus.OK);
     }//createMatiere()
 
+    @PutMapping("/matiere")
+    public ResponseEntity<?> modifierMatiere(@RequestBody Matiere matiere){
+        Matiere resultat = null;
+        try {
+            Optional<Matiere> optMatiereUpdated = this.matiereService.modifierMatiere(matiere);
+            if(optMatiereUpdated.isPresent()){
+                resultat = optMatiereUpdated.get();
+            }
+        } catch (ArgumentException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(new ResponseEndPoint(null,e.getErreurs()),HttpStatus.BAD_REQUEST);
+        } catch (DataBaseException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(new ResponseEndPoint(resultat,null), HttpStatus.OK);
+    }
 }//MatiereEndPoint

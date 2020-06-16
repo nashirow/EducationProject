@@ -26,6 +26,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.Date;
 import java.util.Optional;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -38,10 +39,16 @@ public class MatiereServiceUT {
 
     private Matiere matiereToCreate;
 
+    private Matiere matiereToUpdate;
+
     @Before
     public void setup(){
          this.matiereService = new MatiereService(this.matiereRepository);
          this.matiereToCreate = new Matiere("matiere","#fff","#ddd","1H30","Prendre les élèves dyslexiques en groupe");
+         this.matiereToUpdate = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+         this.matiereToUpdate.setId(1);
+         this.matiereToUpdate.setCreationDate(new Date());
+         this.matiereToUpdate.setModificationDate(new Date());
     }//setup()
 
     @Test
@@ -239,4 +246,287 @@ public class MatiereServiceUT {
                 .hasMessage("Le nom d'une matière doit contenir entre 3 et 40 caractères")
                 .isInstanceOf(ArgumentException.class);
     }//create_matiere_should_throw_exception_when_name_matiere_is_above_40()
+
+    @Test
+    public void modifier_matiere_should_success_when_matiere_is_modified() throws DataBaseException, ArgumentException {
+        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        matiereFromBd.setId(1);
+        matiereFromBd.setCreationDate(new Date(1592149308));
+        matiereFromBd.setModificationDate(new Date());
+        Mockito.when(matiereRepository.modifier(Mockito.any(Matiere.class))).thenReturn(Optional.of(matiereFromBd));
+        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
+        Optional<Matiere> optMatiereModified = matiereService.modifierMatiere(this.matiereToUpdate);
+        Assertions.assertThat(optMatiereModified).isPresent();
+        optMatiereModified.ifPresent( matiereModifier -> {
+            Assertions.assertThat(matiereModifier).isNotNull();
+            Assertions.assertThat(matiereModifier.getId()).isEqualTo(1);
+            Assertions.assertThat(matiereModifier.getNom()).isEqualTo("matiere");
+            Assertions.assertThat(matiereModifier.getCouleurFond()).isEqualTo("#fff");
+            Assertions.assertThat(matiereModifier.getCouleurPolice()).isEqualTo("#ddd");
+            Assertions.assertThat(matiereModifier.getVolumeHoraire()).isEqualTo("1H30");
+            Assertions.assertThat(matiereModifier.getDescription()).isEqualTo("la classe à modifier");
+            Assertions.assertThat(matiereModifier.getCreationDate().getTime()).isNotEqualTo(matiereModifier.getModificationDate().getTime());
+        });
+    }//modifier_matiere_should_success_when_matiere_is_modified()
+
+    @Test
+    public void modifier_matiere_should_throw_exception_when_matiere_id_is_not_filled(){
+        this.matiereToUpdate.setId(null);
+        Assertions.assertThatThrownBy(() -> matiereService.modifierMatiere(this.matiereToUpdate))
+                .hasMessage("La modification de la matière est impossible : l'identifiant n'est pas renseigné.")
+                .isInstanceOf(ArgumentException.class);
+    }//modifier_matiere_should_throw_exception_when_matiere_id_is_not_filled()
+
+    @Test
+    public void modifier_matiere_should_throw_exception_when_name_matiere_is_null() throws DataBaseException {
+        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        matiereFromBd.setId(1);
+        matiereFromBd.setCreationDate(new Date(1592149308));
+        matiereFromBd.setModificationDate(new Date());
+        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
+        this.matiereToUpdate.setNom(null);
+        Assertions.assertThatThrownBy(() -> matiereService.modifierMatiere(this.matiereToUpdate))
+                .hasMessage("Le nom de la matière est obligatoire")
+                .isInstanceOf(ArgumentException.class);
+    }//modifier_matiere_should_throw_exception_when_name_matiere_is_null()
+
+    @Test
+    public void modifier_matiere_should_throw_exception_when_matiere_is_empty() throws DataBaseException {
+        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        matiereFromBd.setId(1);
+        matiereFromBd.setCreationDate(new Date(1592149308));
+        matiereFromBd.setModificationDate(new Date());
+        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
+        this.matiereToUpdate.setNom("");
+        Assertions.assertThatThrownBy(() -> matiereService.modifierMatiere(this.matiereToUpdate))
+                .hasMessage("Le nom de la matière est obligatoire")
+                .isInstanceOf(ArgumentException.class);
+    }//modifier_matiere_should_throw_exception_when_matiere_is_empty()
+
+    @Test
+    public void modifier_matiere_should_throw_exception_when_background_color_is_null() throws DataBaseException {
+        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        matiereFromBd.setId(1);
+        matiereFromBd.setCreationDate(new Date(1592149308));
+        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
+        this.matiereToUpdate.setCouleurFond(null);
+        Assertions.assertThatThrownBy(() -> matiereService.modifierMatiere(this.matiereToUpdate))
+                .hasMessage("La couleur de fond est obligatoire")
+                .isInstanceOf(ArgumentException.class);
+    }//modifier_matiere_should_throw_exception_when_background_color_is_null()
+
+    @Test
+    public void modifier_matiere_should_throw_exception_when_background_color_is_empty() throws DataBaseException {
+        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        matiereFromBd.setId(1);
+        matiereFromBd.setCreationDate(new Date(1592149308));
+        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
+        this.matiereToUpdate.setCouleurFond("");
+        Assertions.assertThatThrownBy(() -> matiereService.modifierMatiere(this.matiereToUpdate))
+                .hasMessage("La couleur de fond est obligatoire")
+                .isInstanceOf(ArgumentException.class);
+    }//modifier_matiere_should_throw_exception_when_background_color_is_empty()
+
+    @Test
+    public void modifier_matiere_should_throw_exception_when_color_font_is_empty() throws DataBaseException {
+        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        matiereFromBd.setId(1);
+        matiereFromBd.setCreationDate(new Date(1592149308));
+        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
+        this.matiereToUpdate.setCouleurPolice("");
+        Assertions.assertThatThrownBy(() -> matiereService.modifierMatiere(this.matiereToUpdate))
+                .hasMessage("La couleur de la police est obligatoire")
+                .isInstanceOf(ArgumentException.class);
+    }//modifier_matiere_should_throw_exception_when_color_font_is_empty()
+
+    @Test
+    public void modifier_matiere_should_throw_exception_when_color_font_is_null() throws DataBaseException {
+        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        matiereFromBd.setId(1);
+        matiereFromBd.setCreationDate(new Date(1592149308));
+        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
+        this.matiereToUpdate.setCouleurPolice(null);
+        Assertions.assertThatThrownBy(() -> matiereService.modifierMatiere(this.matiereToUpdate))
+                .hasMessage("La couleur de la police est obligatoire")
+                .isInstanceOf(ArgumentException.class);
+    }//modifier_matiere_should_throw_exception_when_color_font_is_null()
+
+    @Test
+    public void modifier_matiere_should_throw_exception_when_color_font_is_null_and_name_is_null() throws DataBaseException {
+        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        matiereFromBd.setId(1);
+        matiereFromBd.setCreationDate(new Date(1592149308));
+        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
+        this.matiereToUpdate.setCouleurPolice(null);
+        this.matiereToUpdate.setCouleurFond(null);
+        Assertions.assertThatThrownBy(() -> matiereService.modifierMatiere(this.matiereToUpdate))
+                .hasMessage("La couleur de fond est obligatoire,La couleur de la police est obligatoire")
+                .isInstanceOf(ArgumentException.class);
+    }//modifier_matiere_should_throw_exception_when_color_font_is_null_and_name_is_null()
+
+    @Test
+    public void modifier_matiere_should_throw_exception_when_color_font_and_color_police_are_the_same() throws DataBaseException {
+        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        matiereFromBd.setId(1);
+        matiereFromBd.setCreationDate(new Date(1592149308));
+        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
+        this.matiereToUpdate.setCouleurPolice("#ddd");
+        this.matiereToUpdate.setCouleurFond("#ddd");
+        Assertions.assertThatThrownBy(() -> matiereService.modifierMatiere(this.matiereToUpdate))
+                .hasMessage("La couleur du fond et de la police ne peuvent pas être la même")
+                .isInstanceOf(ArgumentException.class);
+    }//modifier_matiere_should_throw_exception_when_color_font_and_color_police_are_the_same()
+
+    @Test
+    public void modifier_matiere_should_throw_exception_when_background_color_type_is_not_hexadecimal() throws DataBaseException {
+        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        matiereFromBd.setId(1);
+        matiereFromBd.setCreationDate(new Date(1592149308));
+        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
+        this.matiereToUpdate.setCouleurFond("123");
+        Assertions.assertThatThrownBy(() -> matiereService.modifierMatiere(this.matiereToUpdate))
+                .hasMessage("La couleur de fond doit être au format hexadécimal")
+                .isInstanceOf(ArgumentException.class);
+    }//modifier_matiere_should_throw_exception_when_background_color_type_is_not_hexadecimal()
+
+    @Test
+    public void modifier_matiere_should_throw_exception_when_police_color_type_is_not_hexadecimal() throws DataBaseException {
+        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        matiereFromBd.setId(1);
+        matiereFromBd.setCreationDate(new Date(1592149308));
+        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
+        this.matiereToUpdate.setCouleurPolice("123");
+        Assertions.assertThatThrownBy(() -> matiereService.modifierMatiere(this.matiereToUpdate))
+                .hasMessage("La couleur de la police doit être au format hexadécimal")
+                .isInstanceOf(ArgumentException.class);
+    }//modifier_matiere_should_throw_exception_when_police_color_type_is_not_hexadecimal()
+
+    @Test
+    public void modifier_matiere_should_throw_exception_when_police_color_type_is_RGB_255_87_51() throws DataBaseException {
+        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        matiereFromBd.setId(1);
+        matiereFromBd.setCreationDate(new Date(1592149308));
+        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
+        this.matiereToUpdate.setCouleurPolice("255,87,51");
+        Assertions.assertThatThrownBy(() -> matiereService.modifierMatiere(this.matiereToUpdate))
+                .hasMessage("La couleur de la police doit être au format hexadécimal")
+                .isInstanceOf(ArgumentException.class);
+    }//modifier_matiere_should_throw_exception_when_police_color_type_is_RGB_255_87_51()
+
+    @Test
+    public void modifier_matiere_should_throw_exception_when_police_color_type_is_HSL_10_80_p_60_p() throws DataBaseException {
+        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        matiereFromBd.setId(1);
+        matiereFromBd.setCreationDate(new Date(1592149308));
+        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
+        this.matiereToUpdate.setCouleurPolice("10,80%,60%");
+        Assertions.assertThatThrownBy(() -> matiereService.modifierMatiere(this.matiereToUpdate))
+                .hasMessage("La couleur de la police doit être au format hexadécimal")
+                .isInstanceOf(ArgumentException.class);
+    }//modifier_matiere_should_throw_exception_when_police_color_type_is_HSL_10_80_p_60_p()
+
+    @Test
+    public void modifier_matiere_should_throw_exception_when_police_color_type_is_CMYK_0_66_100_0() throws DataBaseException {
+        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        matiereFromBd.setId(1);
+        matiereFromBd.setCreationDate(new Date(1592149308));
+        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
+        this.matiereToUpdate.setCouleurPolice("0,66,100,0");
+        Assertions.assertThatThrownBy(() -> matiereService.modifierMatiere(this.matiereToUpdate))
+                .hasMessage("La couleur de la police doit être au format hexadécimal")
+                .isInstanceOf(ArgumentException.class);
+    }//modifier_matiere_should_throw_exception_when_police_color_type_is_CMYK_0_66_100_0()
+
+    @Test
+    public void modifier_matiere_should_success_when_description_length_is_between_10_and_255() throws ArgumentException, DataBaseException {
+        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        matiereFromBd.setId(1);
+        matiereFromBd.setCreationDate(new Date(1592149308));
+        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
+        Mockito.when(matiereRepository.modifier(this.matiereToUpdate)).thenReturn(Optional.of(matiereFromBd));
+        this.matiereToUpdate.setDescription("la classe à modifier");
+        Optional<Matiere> optMatiereUpdated = matiereService.modifierMatiere(this.matiereToUpdate);
+        Assertions.assertThat(optMatiereUpdated).isPresent();
+        optMatiereUpdated.ifPresent(matiereUpdated -> {
+            Assertions.assertThat(matiereUpdated).isNotNull();
+            Assertions.assertThat(matiereUpdated.getNom()).isEqualTo("matiere");
+            Assertions.assertThat(matiereUpdated.getCouleurFond()).isEqualTo("#fff");
+            Assertions.assertThat(matiereUpdated.getCouleurPolice()).isEqualTo("#ddd");
+            Assertions.assertThat(matiereUpdated.getVolumeHoraire()).isEqualTo("1H30");
+            Assertions.assertThat(matiereUpdated.getDescription()).isEqualTo("la classe à modifier");
+            Assertions.assertThat(matiereUpdated.getId()).isEqualTo(1);
+        });
+    }//modifier_matiere_should_success_when_description_length_is_between_10_and_255()
+
+    @Test
+    public void modifier_matiere_should_throw_exception_when_description_length_is_below_10() throws DataBaseException {
+        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        matiereFromBd.setId(1);
+        matiereFromBd.setCreationDate(new Date(1592149308));
+        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
+        this.matiereToUpdate.setDescription("C'est ok");
+        Assertions.assertThatThrownBy(() -> matiereService.modifierMatiere(this.matiereToUpdate))
+                .hasMessage("La description doit être comprise entre 10 et 255 caractères")
+                .isInstanceOf(ArgumentException.class);
+    }//modifier_matiere_should_throw_exception_when_description_length_is_below_10()
+
+    @Test
+    public void modifier_matiere_should_throw_exception_when_description_length_is_above_255() throws DataBaseException {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 300 ; ++i){
+            sb.append("a");
+        }
+        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        matiereFromBd.setId(1);
+        matiereFromBd.setCreationDate(new Date(1592149308));
+        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
+        this.matiereToUpdate.setDescription(sb.toString());
+        Assertions.assertThatThrownBy(() -> matiereService.modifierMatiere(this.matiereToUpdate))
+                .hasMessage("La description doit être comprise entre 10 et 255 caractères")
+                .isInstanceOf(ArgumentException.class);
+    }//modifier_matiere_should_throw_exception_when_description_length_is_above_255()
+
+    @Test
+    public void modifier_matiere_should_success_when_name_matiere_is_between_3_and_40() throws ArgumentException, DataBaseException {
+        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        matiereFromBd.setId(1);
+        matiereFromBd.setCreationDate(new Date(1592149308));
+        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
+        Mockito.when(matiereRepository.modifier(this.matiereToUpdate)).thenReturn(Optional.of(matiereFromBd));
+        Optional<Matiere> optMatiereModified = matiereService.modifierMatiere(this.matiereToUpdate);
+        Assertions.assertThat(optMatiereModified).isPresent();
+        optMatiereModified.ifPresent(matiereUpdated -> {
+            Assertions.assertThat(matiereUpdated).isNotNull();
+            Assertions.assertThat(matiereUpdated.getNom()).isEqualTo("matiere");
+            Assertions.assertThat(matiereUpdated.getCouleurFond()).isEqualTo("#fff");
+            Assertions.assertThat(matiereUpdated.getCouleurPolice()).isEqualTo("#ddd");
+            Assertions.assertThat(matiereUpdated.getVolumeHoraire()).isEqualTo("1H30");
+            Assertions.assertThat(matiereUpdated.getDescription()).isEqualTo("la classe à modifier");
+            Assertions.assertThat(matiereUpdated.getId()).isEqualTo(1);
+        });
+    }//modifier_matiere_should_success_when_name_matiere_is_between_3_and_40()
+
+    @Test
+    public void modifier_matiere_should_throw_exception_when_name_matiere_is_below_3() throws DataBaseException {
+        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        matiereFromBd.setId(1);
+        matiereFromBd.setCreationDate(new Date(1592149308));
+        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
+        this.matiereToUpdate.setNom("DS");
+        Assertions.assertThatThrownBy(() -> matiereService.modifierMatiere(this.matiereToUpdate))
+                .hasMessage("Le nom d'une matière doit contenir entre 3 et 40 caractères")
+                .isInstanceOf(ArgumentException.class);
+    }//modifier_matiere_should_throw_exception_when_name_matiere_is_below_3()
+
+    @Test
+    public void modifier_matiere_should_throw_exception_when_name_matiere_is_above_40() throws DataBaseException {
+        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        matiereFromBd.setId(1);
+        matiereFromBd.setCreationDate(new Date(1592149308));
+        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
+        this.matiereToUpdate.setNom("Cours de sciences de la vie et de la Terre : Option géographie et études des paysages et montagnes.");
+        Assertions.assertThatThrownBy(() -> matiereService.modifierMatiere(this.matiereToUpdate))
+                .hasMessage("Le nom d'une matière doit contenir entre 3 et 40 caractères")
+                .isInstanceOf(ArgumentException.class);
+    }//modifier_matiere_should_throw_exception_when_name_matiere_is_above_40()
 }//MatiereServiceUT
