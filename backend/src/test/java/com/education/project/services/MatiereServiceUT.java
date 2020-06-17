@@ -529,4 +529,10 @@ public class MatiereServiceUT {
                 .hasMessage("Le nom d'une matière doit contenir entre 3 et 40 caractères")
                 .isInstanceOf(ArgumentException.class);
     }//update_matiere_should_throw_exception_when_name_matiere_is_above_40()
+
+    @Test
+    public void delete_matiere_should_success_when_matiere_id_1_is_deleted(){
+        boolean result = matiereService.deleteMatiere(1);
+        Assertions.assertThat(result).isTrue();
+    }//delete_matiere_should_success_when_matiere_id_1_is_deleted()
 }//MatiereServiceUT
