@@ -47,12 +47,12 @@ public class MatiereEndPoint {
      * @return Réponse HTTP.
      */
     @PostMapping("/matiere")
-    public ResponseEntity<?> createMatiere(@RequestBody Matiere matiere){
-        Matiere resultat = null;
+    public ResponseEntity<?> insertMatiere(@RequestBody Matiere matiere){
+        Matiere result = null;
         try {
-            Optional<Matiere> optMatiere = this.matiereService.createMatiere(matiere);
+            Optional<Matiere> optMatiere = this.matiereService.insertMatiere(matiere);
             if(optMatiere.isPresent()){
-                resultat = optMatiere.get();
+                result = optMatiere.get();
             }
         } catch (ArgumentException e) {
             e.printStackTrace();
@@ -62,16 +62,16 @@ public class MatiereEndPoint {
             e.printStackTrace();
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(new ResponseEndPoint(resultat,null), HttpStatus.OK);
-    }//createMatiere()
+        return new ResponseEntity<>(new ResponseEndPoint(result,null), HttpStatus.OK);
+    }//insertMatiere()
 
     @PutMapping("/matiere")
-    public ResponseEntity<?> modifierMatiere(@RequestBody Matiere matiere){
-        Matiere resultat = null;
+    public ResponseEntity<?> updateMatiere(@RequestBody Matiere matiere){
+        Matiere result = null;
         try {
-            Optional<Matiere> optMatiereUpdated = this.matiereService.modifierMatiere(matiere);
+            Optional<Matiere> optMatiereUpdated = this.matiereService.updateMatiere(matiere);
             if(optMatiereUpdated.isPresent()){
-                resultat = optMatiereUpdated.get();
+                result = optMatiereUpdated.get();
             }
         } catch (ArgumentException e) {
             e.printStackTrace();
@@ -80,6 +80,6 @@ public class MatiereEndPoint {
             e.printStackTrace();
             return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(new ResponseEndPoint(resultat,null), HttpStatus.OK);
-    }
+        return new ResponseEntity<>(new ResponseEndPoint(result,null), HttpStatus.OK);
+    }//updateMatiere()
 }//MatiereEndPoint

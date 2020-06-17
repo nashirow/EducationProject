@@ -62,8 +62,8 @@ public class MatiereRepository {
             preparedStatement.setString(3,matiere.getCouleurPolice());
             preparedStatement.setString(4,matiere.getVolumeHoraire());
             preparedStatement.setString(5,matiere.getDescription());
-            preparedStatement.setDate(6,new java.sql.Date(matiere.getCreationDate().getTime()));
-            preparedStatement.setDate(7,new java.sql.Date(matiere.getModificationDate().getTime()));
+            preparedStatement.setTimestamp(6,new java.sql.Timestamp(matiere.getCreationDate().getTime()));
+            preparedStatement.setTimestamp(7,new java.sql.Timestamp(matiere.getModificationDate().getTime()));
             int nbRowsAdded = preparedStatement.executeUpdate();
             if(nbRowsAdded > 0){
                 ResultSet resultSet = preparedStatement.getGeneratedKeys();
@@ -87,7 +87,7 @@ public class MatiereRepository {
      * @return La matière modifiée.
      * @throws DataBaseException
      */
-    public Optional<Matiere> modifier(Matiere matiere) throws DataBaseException {
+    public Optional<Matiere> update(Matiere matiere) throws DataBaseException {
         String request = "UPDATE matiere SET nom = ?, couleurFond = ?, couleurPolice = ?, volumeHoraire = ?, description = ?, modificationDate = ? WHERE id = ? ";
         try{
             PreparedStatement preparedStatement = this.connexion.prepareStatement(request);
@@ -96,7 +96,7 @@ public class MatiereRepository {
             preparedStatement.setString(3, matiere.getCouleurPolice());
             preparedStatement.setString(4, matiere.getVolumeHoraire());
             preparedStatement.setString(5, matiere.getDescription());
-            preparedStatement.setDate(6, new java.sql.Date(matiere.getModificationDate().getTime()));
+            preparedStatement.setTimestamp(6, new java.sql.Timestamp(matiere.getModificationDate().getTime()));
             preparedStatement.setInt(7, matiere.getId());
             int nbRowsUpdated = preparedStatement.executeUpdate();
             if(nbRowsUpdated > 0){
@@ -110,7 +110,7 @@ public class MatiereRepository {
             e.printStackTrace();
             throw new DataBaseException("La modification de la matière n'a pas pu avoir lieu.");
         }
-    }//modifier()
+    }//update()
 
     /**
      * La fonction récupère une matière en fonction de son identifiant
