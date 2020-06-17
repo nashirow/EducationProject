@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,17 +42,17 @@ public class MatiereEndPoint {
     }
 
     /**
-     *
-     * @param matiere
-     * @return
+     * Ce endpoint permet de créer une matière.
+     * @param matiere La matière à créer.
+     * @return Réponse HTTP.
      */
     @PostMapping("/matiere")
-    public ResponseEntity<?> createMatiere(@RequestBody Matiere matiere){
-        Matiere resultat = null;
+    public ResponseEntity<?> insertMatiere(@RequestBody Matiere matiere){
+        Matiere result = null;
         try {
-            Optional<Matiere> optMatiere = this.matiereService.createMatiere(matiere);
+            Optional<Matiere> optMatiere = this.matiereService.insertMatiere(matiere);
             if(optMatiere.isPresent()){
-                resultat = optMatiere.get();
+                result = optMatiere.get();
             }
         } catch (ArgumentException e) {
             e.printStackTrace();
@@ -61,7 +62,24 @@ public class MatiereEndPoint {
             e.printStackTrace();
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(resultat, HttpStatus.OK);
-    }//createMatiere()
+        return new ResponseEntity<>(new ResponseEndPoint(result,null), HttpStatus.OK);
+    }//insertMatiere()
 
+    @PutMapping("/matiere")
+    public ResponseEntity<?> updateMatiere(@RequestBody Matiere matiere){
+        Matiere result = null;
+        try {
+            Optional<Matiere> optMatiereUpdated = this.matiereService.updateMatiere(matiere);
+            if(optMatiereUpdated.isPresent()){
+                result = optMatiereUpdated.get();
+            }
+        } catch (ArgumentException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(new ResponseEndPoint(null,e.getErreurs()),HttpStatus.BAD_REQUEST);
+        } catch (DataBaseException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(new ResponseEndPoint(result,null), HttpStatus.OK);
+    }//updateMatiere()
 }//MatiereEndPoint

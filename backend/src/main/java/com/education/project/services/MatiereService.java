@@ -50,12 +50,40 @@ public class MatiereService {
      * @throws ArgumentException
      * @throws DataBaseException
      */
-    public Optional<Matiere> createMatiere(Matiere matiere) throws ArgumentException, DataBaseException {
+    public Optional<Matiere> insertMatiere(Matiere matiere) throws ArgumentException, DataBaseException {
         checkBusinessForCreationAndUpdate(matiere);
         matiere.setCreationDate(new Date());
         matiere.setModificationDate(new Date());
         return matiereRepository.insert(matiere);
-    }//createMatiere()
+    }//insertMatiere()
+
+    /**
+     * Cette fonction permet de modifier une matière.
+     * @param matiere La matière à modifier.
+     * @return La matière modifiée.
+     * @throws ArgumentException
+     */
+    public Optional<Matiere> updateMatiere(Matiere matiere) throws ArgumentException, DataBaseException {
+        Optional<Matiere> matiereFromBd = matiereRepository.findById(matiere.getId());
+        checkBusinessForCreationAndUpdate(matiere);
+        if(matiereFromBd.isPresent()){
+            Matiere matFromBd = matiereFromBd.get();
+            matFromBd.setNom(matiere.getNom());
+            matFromBd.setCouleurFond(matiere.getCouleurFond());
+            matFromBd.setCouleurPolice(matiere.getCouleurPolice());
+            if(matiere.getVolumeHoraire() != null){
+                matFromBd.setVolumeHoraire(matiere.getVolumeHoraire());
+            }
+            if(matiere.getDescription() != null){
+                matFromBd.setDescription(matiere.getDescription());
+            }
+            matiere.setModificationDate(new Date());
+            return matiereRepository.update(matiere);
+        }
+        List<String> errors = new ArrayList<>();
+        errors.add("La modification de la matière est impossible : l'identifiant n'est pas renseigné.");
+        throw new ArgumentException(errors);
+    }//updateMatiere()
 
     /**
      * La fonction permet de vérifier les règles métiers.
@@ -75,7 +103,7 @@ public class MatiereService {
                 erreurs.add("La couleur de fond est obligatoire");
             }
             if (matiere.getCouleurPolice() == null || matiere.getCouleurPolice().isEmpty()) {
-                erreurs.add("La couleur de fond est obligatoire");
+                erreurs.add("La couleur de la police est obligatoire");
             }
             if(matiere.getCouleurFond() != null && matiere.getCouleurPolice() != null && matiere.getCouleurFond().equals(matiere.getCouleurPolice())){
                 erreurs.add("La couleur du fond et de la police ne peuvent pas être la même");
@@ -97,5 +125,4 @@ public class MatiereService {
             throw new ArgumentException(erreurs);
         }
     }//checkBusinessForCreationAndUpdate()
-
 }//MatiereService
