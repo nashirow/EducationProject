@@ -103,7 +103,7 @@ public class MatiereService {
      * @param matiere La matière à vérifier.
      * @throws ArgumentException
      */
-    public void checkBusinessForCreationAndUpdate(Matiere matiere) throws ArgumentException {
+    public void checkBusinessForCreationAndUpdate(Matiere matiere) throws ArgumentException, DataBaseException {
         List<String> erreurs = new ArrayList<>();
         if(matiere == null){
             erreurs.add("La matière est obligatoire");
@@ -111,6 +111,9 @@ public class MatiereService {
         else{
             if (matiere.getNom() == null || matiere.getNom().isEmpty()) {
                 erreurs.add("Le nom de la matière est obligatoire");
+            }
+            if(matiereRepository.isExistByName(matiere.getNom())){
+                erreurs.add("Cette matière existe déjà");
             }
             if (matiere.getCouleurFond() == null || matiere.getCouleurFond().isEmpty()) {
                 erreurs.add("La couleur de fond est obligatoire");

@@ -18,6 +18,8 @@ package com.education.project.persistence;
 import com.education.project.exceptions.ArgumentException;
 import com.education.project.exceptions.DataBaseException;
 import com.education.project.model.Matiere;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
@@ -31,6 +33,7 @@ import java.util.Optional;
 public class MatiereRepository {
 
     private Connection connexion;
+    private static final Logger LOGGER = LogManager.getLogger(MatiereRepository.class);
 
     public MatiereRepository(@Value("${db.user}") String user, @Value("${db.password}") String password, @Value("${db.driver}") String driver, @Value("${db.url}") String url){
         try {
@@ -156,9 +159,27 @@ public class MatiereRepository {
             }
             catch(SQLException e){
                 e.printStackTrace();
-                throw new DataBaseException("Erreur technique : la récupération de la matière d'identifiant " + id + " est impossible.");
+                throw new DataBaseException("Erreur technique : la récupération de la matière d'identifiant " + id + " est impossible");
             }
         }
         return Optional.empty();
     }//findById()
+
+    public boolean isExistByName(String nom) throws DataBaseException {
+        String request = "SELECT COUNT(*) FROM matiere WHERE nom = ?";
+        try {
+            PreparedStatement preparedStatement = this.connexion.prepareStatement(request);
+            preparedStatement.setString(1,nom);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            long count = resultSet.getLong(1);
+            if(count > 0){
+                return true;
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Erreur technique : il est impossible de vérifier qu'une matière ayant le nom {} existe",nom ,e);
+            throw new DataBaseException("Erreur technique : il est impossible de vérifier qu'une matière ayant le nom " + nom + " existe");
+        }
+        return false;
+    }
 }//MatiereRepository
