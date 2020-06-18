@@ -142,20 +142,21 @@ public class MatiereRepository {
                 PreparedStatement preparedStatement = this.connexion.prepareStatement(request);
                 preparedStatement.setInt(1, id);
                 ResultSet rs = preparedStatement.executeQuery();
-                rs.next();
-                int idFromBd = rs.getInt("id");
-                String nomFromBd = rs.getString("nom");
-                String couleurFondFromBd = rs.getString("couleurFond");
-                String couleurPoliceFromBd = rs.getString("couleurPolice");
-                String volumeHoraireFromBd = rs.getString("volumeHoraire");
-                String descriptionFromBd = rs.getString("description");
-                Timestamp creationDateFromBd = rs.getTimestamp("creationDate");
-                Timestamp modificationDateFromBd = rs.getTimestamp("modificationDate");
-                Matiere resultat = new Matiere(nomFromBd, couleurFondFromBd, couleurPoliceFromBd, volumeHoraireFromBd, descriptionFromBd);
-                resultat.setId(idFromBd);
-                resultat.setCreationDate(new Date(creationDateFromBd.getTime()));
-                resultat.setModificationDate(new Date(modificationDateFromBd.getTime()));
-                return Optional.of(resultat);
+                if(rs.next()){
+                    int idFromBd = rs.getInt("id");
+                    String nomFromBd = rs.getString("nom");
+                    String couleurFondFromBd = rs.getString("couleurFond");
+                    String couleurPoliceFromBd = rs.getString("couleurPolice");
+                    String volumeHoraireFromBd = rs.getString("volumeHoraire");
+                    String descriptionFromBd = rs.getString("description");
+                    Timestamp creationDateFromBd = rs.getTimestamp("creationDate");
+                    Timestamp modificationDateFromBd = rs.getTimestamp("modificationDate");
+                    Matiere resultat = new Matiere(nomFromBd, couleurFondFromBd, couleurPoliceFromBd, volumeHoraireFromBd, descriptionFromBd);
+                    resultat.setId(idFromBd);
+                    resultat.setCreationDate(new Date(creationDateFromBd.getTime()));
+                    resultat.setModificationDate(new Date(modificationDateFromBd.getTime()));
+                    return Optional.of(resultat);
+                }
             }
             catch(SQLException e){
                 e.printStackTrace();

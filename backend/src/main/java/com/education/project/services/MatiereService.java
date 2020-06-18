@@ -86,7 +86,7 @@ public class MatiereService {
     }//updateMatiere()
 
     /**
-     * La fonction permet de supprimer une classe d'identifiant id
+     * La fonction permet de supprimer une matière grâce à son identifiant
      * @param id L'identifiant de la matière à supprimer
      * @return boolean
      */
@@ -97,6 +97,15 @@ public class MatiereService {
         }
         return result;
     }//deleteMatiere()
+
+    /**
+     * La fonction permet de récupérer une matière par son identifiant
+     * @param id L'identifiant de la matière à récupérer
+     * @return boolean
+     */
+    public Optional<Matiere> getMatiere(int id) throws DataBaseException {
+        return  matiereRepository.findById(id);
+    }//getMatiere()
 
     /**
      * La fonction permet de vérifier les règles métiers.
