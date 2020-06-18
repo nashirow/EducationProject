@@ -15,6 +15,7 @@
  */
 package com.education.project.persistence;
 
+import com.education.project.exceptions.ArgumentException;
 import com.education.project.exceptions.DataBaseException;
 import com.education.project.model.Matiere;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,14 +41,6 @@ public class MatiereRepository {
         }
     }//MatiereRepository
 
-    public void closeConnexion(){
-        try {
-            this.connexion.close();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-    }
-
     /**
      * Cette fonction injecte une matière en base de données.
      * @param matiere C'est la matière créée.
@@ -72,12 +65,12 @@ public class MatiereRepository {
                 return Optional.of(matiere);
             }
             else{
-                throw new DataBaseException("La création de la matière n'a pas pu être réalisée.");
+                throw new DataBaseException("Erreur technique : la création de la matière n'a pas pu être réalisée.");
             }
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-            throw new DataBaseException("La création de la matière n'a pas pu être réalisée.");
+            throw new DataBaseException("Erreur technique : la création de la matière n'a pas pu être réalisée.");
         }
     }//insert()
 
@@ -103,14 +96,35 @@ public class MatiereRepository {
                 return Optional.of(matiere);
             }
             else{
-                throw new DataBaseException("La modification de la matière n'a pas pu avoir lieu.");
+                throw new DataBaseException("Erreur technique : la modification de la matière n'a pas pu avoir lieu.");
             }
         }
         catch(SQLException e){
             e.printStackTrace();
-            throw new DataBaseException("La modification de la matière n'a pas pu avoir lieu.");
+            throw new DataBaseException("Erreur technique : la modification de la matière n'a pas pu avoir lieu.");
         }
     }//update()
+
+    /**
+     * Cette fonction permet de supprimer une matière dont l'identifiant est passé en paramètre.
+     * @param id
+     * @return
+     */
+    public boolean deleteMatiere(int id) throws DataBaseException {
+        String request = "DELETE * FROM matiere WHERE id = ?";
+        try {
+            PreparedStatement preparedStatement = this.connexion.prepareStatement(request);
+            preparedStatement.setInt(1,id);
+            int nbRowsDeleted = preparedStatement.executeUpdate();
+            if(nbRowsDeleted > 0){
+                return true;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw new DataBaseException("Erreur technique : impossible de supprimer la matière n° " + id);
+        }
+        return false;
+    }//deleteMatiere()
 
     /**
      * La fonction récupère une matière en fonction de son identifiant
@@ -142,9 +156,9 @@ public class MatiereRepository {
             }
             catch(SQLException e){
                 e.printStackTrace();
-                throw new DataBaseException("La récupération de la matière d'identifiant " + id + " est impossible.");
+                throw new DataBaseException("Erreur technique : la récupération de la matière d'identifiant " + id + " est impossible.");
             }
         }
         return Optional.empty();
-    }
+    }//findById()
 }//MatiereRepository

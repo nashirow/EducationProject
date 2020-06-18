@@ -24,10 +24,7 @@ import com.education.project.services.MatiereService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -65,6 +62,11 @@ public class MatiereEndPoint {
         return new ResponseEntity<>(new ResponseEndPoint(result,null), HttpStatus.OK);
     }//insertMatiere()
 
+    /**
+     * Ce endpoint permet de modifier une matière.
+     * @param matiere La matière à modifier.
+     * @return Réponse HTTP.
+     */
     @PutMapping("/matiere")
     public ResponseEntity<?> updateMatiere(@RequestBody Matiere matiere){
         Matiere result = null;
@@ -82,4 +84,21 @@ public class MatiereEndPoint {
         }
         return new ResponseEntity<>(new ResponseEndPoint(result,null), HttpStatus.OK);
     }//updateMatiere()
+
+    /**
+     * Le endpoint permet de supprimer une matière
+     * @param id L'identifiant de la matière à supprimer
+     * @return Réponse HTTP
+     */
+    @DeleteMapping("/matiere/{id}")
+    public ResponseEntity<?> deleteMatiere(@PathVariable int id){
+        boolean result = false;
+        try {
+            result = this.matiereService.deleteMatiere(id);
+        } catch (DataBaseException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(new ResponseEndPoint(null, e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(new ResponseEndPoint(result,null),HttpStatus.OK);
+    }//deleteMatiere()
 }//MatiereEndPoint

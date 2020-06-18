@@ -531,8 +531,16 @@ public class MatiereServiceUT {
     }//update_matiere_should_throw_exception_when_name_matiere_is_above_40()
 
     @Test
-    public void delete_matiere_should_success_when_matiere_id_1_is_deleted(){
+    public void delete_matiere_should_success_when_matiere_id_is_1() throws DataBaseException {
+        Mockito.when(matiereRepository.deleteMatiere(1)).thenReturn(true);
         boolean result = matiereService.deleteMatiere(1);
         Assertions.assertThat(result).isTrue();
-    }//delete_matiere_should_success_when_matiere_id_1_is_deleted()
+    }//delete_matiere_should_success_when_matiere_id_is_1()
+
+    @Test
+    public void delete_matiere_should_return_false_when_matiere_id_is_20() throws DataBaseException {
+        Mockito.when(matiereRepository.deleteMatiere(20)).thenReturn(false);
+        boolean result = matiereService.deleteMatiere(20);
+        Assertions.assertThat(matiereService.deleteMatiere(20)).isFalse();
+    }//delete_matiere_should_return_false_when_matiere_id_is_20()
 }//MatiereServiceUT
