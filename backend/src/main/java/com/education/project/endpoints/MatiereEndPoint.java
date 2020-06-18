@@ -101,4 +101,25 @@ public class MatiereEndPoint {
         }
         return new ResponseEntity<>(new ResponseEndPoint(result,null),HttpStatus.OK);
     }//deleteMatiere()
+
+    /**
+     * Ce endpoint permet de récupérer une matière grâce à son identifiant.
+     * @param id Identifiant de la matière à récupérer.
+     * @return Réponse HTTP.
+     */
+    @GetMapping("/matiere/{id}")
+    public ResponseEntity<?> getMatiere(@PathVariable int id){
+        Matiere result = null;
+        try {
+            Optional<Matiere> optMatiereRecovered = this.matiereService.getMatiere(id);
+            if(optMatiereRecovered.isPresent()){
+                result = optMatiereRecovered.get();
+            }
+        } catch (DataBaseException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(new ResponseEndPoint(result,null), HttpStatus.OK);
+    }//getMatiere()
+
 }//MatiereEndPoint

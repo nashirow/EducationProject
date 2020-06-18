@@ -559,4 +559,31 @@ public class MatiereServiceUT {
                 .hasMessage("Cette matière existe déjà")
                 .isInstanceOf(ArgumentException.class);
     }//update_matiere_should_throw_exception_when_matiere_name_already_exists()
+
+    @Test
+    public void get_matiere_should_success_when_matiere_id_is_1() throws DataBaseException {
+        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        matiereFromBd.setId(1);
+        matiereFromBd.setCreationDate(new Date());
+        matiereFromBd.setModificationDate(new Date());
+        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
+        Optional<Matiere> optResult = matiereService.getMatiere(1);
+        Assertions.assertThat(optResult).isPresent();
+        optResult.ifPresent((result) -> {
+            Assertions.assertThat(result.getId()).isEqualTo(1);
+            Assertions.assertThat(result.getNom()).isEqualTo(matiereFromBd.getNom());
+            Assertions.assertThat(result.getCouleurFond()).isEqualTo(matiereFromBd.getCouleurFond());
+            Assertions.assertThat(result.getCouleurPolice()).isEqualTo(matiereFromBd.getCouleurPolice());
+            Assertions.assertThat(result.getVolumeHoraire()).isEqualTo(matiereFromBd.getVolumeHoraire());
+            Assertions.assertThat(result.getCreationDate()).isEqualTo(matiereFromBd.getCreationDate());
+            Assertions.assertThat(result.getModificationDate()).isEqualTo(matiereFromBd.getModificationDate());
+        });
+    }//get_matiere_should_success_when_matiere_id_is_1
+
+    @Test
+    public void get_matiere_should_throw_exception_when_matiere_id_is_20() throws DataBaseException {
+        Mockito.when(matiereRepository.findById(20)).thenReturn(Optional.empty());
+        Optional<Matiere> matFromBd = matiereService.getMatiere(20);
+        Assertions.assertThat(matFromBd).isNotPresent();
+    }//get_matiere_should_throw_exception_when_matiere_id_is_20()
 }//MatiereServiceUT
