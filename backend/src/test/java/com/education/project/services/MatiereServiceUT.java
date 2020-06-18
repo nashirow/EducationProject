@@ -543,4 +543,20 @@ public class MatiereServiceUT {
         boolean result = matiereService.deleteMatiere(20);
         Assertions.assertThat(matiereService.deleteMatiere(20)).isFalse();
     }//delete_matiere_should_return_false_when_matiere_id_is_20()
+
+    @Test
+    public void creation_matiere_should_throw_exception_when_matiere_name_already_exists() throws DataBaseException {
+        Mockito.when(matiereRepository.isExistByName(this.matiereToCreate.getNom())).thenReturn(true);
+        Assertions.assertThatThrownBy(() -> matiereService.insertMatiere(this.matiereToCreate))
+                .hasMessage("Cette matière existe déjà")
+                .isInstanceOf(ArgumentException.class);
+    }//creation_matiere_should_throw_exception_when_matiere_name_already_exists()
+
+    @Test
+    public void update_matiere_should_throw_exception_when_matiere_name_already_exists() throws DataBaseException {
+        Mockito.when(matiereRepository.isExistByName(this.matiereToUpdate.getNom())).thenReturn(true);
+        Assertions.assertThatThrownBy(() -> matiereService.updateMatiere(this.matiereToUpdate))
+                .hasMessage("Cette matière existe déjà")
+                .isInstanceOf(ArgumentException.class);
+    }//update_matiere_should_throw_exception_when_matiere_name_already_exists()
 }//MatiereServiceUT
