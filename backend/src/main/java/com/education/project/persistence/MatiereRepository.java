@@ -111,7 +111,7 @@ public class MatiereRepository {
      * @return
      */
     public boolean deleteMatiere(int id) throws DataBaseException {
-        String request = "DELETE * FROM matiere WHERE id = ?";
+        String request = "DELETE FROM matiere WHERE id = ?";
         try {
             PreparedStatement preparedStatement = this.connexion.prepareStatement(request);
             preparedStatement.setInt(1,id);
