@@ -581,9 +581,9 @@ public class MatiereServiceUT {
     }//get_matiere_should_success_when_matiere_id_is_1
 
     @Test
-    public void get_matiere_should_throw_exception_when_matiere_id_is_20() throws DataBaseException {
+    public void get_matiere_should_return_empty_when_matiere_id_is_20() throws DataBaseException {
         Mockito.when(matiereRepository.findById(20)).thenReturn(Optional.empty());
         Optional<Matiere> matFromBd = matiereService.getMatiere(20);
         Assertions.assertThat(matFromBd).isNotPresent();
-    }//get_matiere_should_throw_exception_when_matiere_id_is_20()
+    }//get_matiere_should_return_empty_when_matiere_id_is_20()
 }//MatiereServiceUT
