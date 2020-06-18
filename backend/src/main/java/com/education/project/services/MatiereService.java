@@ -29,12 +29,12 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * La classe permet d'utiliser les fonctionnalités liées à une matière.
+ * La classe permet d'utiliser les fonctionnalités liées à une matière
  */
 @Service
 public class MatiereService {
     /**
-     * Cette classe me permet de réaliser les requêtes liées à la matière (SQL) sur la base de données.
+     * Cette classe me permet de réaliser les requêtes liées à la matière (SQL) sur la base de données
      */
     private MatiereRepository matiereRepository;
 
@@ -44,9 +44,9 @@ public class MatiereService {
     }//MatiereService()
 
     /**
-     * Cette fonction permet de créer une matière.
-     * @param matiere la matière à créer.
-     * @return La matière créée.
+     * Cette fonction permet de créer une matière
+     * @param matiere la matière à créer
+     * @return La matière créée
      * @throws ArgumentException
      * @throws DataBaseException
      */
@@ -58,8 +58,8 @@ public class MatiereService {
     }//insertMatiere()
 
     /**
-     * Cette fonction permet de modifier une matière.
-     * @param matiere La matière à modifier.
+     * Cette fonction permet de modifier une matière
+     * @param matiere La matière à modifier
      * @return La matière modifiée.
      * @throws ArgumentException
      */
@@ -84,6 +84,19 @@ public class MatiereService {
         errors.add("La modification de la matière est impossible : l'identifiant n'est pas renseigné.");
         throw new ArgumentException(errors);
     }//updateMatiere()
+
+    /**
+     * La fonction permet de supprimer une classe d'identifiant id
+     * @param id L'identifiant de la matière à supprimer
+     * @return boolean
+     */
+    public boolean deleteMatiere(int id) throws DataBaseException {
+        boolean result = false;
+        if(matiereRepository.deleteMatiere(id)){
+             result = true;
+        }
+        return result;
+    }//deleteMatiere()
 
     /**
      * La fonction permet de vérifier les règles métiers.
