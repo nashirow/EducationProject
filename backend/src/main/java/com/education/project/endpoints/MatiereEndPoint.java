@@ -52,11 +52,9 @@ public class MatiereEndPoint {
                 result = optMatiere.get();
             }
         } catch (ArgumentException e) {
-            e.printStackTrace();
             ResponseEndPoint response = new ResponseEndPoint(null,e.getErreurs());
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         } catch (DataBaseException e) {
-            e.printStackTrace();
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(new ResponseEndPoint(result,null), HttpStatus.OK);
@@ -76,10 +74,8 @@ public class MatiereEndPoint {
                 result = optMatiereUpdated.get();
             }
         } catch (ArgumentException e) {
-            e.printStackTrace();
             return new ResponseEntity<>(new ResponseEndPoint(null,e.getErreurs()),HttpStatus.BAD_REQUEST);
         } catch (DataBaseException e) {
-            e.printStackTrace();
             return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(new ResponseEndPoint(result,null), HttpStatus.OK);
@@ -92,11 +88,10 @@ public class MatiereEndPoint {
      */
     @DeleteMapping("/matiere/{id}")
     public ResponseEntity<?> deleteMatiere(@PathVariable int id){
-        boolean result = false;
+        boolean result;
         try {
             result = this.matiereService.deleteMatiere(id);
         } catch (DataBaseException e) {
-            e.printStackTrace();
             return new ResponseEntity<>(new ResponseEndPoint(null, e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(new ResponseEndPoint(result,null),HttpStatus.OK);
@@ -116,10 +111,24 @@ public class MatiereEndPoint {
                 result = optMatiereRecovered.get();
             }
         } catch (DataBaseException e) {
-            e.printStackTrace();
             return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(new ResponseEndPoint(result,null), HttpStatus.OK);
     }//getMatiere()
+
+    /**
+     * Ce endpoint permet de récupérer toutes les matières à l'aide de filtres.
+     * @param name Nom de la matière à rechercher (optionnel)
+     * @param colorPolice Nom de la couleur de police (optionnel)
+     * @return Réponse HTTP.
+     */
+    @GetMapping("/matieres")
+    public ResponseEntity<?> getMatieres(@RequestParam(value = "name", required = false) String name, @RequestParam(value = "colorPolice", required = false) String colorPolice){
+        try {
+            return new ResponseEntity<>(new ResponseEndPoint(this.matiereService.getMatieres(name, colorPolice),null), HttpStatus.OK);
+        } catch (DataBaseException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }//getMatieres()
 
 }//MatiereEndPoint
