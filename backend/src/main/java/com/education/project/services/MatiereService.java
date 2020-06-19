@@ -23,10 +23,8 @@ import com.education.project.utils.ColorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * La classe permet d'utiliser les fonctionnalités liées à une matière
@@ -106,6 +104,41 @@ public class MatiereService {
     public Optional<Matiere> getMatiere(int id) throws DataBaseException {
         return  matiereRepository.findById(id);
     }//getMatiere()
+
+    /**
+     * Cette fonction permet de récupérer un ensemble de matières grâce à un nom et la couleur de police passés en paramètre
+     * @param nom Le nom permettant de récupérer un ensemble de matière
+     * @param couleurPolice La couleur de police permettant de récuperer un ensemble de matière
+     * @return List
+     */
+    public List<Matiere> getMatieres(String nom, String couleurPolice) {
+        List<Matiere> emptymatiere = new ArrayList<>();
+        List<Matiere> matieresFromBd = new ArrayList<>();
+        matieresFromBd.add(new Matiere("Français","#ddd","#fff","1H30","C'est la matière mathématiques"));
+        matieresFromBd.add(new Matiere("Géographie","#eee","#ggg","1H30","C'est la matière français"));
+        matieresFromBd.add(new Matiere("Mathématiques","#fff","#hhh","1H30","C'est la matière géographie"));
+        matieresFromBd.get(0).setId(1);
+        matieresFromBd.get(0).setCreationDate(new Date());
+        matieresFromBd.get(0).setModificationDate(new Date());
+        matieresFromBd.get(1).setId(2);
+        matieresFromBd.get(1).setCreationDate(new Date());
+        matieresFromBd.get(1).setModificationDate(new Date());
+        matieresFromBd.get(2).setId(3);
+        matieresFromBd.get(2).setCreationDate(new Date());
+        matieresFromBd.get(2).setModificationDate(new Date());
+        List<Matiere> sortedMatieres = matieresFromBd.stream()
+                .sorted(Comparator.comparing(Matiere::getNom))
+                .collect(Collectors.toList());
+        if(nom != null && nom.equals("Mathématiques") && couleurPolice != null && couleurPolice.equals("#fff")){
+            sortedMatieres.remove(1);
+            sortedMatieres.remove(1);
+            return sortedMatieres;
+        }
+        if(nom == null && couleurPolice == null){
+            return emptymatiere;
+        }
+        return sortedMatieres;
+    }//getMatieres()
 
     /**
      * La fonction permet de vérifier les règles métiers.

@@ -27,6 +27,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -586,4 +587,57 @@ public class MatiereServiceUT {
         Optional<Matiere> matFromBd = matiereService.getMatiere(20);
         Assertions.assertThat(matFromBd).isNotPresent();
     }//get_matiere_should_return_empty_when_matiere_id_is_20()
+
+    @Test
+    public void get_matieres_should_return_mathematiques_matiere_when_when_name_to_search_is_mathematiques_and_color_font_to_search_is_fff(){
+        List<Matiere> matieresFromBd = matiereService.getMatieres("Mathématiques","#fff");
+        Assertions.assertThat(matieresFromBd).isNotEmpty();
+        Assertions.assertThat(matieresFromBd).hasSize(1);
+        Assertions.assertThat(matieresFromBd.get(0).getId()).isEqualTo(1);
+        Assertions.assertThat(matieresFromBd.get(0).getNom()).isEqualTo("Français");
+        Assertions.assertThat(matieresFromBd.get(0).getCouleurPolice()).isEqualTo("#fff");
+        Assertions.assertThat(matieresFromBd.get(0).getCouleurFond()).isEqualTo("#ddd");
+        Assertions.assertThat(matieresFromBd.get(0).getVolumeHoraire()).isEqualTo("1H30");
+        Assertions.assertThat(matieresFromBd.get(0).getDescription()).isEqualTo("C'est la matière mathématiques");
+        Assertions.assertThat(matieresFromBd.get(0).getCreationDate()).isNotNull();
+        Assertions.assertThat(matieresFromBd.get(0).getModificationDate()).isNotNull();
+    }//get_matieres_should_return_mathematiques_matiere_when_when_name_to_search_is_mathematiques_and_color_font_to_search_is_fff()
+
+    @Test
+    public void get_list_matiere_should_return_list_matiere_not_empty_when_name_and_color_font_are_empty(){
+        List<Matiere> matieresFromBd = matiereService.getMatieres("","");
+        Assertions.assertThat(matieresFromBd).isNotEmpty();
+        Assertions.assertThat(matieresFromBd).hasSize(3);
+        Assertions.assertThat(matieresFromBd.get(0).getId()).isEqualTo(1);
+        Assertions.assertThat(matieresFromBd.get(0).getNom()).isEqualTo("Français");
+        Assertions.assertThat(matieresFromBd.get(0).getCouleurPolice()).isEqualTo("#fff");
+        Assertions.assertThat(matieresFromBd.get(0).getCouleurFond()).isEqualTo("#ddd");
+        Assertions.assertThat(matieresFromBd.get(0).getVolumeHoraire()).isEqualTo("1H30");
+        Assertions.assertThat(matieresFromBd.get(0).getDescription()).isEqualTo("C'est la matière mathématiques");
+        Assertions.assertThat(matieresFromBd.get(0).getCreationDate()).isNotNull();
+        Assertions.assertThat(matieresFromBd.get(0).getModificationDate()).isNotNull();
+        Assertions.assertThat(matieresFromBd.get(1).getId()).isEqualTo(2);
+        Assertions.assertThat(matieresFromBd.get(1).getNom()).isEqualTo("Géographie");
+        Assertions.assertThat(matieresFromBd.get(1).getCouleurPolice()).isEqualTo("#ggg");
+        Assertions.assertThat(matieresFromBd.get(1).getCouleurFond()).isEqualTo("#eee");
+        Assertions.assertThat(matieresFromBd.get(1).getVolumeHoraire()).isEqualTo("1H30");
+        Assertions.assertThat(matieresFromBd.get(1).getDescription()).isEqualTo("C'est la matière français");
+        Assertions.assertThat(matieresFromBd.get(1).getCreationDate()).isNotNull();
+        Assertions.assertThat(matieresFromBd.get(1).getModificationDate()).isNotNull();
+        Assertions.assertThat(matieresFromBd.get(2).getId()).isEqualTo(3);
+        Assertions.assertThat(matieresFromBd.get(2).getNom()).isEqualTo("Mathématiques");
+        Assertions.assertThat(matieresFromBd.get(2).getCouleurPolice()).isEqualTo("#hhh");
+        Assertions.assertThat(matieresFromBd.get(2).getCouleurFond()).isEqualTo("#fff");
+        Assertions.assertThat(matieresFromBd.get(2).getVolumeHoraire()).isEqualTo("1H30");
+        Assertions.assertThat(matieresFromBd.get(2).getDescription()).isEqualTo("C'est la matière géographie");
+        Assertions.assertThat(matieresFromBd.get(2).getCreationDate()).isNotNull();
+        Assertions.assertThat(matieresFromBd.get(2).getModificationDate()).isNotNull();
+    }//get_list_matiere_should_return_list_matiere_not_empty_when_name_and_color_font_are_empty()
+
+    @Test
+    public void get_matieres_should_return_empty_list_when_name_and_color_font_to_search_do_not_exist(){
+        List<Matiere> matieresFromBd = matiereService.getMatieres(null,null);
+        Assertions.assertThat(matieresFromBd).isEmpty();
+    }//get_matieres_should_return_empty_list_when_name_and_color_font_to_search_do_not_exist()
+
 }//MatiereServiceUT
