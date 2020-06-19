@@ -24,6 +24,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -33,6 +35,7 @@ import java.util.Optional;
 public class MatiereRepository {
 
     private Connection connexion;
+
     private static final Logger LOGGER = LogManager.getLogger(MatiereRepository.class);
 
     public MatiereRepository(@Value("${db.user}") String user, @Value("${db.password}") String password, @Value("${db.driver}") String driver, @Value("${db.url}") String url){
@@ -71,8 +74,8 @@ public class MatiereRepository {
                 throw new DataBaseException("Erreur technique : la création de la matière n'a pas pu être réalisée.");
             }
 
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            LOGGER.error("Erreur technique : la création de la matière n'a pas pu être réalisée.", e);
             throw new DataBaseException("Erreur technique : la création de la matière n'a pas pu être réalisée.");
         }
     }//insert()
@@ -103,7 +106,7 @@ public class MatiereRepository {
             }
         }
         catch(SQLException e){
-            e.printStackTrace();
+            LOGGER.error("Erreur technique : la modification de la matière n'a pas pu avoir lieu.", e);
             throw new DataBaseException("Erreur technique : la modification de la matière n'a pas pu avoir lieu.");
         }
     }//update()
@@ -122,8 +125,8 @@ public class MatiereRepository {
             if(nbRowsDeleted > 0){
                 return true;
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            LOGGER.error("Erreur technique : impossible de supprimer la matière n° {}", id, e);
             throw new DataBaseException("Erreur technique : impossible de supprimer la matière n° " + id);
         }
         return false;
@@ -159,7 +162,7 @@ public class MatiereRepository {
                 }
             }
             catch(SQLException e){
-                e.printStackTrace();
+                LOGGER.error("Erreur technique : la récupération de la matière d'identifiant {} est impossible", id, e);
                 throw new DataBaseException("Erreur technique : la récupération de la matière d'identifiant " + id + " est impossible");
             }
         }
@@ -183,4 +186,64 @@ public class MatiereRepository {
         }
         return false;
     }
+
+    /**
+     * Récupère toutes les matières en fonction de filtres
+     * @param nom Nom de la matière recherchée (optionnel)
+     * @param couleurPolice Couleur hexadécimale de la police (optionnel)
+     * @return liste de matières
+     */
+    public List<Matiere> findAll(String nom, String couleurPolice) throws DataBaseException {
+        List<Matiere> results = new ArrayList<>();
+        StringBuilder sb = new StringBuilder("SELECT * FROM matiere ");
+        int idxNom = 0, idxColor = 0;
+        if(nom != null && !nom.isEmpty() && couleurPolice != null && !couleurPolice.isEmpty()){
+            sb.append("WHERE nom LIKE ? AND couleurpolice LIKE ? ");
+            idxNom = 1;
+            idxColor = 2;
+        }
+        else if(nom != null && !nom.isEmpty()){
+            sb.append("WHERE nom LIKE ?");
+            idxNom = 1;
+        }
+        else if(couleurPolice != null && !couleurPolice.isEmpty()){
+            sb.append("WHERE couleurpolice LIKE ?");
+            idxColor = 1;
+        }
+        sb.append(" ORDER BY nom ASC");
+        String requestSql = sb.toString();
+        try {
+            PreparedStatement ps = this.connexion.prepareStatement(requestSql);
+            if(nom != null && !nom.isEmpty() && idxNom != 0){
+                ps.setString(idxNom, "%" + nom + "%");
+            }
+            if(couleurPolice != null && !couleurPolice.isEmpty() && idxColor != 0){
+                ps.setString(idxColor, "%" + couleurPolice + "%");
+            }
+            if(!ps.execute()){
+                LOGGER.error("Erreur technique : impossible de récupérer les matières, ps.execute == false");
+                throw new DataBaseException("Erreur technique : impossible de récupérer les matières");
+            }
+            ResultSet resultSet = ps.getResultSet();
+            while(resultSet.next()){
+                int idFromBd = resultSet.getInt("id");
+                String nomFromBd = resultSet.getString("nom");
+                String couleurFondFromBd = resultSet.getString("couleurFond");
+                String couleurPoliceFromBd = resultSet.getString("couleurPolice");
+                String volumeHoraireFromBd = resultSet.getString("volumeHoraire");
+                String descriptionFromBd = resultSet.getString("description");
+                Timestamp creationDateFromBd = resultSet.getTimestamp("creationDate");
+                Timestamp modificationDateFromBd = resultSet.getTimestamp("modificationDate");
+                Matiere resultat = new Matiere(nomFromBd, couleurFondFromBd, couleurPoliceFromBd, volumeHoraireFromBd, descriptionFromBd);
+                resultat.setId(idFromBd);
+                resultat.setCreationDate(new Date(creationDateFromBd.getTime()));
+                resultat.setModificationDate(new Date(modificationDateFromBd.getTime()));
+                results.add(resultat);
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Erreur technique : impossible de récupérer les matières", e);
+            throw new DataBaseException("Erreur technique : impossible de récupérer les matières");
+        }
+        return results;
+    }// findAll()
 }//MatiereRepository
