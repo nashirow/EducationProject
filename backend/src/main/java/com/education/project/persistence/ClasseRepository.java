@@ -123,4 +123,28 @@ public class ClasseRepository {
         }
     }// insert()
 
+    /**
+     * Met à jour la classe passée en paramètre en base de données
+     * @param classeToUpdate Classe à mettre à jour
+     * @return Classe mis à jour
+     */
+    public Optional<Classe> update(Classe classeToUpdate) throws DataBaseException {
+        String requestSql = "UPDATE classe SET nom = ?, modificationDate = ? WHERE id = ?";
+        try {
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
+            ps.setString(1, classeToUpdate.getNom());
+            ps.setTimestamp(2, new Timestamp(classeToUpdate.getModificationDate().getTime()));
+            ps.setInt(3, classeToUpdate.getId());
+            int rowsAdded = ps.executeUpdate();
+            if(rowsAdded > 0){
+                return Optional.of(classeToUpdate);
+            }else{
+                throw new DataBaseException("Impossible de mettre à jour la classe (vérifiez votre identifiant de classe)");
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Impossible de mettre à jour la classe {}", classeToUpdate.toString(), e);
+            throw new DataBaseException("Impossible de mettre à jour la classe");
+        }
+    }// update()
+
 }// ClasseRepository

@@ -49,7 +49,7 @@ public class ClasseService {
      * @throws DataBaseException
      */
     public Optional<Classe> insertClasse(Classe classeToInsert) throws ArgumentException, DataBaseException {
-        this.checkBusiness(classeToInsert);
+        this.checkBusiness(classeToInsert, false);
         Date now = new Date();
         classeToInsert.setCreationDate(now);
         classeToInsert.setModificationDate(now);
@@ -57,21 +57,40 @@ public class ClasseService {
     }// insertClasse()
 
     /**
+     * Cette fonction permet de mettre à jour une classe
+     * existante dans l'application.
+     * @param classeToUpdate Classe à mettre à jour
+     * @return Classe mise à jour
+     */
+    public Optional<Classe> updateClasse(Classe classeToUpdate) throws ArgumentException, DataBaseException {
+        this.checkBusiness(classeToUpdate, true);
+        Date now = new Date();
+        classeToUpdate.setModificationDate(now);
+        return classeRepository.update(classeToUpdate);
+    }// updateClasse()
+
+    /**
      * Contrôle les règles métiers
-     * @param classeToInsert Classe à contrôler
+     * @param classe Classe à contrôler
      * @throws ArgumentException
      * @throws DataBaseException
      */
-    private void checkBusiness(Classe classeToInsert) throws ArgumentException, DataBaseException {
+    private void checkBusiness(Classe classe, boolean isUpdate) throws ArgumentException, DataBaseException {
         List<String> errors = new ArrayList<>();
-        if(classeToInsert == null){
-            errors.add("La classe à insérer est obligatoire");
+        if(classe == null){
+            StringBuilder sb = new StringBuilder("La classe à ");
+            sb.append(isUpdate ? "mettre à jour " : "insérer ");
+            sb.append("est obligatoire");
+            errors.add(sb.toString());
         }else {
-            if(classeToInsert.getNom() == null || classeToInsert.getNom().isEmpty()){
+            if(isUpdate && classe.getId() == null){
+                errors.add("L'identifiant de la classe à mettre à jour est obligatoire");
+            }
+            if(classe.getNom() == null || classe.getNom().isEmpty()){
                 errors.add("Le nom d'une classe est obligatoire");
             }
-            if(classeRepository.existsByName(classeToInsert.getNom())){
-                errors.add("Une classe avec le nom " + classeToInsert.getNom() + " existe déjà dans la base de données");
+            if(classeRepository.existsByName(classe.getNom())){
+                errors.add("Une classe avec le nom " + classe.getNom() + " existe déjà dans la base de données");
             }
         }
         if(!errors.isEmpty()){
