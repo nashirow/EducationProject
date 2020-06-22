@@ -12,3 +12,11 @@ CREATE TABLE `matiere` (
 	PRIMARY KEY (`id`)
 ) COLLATE='utf8mb4_0900_ai_ci';
 
+CREATE TABLE `classe` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `nom` VARCHAR(40) NOT NULL DEFAULT '' COMMENT 'C\'est le nom de la classe.',
+    `creationDate` TIMESTAMP NOT NULL DEFAULT NOW(),
+    `modificationDate` TIMESTAMP NOT NULL DEFAULT NOW(),
+    PRIMARY KEY (`id`)
+) COLLATE='utf8mb4_0900_ai_ci';
+
