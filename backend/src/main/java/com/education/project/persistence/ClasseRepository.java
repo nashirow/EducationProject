@@ -124,6 +124,33 @@ public class ClasseRepository {
     }// insert()
 
     /**
+     * Retourne une classe en fonction de son identifiant
+     * @param id Identifiant de la classe
+     * @return Classe
+     */
+    public Optional<Classe> findById(int id) throws DataBaseException {
+        String requestSql = "SELECT * FROM classe WHERE id = ?";
+        try {
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
+            ps.setInt(1, id);
+            ResultSet resultSet = ps.executeQuery();
+            if(resultSet.next()) {
+                Timestamp creationDateFromBd = resultSet.getTimestamp("creationDate");
+                Timestamp modificationDateFromBd = resultSet.getTimestamp("modificationDate");
+                Classe classe = new Classe(resultSet.getInt("id"),
+                        resultSet.getString("nom"),
+                        new java.util.Date(creationDateFromBd.getTime()),
+                        new java.util.Date(modificationDateFromBd.getTime()));
+                return Optional.of(classe);
+            }else{
+                return Optional.empty();
+            }
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new DataBaseException("Impossible de trouver la classe avec l'identifiant " + id);
+        }
+    }// findById()
+    /**
      * Met à jour la classe passée en paramètre en base de données
      * @param classeToUpdate Classe à mettre à jour
      * @return Classe mis à jour

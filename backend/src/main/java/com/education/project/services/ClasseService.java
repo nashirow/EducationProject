@@ -57,6 +57,15 @@ public class ClasseService {
     }// insertClasse()
 
     /**
+     * Retourne la classe dont l'identifiant est passé en paramètre
+     * @param id identifiant de la classe
+     * @return Classe
+     */
+    public Optional<Classe> getClasse(int id) throws DataBaseException {
+        return classeRepository.findById(id);
+    }// getClasse()
+
+    /**
      * Cette fonction permet de mettre à jour une classe
      * existante dans l'application.
      * @param classeToUpdate Classe à mettre à jour

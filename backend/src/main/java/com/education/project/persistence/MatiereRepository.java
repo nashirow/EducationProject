@@ -156,8 +156,8 @@ public class MatiereRepository {
                     Timestamp modificationDateFromBd = rs.getTimestamp("modificationDate");
                     Matiere resultat = new Matiere(nomFromBd, couleurFondFromBd, couleurPoliceFromBd, volumeHoraireFromBd, descriptionFromBd);
                     resultat.setId(idFromBd);
-                    resultat.setCreationDate(new Date(creationDateFromBd.getTime()));
-                    resultat.setModificationDate(new Date(modificationDateFromBd.getTime()));
+                    resultat.setCreationDate(new java.util.Date(creationDateFromBd.getTime()));
+                    resultat.setModificationDate(new java.util.Date(modificationDateFromBd.getTime()));
                     return Optional.of(resultat);
                 }
             }
