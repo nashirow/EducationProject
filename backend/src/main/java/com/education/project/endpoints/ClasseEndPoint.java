@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,5 +39,20 @@ public class ClasseEndPoint {
         }
         return new ResponseEntity<>(new ResponseEndPoint(null, null), HttpStatus.INTERNAL_SERVER_ERROR);
     }// insertClasse()
+
+    @PutMapping("/classe")
+    public ResponseEntity<?> updateClasse(@RequestBody Classe classe) {
+        try {
+            Optional<Classe> optClasse = classeService.updateClasse(classe);
+            if(optClasse.isPresent()){
+                return new ResponseEntity<>(new ResponseEndPoint(optClasse.get(), null), HttpStatus.OK);
+            }
+        } catch (ArgumentException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null, e.getErreurs()), HttpStatus.BAD_REQUEST);
+        } catch (DataBaseException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(new ResponseEndPoint(null, null), HttpStatus.INTERNAL_SERVER_ERROR);
+    }// updateClasse()
 
 }// ClasseEndPoint

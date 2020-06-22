@@ -107,6 +107,65 @@ public class ClasseServiceUT {
                 .hasMessage("Impossible de rechercher une classe ayant le nom " + classeToInsert.getNom());
     }// insert_classe_should_throw_database_exception_when_database_meet_error()
 
+    @Test
+    public void update_classe_should_success_when_classe_is_filled_with_name_and_id() throws ArgumentException, DataBaseException {
+        Classe classeToUpdate = initClasseToUpdate();
+        Mockito.when(classeRepository.update(classeToUpdate)).thenReturn(Optional.of(classeToUpdate));
+        Optional<Classe> optClasseUpdated = classeService.updateClasse(classeToUpdate);
+        Assertions.assertThat(optClasseUpdated).isPresent();
+        optClasseUpdated.ifPresent(classe -> {
+            Assertions.assertThat(classe.getNom()).isEqualTo(classeToUpdate.getNom());
+            Assertions.assertThat(classe.getId()).isEqualTo(1);
+            Assertions.assertThat(classe.getCreationDate()).isNotNull();
+            Assertions.assertThat(classe.getModificationDate()).isNotNull();
+            Assertions.assertThat(classe.getCreationDate()).isNotEqualTo(classe.getModificationDate());
+        });
+    }// update_classe_should_success_when_classe_is_filled_with_name_and_id()
+
+    @Test
+    public void update_classe_should_throw_argument_exception_when_name_is_null(){
+        Classe classeToUpdate = initClasseToUpdate();
+        classeToUpdate.setNom(null);
+        Assertions.assertThatThrownBy(() -> classeService.updateClasse(classeToUpdate))
+                .isInstanceOf(ArgumentException.class)
+                .hasMessage("Le nom d'une classe est obligatoire");
+    }// update_classe_should_throw_argument_exception_when_name_is_null()
+
+    @Test
+    public void update_classe_should_throw_argument_exception_when_name_is_empty(){
+        Classe classeToUpdate = initClasseToUpdate();
+        classeToUpdate.setNom("");
+        Assertions.assertThatThrownBy(() -> classeService.updateClasse(classeToUpdate))
+                .isInstanceOf(ArgumentException.class)
+                .hasMessage("Le nom d'une classe est obligatoire");
+    }// update_classe_should_throw_argument_exception_when_name_is_empty()
+
+    @Test
+    public void update_classe_should_throw_argument_exception_when_classe_id_is_null(){
+        Classe classeToInsert = initClasseToUpdate();
+        classeToInsert.setId(null);
+        Assertions.assertThatThrownBy(() -> classeService.updateClasse(classeToInsert))
+                .isInstanceOf(ArgumentException.class)
+                .hasMessage("L'identifiant de la classe à mettre à jour est obligatoire");
+    }// update_classe_should_throw_argument_exception_when_classe_id_is_null()
+
+    @Test
+    public void update_classe_should_throw_argument_exception_when_classe_is_null(){
+        Classe classeToInsert = null;
+        Assertions.assertThatThrownBy(() -> classeService.updateClasse(classeToInsert))
+                .isInstanceOf(ArgumentException.class)
+                .hasMessage("La classe à mettre à jour est obligatoire");
+    }// update_classe_should_throw_argument_exception_when_classe_is_null()
+
+    @Test
+    public void update_classe_should_throw_argument_exception_when_classe_to_update_is_already_exists() throws DataBaseException {
+        Classe classeToUpdate = initClasseToUpdate();
+        Mockito.when(classeRepository.existsByName(classeToUpdate.getNom())).thenReturn(true);
+        Assertions.assertThatThrownBy(() -> classeService.updateClasse(classeToUpdate))
+                .isInstanceOf(ArgumentException.class)
+                .hasMessage("Une classe avec le nom " + classeToUpdate.getNom() + " existe déjà dans la base de données");
+    }// update_classe_should_throw_argument_exception_when_classe_to_update_is_already_exists()
+
     private Classe initClasseFromDataBase(){
         Date now = new Date();
         Classe classeFromBd = new Classe();
@@ -122,4 +181,13 @@ public class ClasseServiceUT {
         classeToInsert.setNom("6ème A");
         return classeToInsert;
     }// initClasseToInsert()
+
+    private Classe initClasseToUpdate(){
+        Classe classeToUpdate = new Classe();
+        classeToUpdate.setId(1);
+        classeToUpdate.setNom("5ème A");
+        classeToUpdate.setCreationDate(new Date(1592848921));
+        classeToUpdate.setModificationDate(new Date(1592852521));
+        return classeToUpdate;
+    }// initClasseToUpdate()
 }// ClasseServiceUT
