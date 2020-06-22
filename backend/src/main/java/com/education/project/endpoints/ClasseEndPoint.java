@@ -37,6 +37,15 @@ public class ClasseEndPoint {
         return new ResponseEntity<>(new ResponseEndPoint(null, null), HttpStatus.INTERNAL_SERVER_ERROR);
     }// insertClasse()
 
+    @DeleteMapping("/classe/{id}")
+    public ResponseEntity<?> deleteClasse(@PathVariable("id") Integer id){
+        try {
+            boolean result = classeService.deleteClass(id);
+            return new ResponseEntity<>(new ResponseEndPoint(result, null), HttpStatus.OK);
+        } catch (DataBaseException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     @GetMapping("/classe/{id}")
     public ResponseEntity<?> getClasse(@PathVariable Integer id){
         try {

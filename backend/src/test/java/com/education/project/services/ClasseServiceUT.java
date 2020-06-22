@@ -108,6 +108,20 @@ public class ClasseServiceUT {
     }// insert_classe_should_throw_database_exception_when_database_meet_error()
 
     @Test
+    public void delete_classe_should_success_when_id_1_is_given() throws DataBaseException {
+        Mockito.when(classeRepository.delete(1)).thenReturn(true);
+        boolean isDeleted = classeService.deleteClass(1);
+        Assertions.assertThat(isDeleted).isTrue();
+    }// delete_classe_should_success_when_id_1_is_given()
+
+    @Test
+    public void delete_classe_should_success_when_id_890_is_given() throws DataBaseException {
+        Mockito.when(classeRepository.delete(890)).thenReturn(false);
+        boolean isDeleted = classeService.deleteClass(890);
+        Assertions.assertThat(isDeleted).isFalse();
+    }// delete_classe_should_success_when_id_890_is_given()
+
+    @Test
     public void get_classe_should_return_result_when_id_is_1() throws DataBaseException {
         Classe classeFromBd = initClasseFromDataBase();
         classeFromBd.setModificationDate(new Date(1592848921));

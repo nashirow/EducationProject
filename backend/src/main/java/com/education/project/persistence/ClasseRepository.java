@@ -124,6 +124,24 @@ public class ClasseRepository {
     }// insert()
 
     /**
+     * Supprime une classe en base de données
+     * @param id Identifiant de la classe à supprimer en base de données
+     * @return boolean
+     */
+    public boolean delete(int id) throws DataBaseException {
+        String requestSql = "DELETE FROM classe WHERE id = ?";
+        try {
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
+            ps.setInt(1, id);
+            long nbClassesDeleted = ps.executeUpdate();
+            return nbClassesDeleted > 0;
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new DataBaseException("Impossible de supprimer la classe d'identifiant " + id);
+        }
+    }// delete()
+
+    /**
      * Retourne une classe en fonction de son identifiant
      * @param id Identifiant de la classe
      * @return Classe
