@@ -23,6 +23,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -153,13 +155,7 @@ public class ClasseRepository {
             ps.setInt(1, id);
             ResultSet resultSet = ps.executeQuery();
             if(resultSet.next()) {
-                Timestamp creationDateFromBd = resultSet.getTimestamp("creationDate");
-                Timestamp modificationDateFromBd = resultSet.getTimestamp("modificationDate");
-                Classe classe = new Classe(resultSet.getInt("id"),
-                        resultSet.getString("nom"),
-                        new java.util.Date(creationDateFromBd.getTime()),
-                        new java.util.Date(modificationDateFromBd.getTime()));
-                return Optional.of(classe);
+                return Optional.of(initClasse(resultSet));
             }else{
                 return Optional.empty();
             }
@@ -168,6 +164,7 @@ public class ClasseRepository {
             throw new DataBaseException("Erreur technique : Impossible de trouver la classe avec l'identifiant " + id);
         }
     }// findById()
+
     /**
      * Met à jour la classe passée en paramètre en base de données
      * @param classeToUpdate Classe à mettre à jour
@@ -217,5 +214,57 @@ public class ClasseRepository {
             throw new DataBaseException("Erreur technique : Impossible de compter le nombre de classes avec nom = " + ((name != null) ? name : ""));
         }
     }// count()
+
+    /**
+     * Retourne l'ensemble des classes en fonction de filtres.
+     * @param page n° de la page à récupérer (facultatif)
+     * @param nbElementsPerPage Nombre d'éléments par page (facultatif)
+     * @param name Nom de la classe (facultatif)
+     * @return Liste de classes
+     */
+    public List<Classe> getClasses(Integer page, Integer nbElementsPerPage, String name) throws DataBaseException {
+        List<Classe> results = new ArrayList<>();
+        StringBuilder sb = new StringBuilder("SELECT * FROM classe ");
+        if(name != null && !name.isEmpty()){
+            sb.append(" WHERE nom LIKE ? ");
+        }
+        if(page != null && nbElementsPerPage != null){
+            sb.append(" LIMIT ? OFFSET ? ");
+        }
+        String requestSql = sb.toString();
+        try {
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
+            if(name != null && !name.isEmpty()){
+                ps.setString(1, "%" + name + "%");
+            }
+            if(page != null && nbElementsPerPage != null){
+                ps.setInt(2, nbElementsPerPage);
+                ps.setInt(3, (page-1) * nbElementsPerPage);
+            }
+            ResultSet resultSet = ps.executeQuery();
+            while(resultSet.next()){
+                results.add(initClasse(resultSet));
+            }
+            return results;
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new DataBaseException("Erreur technique : Impossible de récupérer les classes avec les filtres [page : " + page + ", nbElementsPerPage : " + nbElementsPerPage + ", name : " + name);
+        }
+    }// getClasses()
+
+    /**
+     * Initialise une classe à partir d'un resultSet.
+     * @param resultSet resultSet
+     * @return classe
+     * @throws SQLException
+     */
+    private Classe initClasse(ResultSet resultSet) throws SQLException {
+        Timestamp creationDateFromBd = resultSet.getTimestamp("creationDate");
+        Timestamp modificationDateFromBd = resultSet.getTimestamp("modificationDate");
+        return new Classe(resultSet.getInt("id"),
+                resultSet.getString("nom"),
+                new java.util.Date(creationDateFromBd.getTime()),
+                new java.util.Date(modificationDateFromBd.getTime()));
+    }// initClasse()
 
 }// ClasseRepository

@@ -27,8 +27,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ClasseServiceUT {
@@ -224,6 +225,155 @@ public class ClasseServiceUT {
         Assertions.assertThat(total).isEqualTo(4);
     }// get_count_classes_should_return_2_when_filter_name_is_null()
 
+    @Test
+    public void get_classes_should_return_all_classes_when_no_filters() throws DataBaseException {
+        Mockito.when(classeRepository.getClasses(null, null, null)).thenReturn(this.getClassesFromDataBase());
+        List<Classe> results = classeService.getClasses(null, null, null);
+        Assertions.assertThat(results).isNotNull();
+        Assertions.assertThat(results).isNotEmpty();
+        Assertions.assertThat(results).hasSize(4);
+        Classe r1 = results.get(0);
+        Classe r2 = results.get(1);
+        Classe r3 = results.get(2);
+        Classe r4 = results.get(3);
+
+        Assertions.assertThat(r1.getId()).isEqualTo(1);
+        Assertions.assertThat(r1.getNom()).isEqualTo("6ème A");
+        Assertions.assertThat(r1.getCreationDate()).isNotNull();
+        Assertions.assertThat(r1.getModificationDate()).isNotNull();
+
+        Assertions.assertThat(r2.getId()).isEqualTo(2);
+        Assertions.assertThat(r2.getNom()).isEqualTo("6ème B");
+        Assertions.assertThat(r2.getCreationDate()).isNotNull();
+        Assertions.assertThat(r2.getModificationDate()).isNotNull();
+
+        Assertions.assertThat(r3.getId()).isEqualTo(3);
+        Assertions.assertThat(r3.getNom()).isEqualTo("5ème A");
+        Assertions.assertThat(r3.getCreationDate()).isNotNull();
+        Assertions.assertThat(r3.getModificationDate()).isNotNull();
+
+        Assertions.assertThat(r4.getId()).isEqualTo(4);
+        Assertions.assertThat(r4.getNom()).isEqualTo("3ème C");
+        Assertions.assertThat(r4.getCreationDate()).isNotNull();
+        Assertions.assertThat(r4.getModificationDate()).isNotNull();
+    }// get_classes_should_return_all_classes_when_no_filters()
+
+    @Test
+    public void get_classes_should_return_all_classes_when_filter_name_is_C() throws DataBaseException {
+        List<Classe> classes = this.getClassesFromDataBase();
+        Classe classeC = classes.stream().filter(classe -> classe.getNom().contains("C")).findFirst().get();
+        Mockito.when(classeRepository.getClasses(null, null, "C")).thenReturn(Collections.singletonList(classeC));
+        List<Classe> results = classeService.getClasses(null, null, "C");
+        Assertions.assertThat(results).isNotNull();
+        Assertions.assertThat(results).isNotEmpty();
+        Assertions.assertThat(results).hasSize(1);
+
+        Classe result = results.get(0);
+        Assertions.assertThat(result.getId()).isEqualTo(4);
+        Assertions.assertThat(result.getNom()).isEqualTo("3ème C");
+        Assertions.assertThat(result.getCreationDate()).isNotNull();
+        Assertions.assertThat(result.getModificationDate()).isNotNull();
+    }// get_classes_should_return_all_classes_when_filter_name_is_C()
+
+    @Test
+    public void get_classes_should_return_all_classes_when_filter_name_is_null_or_empty_and_with_pagination() throws DataBaseException {
+        final int nbClassesPerPage = 2;
+        List<Classe> classes = this.getClassesFromDataBase();
+        List<Classe> classesPage1 = Stream.of(classes.get(0), classes.get(1)).collect(Collectors.toList());
+        Mockito.when(classeRepository.getClasses(1, nbClassesPerPage, null)).thenReturn(classesPage1);
+        List<Classe> results = classeService.getClasses(1, nbClassesPerPage, null); // page 1
+
+        Assertions.assertThat(results).isNotNull();
+        Assertions.assertThat(results).isNotEmpty();
+        Assertions.assertThat(results).hasSize(nbClassesPerPage);
+
+        Classe r1 = results.get(0);
+        Classe r2 = results.get(1);
+
+        Assertions.assertThat(r1.getId()).isEqualTo(1);
+        Assertions.assertThat(r1.getNom()).isEqualTo("6ème A");
+        Assertions.assertThat(r1.getCreationDate()).isNotNull();
+        Assertions.assertThat(r1.getModificationDate()).isNotNull();
+
+        Assertions.assertThat(r2.getId()).isEqualTo(2);
+        Assertions.assertThat(r2.getNom()).isEqualTo("6ème B");
+        Assertions.assertThat(r2.getCreationDate()).isNotNull();
+        Assertions.assertThat(r2.getModificationDate()).isNotNull();
+
+        List<Classe> classesPage2 = Stream.of(classes.get(2), classes.get(3)).collect(Collectors.toList());
+        Mockito.when(classeRepository.getClasses(2, nbClassesPerPage, "")).thenReturn(classesPage2);
+        results = classeService.getClasses(2, nbClassesPerPage, ""); // page 2
+        Assertions.assertThat(results).isNotNull();
+        Assertions.assertThat(results).isNotEmpty();
+        Assertions.assertThat(results).hasSize(nbClassesPerPage);
+
+        r1 = results.get(0);
+        r2 = results.get(1);
+
+        Assertions.assertThat(r1.getId()).isEqualTo(3);
+        Assertions.assertThat(r1.getNom()).isEqualTo("5ème A");
+        Assertions.assertThat(r1.getCreationDate()).isNotNull();
+        Assertions.assertThat(r1.getModificationDate()).isNotNull();
+
+        Assertions.assertThat(r2.getId()).isEqualTo(4);
+        Assertions.assertThat(r2.getNom()).isEqualTo("3ème C");
+        Assertions.assertThat(r2.getCreationDate()).isNotNull();
+        Assertions.assertThat(r2.getModificationDate()).isNotNull();
+    }// get_classes_should_return_all_classes_when_filter_name_is_null_or_empty_and_with_pagination()
+
+    @Test
+    public void get_classes_should_return_all_classes_when_filter_name_is_ème_and_with_pagination() throws DataBaseException {
+        final int nbClassesPerPage = 2;
+        List<Classe> classes = this.getClassesFromDataBase();
+        List<Classe> classesPage1 = Stream.of(classes.get(0), classes.get(1)).collect(Collectors.toList());
+        Mockito.when(classeRepository.getClasses(1, nbClassesPerPage, "ème")).thenReturn(classesPage1);
+        List<Classe> results = classeService.getClasses(1, nbClassesPerPage, "ème"); // page 1
+
+        Assertions.assertThat(results).isNotNull();
+        Assertions.assertThat(results).isNotEmpty();
+        Assertions.assertThat(results).hasSize(nbClassesPerPage);
+
+        Classe r1 = results.get(0);
+        Classe r2 = results.get(1);
+
+        Assertions.assertThat(r1.getId()).isEqualTo(1);
+        Assertions.assertThat(r1.getNom()).isEqualTo("6ème A");
+        Assertions.assertThat(r1.getCreationDate()).isNotNull();
+        Assertions.assertThat(r1.getModificationDate()).isNotNull();
+
+        Assertions.assertThat(r2.getId()).isEqualTo(2);
+        Assertions.assertThat(r2.getNom()).isEqualTo("6ème B");
+        Assertions.assertThat(r2.getCreationDate()).isNotNull();
+        Assertions.assertThat(r2.getModificationDate()).isNotNull();
+
+        List<Classe> classesPage2 = Stream.of(classes.get(2), classes.get(3)).collect(Collectors.toList());
+        Mockito.when(classeRepository.getClasses(2, nbClassesPerPage, "ème")).thenReturn(classesPage2);
+        results = classeService.getClasses(2, nbClassesPerPage, "ème"); // page 2
+        Assertions.assertThat(results).isNotNull();
+        Assertions.assertThat(results).isNotEmpty();
+        Assertions.assertThat(results).hasSize(nbClassesPerPage);
+
+        r1 = results.get(0);
+        r2 = results.get(1);
+
+        Assertions.assertThat(r1.getId()).isEqualTo(3);
+        Assertions.assertThat(r1.getNom()).isEqualTo("5ème A");
+        Assertions.assertThat(r1.getCreationDate()).isNotNull();
+        Assertions.assertThat(r1.getModificationDate()).isNotNull();
+
+        Assertions.assertThat(r2.getId()).isEqualTo(4);
+        Assertions.assertThat(r2.getNom()).isEqualTo("3ème C");
+        Assertions.assertThat(r2.getCreationDate()).isNotNull();
+        Assertions.assertThat(r2.getModificationDate()).isNotNull();
+    }// get_classes_should_return_all_classes_when_filter_name_is_ème_and_with_pagination()
+
+    @Test
+    public void get_classes_should_return_empty_list_when_filter_name_is_toto_and_no_pagination() throws DataBaseException {
+        Assertions.assertThat(classeService.getClasses(null, null, "toto"))
+                .isNotNull()
+                .isEmpty();
+    }// get_classes_should_return_empty_list_when_filter_name_is_toto_and_no_pagination()
+
     private Classe initClasseFromDataBase(){
         Date now = new Date();
         Classe classeFromBd = new Classe();
@@ -248,4 +398,15 @@ public class ClasseServiceUT {
         classeToUpdate.setModificationDate(new Date(1592852521));
         return classeToUpdate;
     }// initClasseToUpdate()
+
+    private List<Classe> getClassesFromDataBase(){
+        Date now = new Date();
+        List<Classe> results = new ArrayList<>();
+        results.add(new Classe(1, "6ème A", now, now));
+        results.add(new Classe(2, "6ème B", now, now));
+        results.add(new Classe(3, "5ème A", now, now));
+        results.add(new Classe(4, "3ème C", now, now));
+        return results;
+    }// getClassesFromDataBase()
+
 }// ClasseServiceUT
