@@ -117,4 +117,23 @@ public class ClasseService {
         }
     }// checkBusiness()
 
+    /**
+     * Retourne le nombre total de classes
+     * @throws DataBaseException
+     * @return nombre total de classes
+     */
+    public long getCount() throws DataBaseException {
+        return this.getCount(null);
+    }// getCount()
+
+    /**
+     * Retourne le nombre total de classes
+     * @param name Filtre sur le nom de la classe
+     * @throws DataBaseException
+     * @return nombre total de classes
+     */
+    public long getCount(String name) throws DataBaseException {
+        return classeRepository.count(name);
+    }// getCount()
+
 }// ClasseService

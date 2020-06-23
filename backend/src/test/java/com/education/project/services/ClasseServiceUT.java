@@ -203,6 +203,27 @@ public class ClasseServiceUT {
                 .hasMessage("Une classe avec le nom " + classeToUpdate.getNom() + " existe déjà dans la base de données");
     }// update_classe_should_throw_argument_exception_when_classe_to_update_is_already_exists()
 
+    @Test
+    public void get_count_classes_should_return_4_when_no_filters() throws DataBaseException {
+        Mockito.when(classeRepository.count(null)).thenReturn(4L);
+        long total = classeService.getCount();
+        Assertions.assertThat(total).isEqualTo(4);
+    }// get_count_classes_should_return_4_when_no_filters()
+
+    @Test
+    public void get_count_classes_should_return_2_when_filter_name_is_A() throws DataBaseException {
+        Mockito.when(classeRepository.count("A")).thenReturn(2L);
+        long total = classeService.getCount("A");
+        Assertions.assertThat(total).isEqualTo(2);
+    }// get_count_classes_should_return_2_when_filter_name_is_A()
+
+    @Test
+    public void get_count_classes_should_return_4_when_filter_name_is_null() throws DataBaseException {
+        Mockito.when(classeRepository.count(null)).thenReturn(4L);
+        long total = classeService.getCount(null);
+        Assertions.assertThat(total).isEqualTo(4);
+    }// get_count_classes_should_return_2_when_filter_name_is_null()
+
     private Classe initClasseFromDataBase(){
         Date now = new Date();
         Classe classeFromBd = new Classe();
