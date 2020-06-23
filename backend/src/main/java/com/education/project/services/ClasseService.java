@@ -79,6 +79,16 @@ public class ClasseService {
     }// updateClasse()
 
     /**
+     * Supprime la classe dont l'identifiant est passé en paramètre
+     * @param id Identifiant de la classe à supprimer
+     * @return boolean
+     * @throws DataBaseException
+     */
+    public boolean deleteClass(int id) throws DataBaseException {
+        return classeRepository.delete(id);
+    }// deleteClass()
+
+    /**
      * Contrôle les règles métiers
      * @param classe Classe à contrôler
      * @throws ArgumentException
