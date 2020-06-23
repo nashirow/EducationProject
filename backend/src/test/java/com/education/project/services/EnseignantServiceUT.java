@@ -40,8 +40,6 @@ public class EnseignantServiceUT {
     @Mock
     private EnseignantRepository enseignantRepository;
 
-    public EnseignantServiceUT() {
-    }
 
     @Before
     public void setup(){
@@ -110,9 +108,9 @@ public class EnseignantServiceUT {
 
     @Test
     public void insert_enseignant_should_throw_exception_when_enseignant_already_exists() throws ArgumentException, DataBaseException {
-        Mockito.when(enseignantRepository.isExistByName(this.enseignantToInsert.getNom())).thenReturn(true);
+        Mockito.when(enseignantRepository.isExistByName(this.enseignantToInsert.getNom(),this.enseignantToInsert.getPrenom())).thenReturn(true);
         Assertions.assertThatThrownBy(() -> enseignantService.insertEnseignant(enseignantToInsert))
-                .hasMessage("Le nom de l'enseignant " + this.enseignantToInsert.getNom() +" existe déjà dans la base de données.")
+                .hasMessage("L'enseignant : " + this.enseignantToInsert.getNom() + " " + this.enseignantToInsert.getPrenom() + " existe déjà dans la base de données.")
                 .isInstanceOf(ArgumentException.class);
     }//insert_enseignant_should_throw_exception_when_enseignant_already_exists()
 

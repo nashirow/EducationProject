@@ -38,7 +38,7 @@ public class EnseignantService {
     @Autowired
     public EnseignantService(EnseignantRepository enseignantRepository){
         this.enseignantRepository = enseignantRepository;
-    }
+    }//EnseignantService()
 
 
     /**
@@ -50,9 +50,9 @@ public class EnseignantService {
      */
     public Optional<Enseignant> insertEnseignant(Enseignant enseignant) throws ArgumentException, DataBaseException {
         checkBusiness(enseignant);
-        enseignant.setCreationDate(new Date());
-        enseignant.setModificationDate(new Date());
-        enseignant.setId(1);
+        Date now = new Date();
+        enseignant.setCreationDate(now);
+        enseignant.setModificationDate(now);
         return enseignantRepository.insert(enseignant);
     }//insertEnseignant()
 
@@ -71,8 +71,8 @@ public class EnseignantService {
             if(enseignant.getNom() == null || enseignant.getNom().isEmpty()){
                 errors.add("Le nom de l'enseignant est obligatoire");
             }
-            if(enseignantRepository.isExistByName(enseignant.getNom())){
-                errors.add("Le nom de l'enseignant " + enseignant.getNom() +" existe déjà dans la base de données.");
+            if(enseignantRepository.isExistByName(enseignant.getNom(),enseignant.getPrenom())){
+                errors.add("L'enseignant : " + enseignant.getNom() + " " + enseignant.getPrenom() + " existe déjà dans la base de données.");
             }
             if(enseignant.getPrenom() == null || enseignant.getPrenom().isEmpty()){
                 errors.add("Le prénom de l'enseignant est obligatoire");

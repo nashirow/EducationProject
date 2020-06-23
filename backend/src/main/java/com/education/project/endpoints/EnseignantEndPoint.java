@@ -56,7 +56,7 @@ public class EnseignantEndPoint {
             ResponseEndPoint reponse = new ResponseEndPoint(null,e.getErreurs());
             return new ResponseEntity<>(reponse, HttpStatus.BAD_REQUEST);
         } catch (DataBaseException e) {
-            return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(new ResponseEndPoint(result,null), HttpStatus.OK);
     }//insertEnseignant()

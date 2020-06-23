@@ -27,5 +27,6 @@ CREATE TABLE `enseignant` (
 	`creationDate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`modificationDate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (`id`)
-) COLLATE='utf8mb4_0900_ai_ci';
+)
+COLLATE='utf8mb4_0900_ai_ci';
 

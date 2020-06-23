@@ -109,13 +109,15 @@ public class EnseignantRepository {
      *Cette fonction permet de savoir si un enseignant avec
      * le nom passé en paramètre existe en base de données.
      * @param nom Nom de l'enseignant à trouver
+     * @param prenom Prenom de l'enseignant à trouver
      * @return boolean
      */
-    public boolean isExistByName(String nom) throws DataBaseException {
-        String request = "SELECT COUNT(id) FROM enseignant WHERE nom = ?";
+    public boolean isExistByName(String nom, String prenom) throws DataBaseException {
+        String request = "SELECT COUNT(id) FROM enseignant WHERE nom = ? AND prenom = ?";
         try {
             PreparedStatement preparedStatement = this.connexion.prepareStatement(request);
             preparedStatement.setString(1,nom);
+            preparedStatement.setString(2,prenom);
             ResultSet rs = preparedStatement.executeQuery();
             rs.next();
             long countName = rs.getLong(1);
@@ -123,8 +125,8 @@ public class EnseignantRepository {
                 return true;
             }
         } catch (SQLException e) {
-            LOGGER.error("Erreur technique : il est impossible de vérifier qu'une matière ayant le nom {} existe",nom,e);
-            throw new DataBaseException("Erreur technique : il est impossible de vérifier qu'un enseignant ayant le nom " + nom + " existe");
+            LOGGER.error("Erreur technique : il est impossible de vérifier qu'un enseignant ayant le nom {} et le prenom {} existe",nom,prenom,e);
+            throw new DataBaseException("Erreur technique : il est impossible de vérifier qu'un enseignant ayant le nom " + nom + " et prenom " + prenom + " existe");
         }
         return false;
     }//isExistByName()
