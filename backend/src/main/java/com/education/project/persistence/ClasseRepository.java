@@ -92,7 +92,7 @@ public class ClasseRepository {
             return countClasses > 0;
         } catch (SQLException e) {
             LOGGER.error(e.getMessage(), e);
-            throw new DataBaseException("Impossible de rechercher une classe ayant le nom " + nom);
+            throw new DataBaseException("Erreur technique : Impossible de rechercher une classe ayant le nom " + nom);
         }
     }// existsByName()
 
@@ -115,11 +115,11 @@ public class ClasseRepository {
                 classeToInsert.setId(generatedKeys.getInt(1));
                 return Optional.of(classeToInsert);
             }else{
-                throw new DataBaseException("Impossible d'insérer la classe");
+                throw new DataBaseException("Erreur technique : Impossible d'insérer la classe");
             }
         } catch (SQLException e) {
             LOGGER.error("Impossible d'insérer la classe {}", classeToInsert.toString(), e);
-            throw new DataBaseException("Impossible d'insérer la classe");
+            throw new DataBaseException("Erreur technique : Impossible d'insérer la classe");
         }
     }// insert()
 
@@ -137,7 +137,7 @@ public class ClasseRepository {
             return nbClassesDeleted > 0;
         } catch (SQLException e) {
             LOGGER.error(e.getMessage(), e);
-            throw new DataBaseException("Impossible de supprimer la classe d'identifiant " + id);
+            throw new DataBaseException("Erreur technique : Impossible de supprimer la classe d'identifiant " + id);
         }
     }// delete()
 
@@ -165,7 +165,7 @@ public class ClasseRepository {
             }
         } catch (SQLException e) {
             LOGGER.error(e.getMessage(), e);
-            throw new DataBaseException("Impossible de trouver la classe avec l'identifiant " + id);
+            throw new DataBaseException("Erreur technique : Impossible de trouver la classe avec l'identifiant " + id);
         }
     }// findById()
     /**
@@ -184,12 +184,38 @@ public class ClasseRepository {
             if(rowsAdded > 0){
                 return Optional.of(classeToUpdate);
             }else{
-                throw new DataBaseException("Impossible de mettre à jour la classe (vérifiez votre identifiant de classe)");
+                throw new DataBaseException("Erreur technique : Impossible de mettre à jour la classe (vérifiez votre identifiant de classe)");
             }
         } catch (SQLException e) {
             LOGGER.error("Impossible de mettre à jour la classe {}", classeToUpdate.toString(), e);
-            throw new DataBaseException("Impossible de mettre à jour la classe");
+            throw new DataBaseException("Erreur technique : Impossible de mettre à jour la classe");
         }
     }// update()
+
+    /**
+     * Retourne le nombre total de classes
+     * @param name Filtre sur le nom de la classe
+     * @throws DataBaseException
+     * @return nombre total de classes
+     */
+    public long count(String name) throws DataBaseException{
+        StringBuilder sb = new StringBuilder("SELECT COUNT(id) FROM classe ");
+        if(name != null && !name.isEmpty()){
+            sb.append(" WHERE nom LIKE ?");
+        }
+        String requestSql = sb.toString();
+        try {
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
+            if(name != null && !name.isEmpty()){
+                ps.setString(1, "%" + name + "%");
+            }
+            ResultSet resultSet = ps.executeQuery();
+            resultSet.next();
+            return resultSet.getLong(1);
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new DataBaseException("Erreur technique : Impossible de compter le nombre de classes avec nom = " + ((name != null) ? name : ""));
+        }
+    }// count()
 
 }// ClasseRepository

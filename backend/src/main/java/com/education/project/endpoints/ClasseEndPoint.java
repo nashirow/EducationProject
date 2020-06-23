@@ -1,3 +1,18 @@
+/*
+ * Copyright 2020 Hicham AZIMANI
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.education.project.endpoints;
 
 import com.education.project.exceptions.ArgumentException;
@@ -22,6 +37,11 @@ public class ClasseEndPoint {
         this.classeService = classeService;
     }// ClasseEndPoint()
 
+    /**
+     * Cet endpoint insère une classe
+     * @param classe Classe à insérer
+     * @return Réponse HTTP
+     */
     @PostMapping("/classe")
     public ResponseEntity<?> insertClasse(@RequestBody Classe classe){
         try {
@@ -37,6 +57,11 @@ public class ClasseEndPoint {
         return new ResponseEntity<>(new ResponseEndPoint(null, null), HttpStatus.INTERNAL_SERVER_ERROR);
     }// insertClasse()
 
+    /**
+     * Cet endpoint supprime la classe dont l'identifiant est passé en paramètre
+     * @param id Identifiant de la classe à supprimer
+     * @return Réponse HTTP
+     */
     @DeleteMapping("/classe/{id}")
     public ResponseEntity<?> deleteClasse(@PathVariable("id") Integer id){
         try {
@@ -45,7 +70,13 @@ public class ClasseEndPoint {
         } catch (DataBaseException e) {
             return new ResponseEntity<>(new ResponseEndPoint(null, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
+    }// deleteClasse()
+
+    /**
+     * Cet endpoint récupère toutes les informations d'une classe
+     * @param id Identifiant de la classe pour laquelle on doit récupérer les informations
+     * @return Réponse HTTP
+     */
     @GetMapping("/classe/{id}")
     public ResponseEntity<?> getClasse(@PathVariable Integer id){
         try {
@@ -57,6 +88,11 @@ public class ClasseEndPoint {
         }
     }// getClasse()
 
+    /**
+     * Cet endpoint met à jour la classe passée en paramètre
+     * @param classe Classe à mettre à jour
+     * @return Réponse HTTP
+     */
     @PutMapping("/classe")
     public ResponseEntity<?> updateClasse(@RequestBody Classe classe) {
         try {
@@ -71,5 +107,20 @@ public class ClasseEndPoint {
         }
         return new ResponseEntity<>(new ResponseEndPoint(null, null), HttpStatus.INTERNAL_SERVER_ERROR);
     }// updateClasse()
+
+    /**
+     * Cet endpoint retourne le nombre de classes en fonction de filtres.
+     * @param name Nom de la classe
+     * @return Réponse HTTP
+     */
+    @GetMapping("/count")
+    public ResponseEntity<?> countClasses(@RequestParam(value = "name", required = false) String name){
+        try {
+            long count = classeService.getCount(name);
+            return new ResponseEntity<>(new ResponseEndPoint(count, null), HttpStatus.OK);
+        } catch (DataBaseException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }// countClasses()
 
 }// ClasseEndPoint
