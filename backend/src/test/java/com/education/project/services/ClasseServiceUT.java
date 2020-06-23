@@ -108,6 +108,29 @@ public class ClasseServiceUT {
     }// insert_classe_should_throw_database_exception_when_database_meet_error()
 
     @Test
+    public void get_classe_should_return_result_when_id_is_1() throws DataBaseException {
+        Classe classeFromBd = initClasseFromDataBase();
+        classeFromBd.setModificationDate(new Date(1592848921));
+        Mockito.when(classeRepository.findById(1)).thenReturn(Optional.of(classeFromBd));
+        Optional<Classe> optResult = classeService.getClasse(1);
+        Assertions.assertThat(optResult).isPresent();
+        optResult.ifPresent(classe -> {
+            Assertions.assertThat(classe.getNom()).isEqualTo("6ème A");
+            Assertions.assertThat(classe.getId()).isEqualTo(1);
+            Assertions.assertThat(classe.getModificationDate()).isNotNull();
+            Assertions.assertThat(classe.getCreationDate()).isNotNull();
+            Assertions.assertThat(classe.getModificationDate()).isNotEqualTo(classe.getCreationDate());
+        });
+    }// get_classe_should_return_result_when_id_is_1()
+
+    @Test
+    public void get_classe_should_return_empty_result_when_id_is_10() throws DataBaseException {
+        Mockito.when(classeRepository.findById(10)).thenReturn(Optional.empty());
+        Optional<Classe> optResult = classeService.getClasse(10);
+        Assertions.assertThat(optResult).isNotPresent();
+    }// get_classe_should_return_empty_result_when_id_is_10()
+
+    @Test
     public void update_classe_should_success_when_classe_is_filled_with_name_and_id() throws ArgumentException, DataBaseException {
         Classe classeToUpdate = initClasseToUpdate();
         Mockito.when(classeRepository.update(classeToUpdate)).thenReturn(Optional.of(classeToUpdate));

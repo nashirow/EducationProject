@@ -39,6 +39,16 @@ public class Classe {
      */
     private Date modificationDate;
 
+    public Classe() {
+    }// Classe()
+
+    public Classe(Integer id, String nom, Date creationDate, Date modificationDate) {
+        this.id = id;
+        this.nom = nom;
+        this.creationDate = creationDate;
+        this.modificationDate = modificationDate;
+    }// Classe()
+
     public String getNom() {
         return nom;
     }// getNom()
