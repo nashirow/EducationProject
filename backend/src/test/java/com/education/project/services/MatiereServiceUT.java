@@ -16,6 +16,7 @@
 package com.education.project.services;
 import com.education.project.exceptions.ArgumentException;
 import com.education.project.exceptions.DataBaseException;
+import com.education.project.model.Enseignant;
 import com.education.project.model.Matiere;
 import com.education.project.persistence.MatiereRepository;
 import org.assertj.core.api.Assertions;
@@ -46,6 +47,7 @@ public class MatiereServiceUT {
 
     private Matiere matiereFrancais;
 
+
     @Before
     public void setup() throws DataBaseException {
          this.matiereService = new MatiereService(this.matiereRepository);
@@ -65,6 +67,7 @@ public class MatiereServiceUT {
          Mockito.when(matiereRepository.findAll("","")).thenReturn(results);
          Mockito.when(matiereRepository.findAll(null,null)).thenReturn(results);
     }//setup()
+
 
     @Test
     public void insert_matiere_should_success_when_all_fields_filled() throws ArgumentException, DataBaseException {

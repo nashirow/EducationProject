@@ -185,7 +185,7 @@ public class MatiereRepository {
             throw new DataBaseException("Erreur technique : il est impossible de vérifier qu'une matière ayant le nom " + nom + " existe");
         }
         return false;
-    }
+    }//isExistByName()
 
     /**
      * Récupère toutes les matières en fonction de filtres

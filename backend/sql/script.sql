@@ -20,3 +20,13 @@ CREATE TABLE `classe` (
     PRIMARY KEY (`id`)
 ) COLLATE='utf8mb4_0900_ai_ci';
 
+CREATE TABLE `enseignant` (
+	`id` INT(10,0) NOT NULL AUTO_INCREMENT,
+	`nom` VARCHAR(40) NOT NULL DEFAULT '' COMMENT 'C\'est le nom de l\'enseignant' COLLATE 'utf8mb4_0900_ai_ci',
+	`prenom` VARCHAR(40) NOT NULL DEFAULT '' COMMENT 'C\'est le prenom de l\'enseignant' COLLATE 'utf8mb4_0900_ai_ci',
+	`creationDate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`modificationDate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (`id`)
+)
+COLLATE='utf8mb4_0900_ai_ci';
+
