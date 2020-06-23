@@ -136,4 +136,15 @@ public class ClasseService {
         return classeRepository.count(name);
     }// getCount()
 
+    /**
+     * Retourne l'ensemble des classes en fonction de filtres.
+     * @param page n° de la page à récupérer (facultatif)
+     * @param nbElementsPerPage Nombre d'éléments par page (facultatif)
+     * @param name Nom de la classe (facultatif)
+     * @return Liste de classes
+     */
+    public List<Classe> getClasses(Integer page, Integer nbElementsPerPage, String name) throws DataBaseException {
+        return classeRepository.getClasses(page, nbElementsPerPage, name);
+    }// getClasses()
+
 }// ClasseService

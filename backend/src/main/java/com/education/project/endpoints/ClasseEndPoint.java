@@ -25,6 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -123,4 +124,22 @@ public class ClasseEndPoint {
         }
     }// countClasses()
 
+    /**
+     * Cet endpoint retourne un ensemble de classes en fonction de filtres
+     * @param name Nom de la classe / Sous-chaîne à rechercher (facultatif)
+     * @param page N° de la page (facultatif)
+     * @param nbElementsPerPage Nombre d'éléments par page (facultatif)
+     * @return Réponse HTTP
+     */
+    @GetMapping("/classes")
+    public ResponseEntity<?> getClasses(@RequestParam(value = "name", required = false) String name,
+                                        @RequestParam(value = "page", required = false) Integer page,
+                                        @RequestParam(value = "nbElementsPerPage", required = false) Integer nbElementsPerPage){
+        try {
+            List<Classe> classes = classeService.getClasses(page, nbElementsPerPage, name);
+            return new ResponseEntity<>(new ResponseEndPoint(classes, null), HttpStatus.OK);
+        } catch (DataBaseException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }// getClasses()
 }// ClasseEndPoint
