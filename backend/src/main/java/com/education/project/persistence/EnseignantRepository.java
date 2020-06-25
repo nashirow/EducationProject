@@ -130,4 +130,33 @@ public class EnseignantRepository {
         }
         return false;
     }//isExistByName()
+
+    /**
+     * Cette fonction permet de mettre à jour un enseignant dans la base de données.
+     * @param enseignantToUpdate Enseignant à mettre à jour.
+     * @return Enseignant mis à jour.
+     * @throws DataBaseException
+     */
+    public Optional<Enseignant> update(Enseignant enseignantToUpdate) throws DataBaseException {
+        String requestSql = "UPDATE enseignant SET nom = ?, prenom = ?, modificationDate = ? WHERE id = ?";
+        try {
+            PreparedStatement ps = this.connexion.prepareStatement(requestSql);
+            ps.setString(1,enseignantToUpdate.getNom());
+            ps.setString(2, enseignantToUpdate.getPrenom());
+            ps.setTimestamp(3,new Timestamp(enseignantToUpdate.getModificationDate().getTime()));
+            ps.setInt(4,enseignantToUpdate.getId());
+            int rowsUpdated = ps.executeUpdate();
+            if(rowsUpdated > 0){
+                return Optional.of(enseignantToUpdate);
+            }
+            else
+            {
+                throw new DataBaseException("Impossible de mettre à jour l'enseignant : l'identifiant est invalide");
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Erreur technique : il est impossible de mettre à jour l'enseignant ayant le nom {} et le prénom {} dans la base de données"
+                    ,enseignantToUpdate.getNom(),enseignantToUpdate.getPrenom(),e);
+            throw new DataBaseException("Erreur technique : il est impossible de mettre à jour l'enseignant");
+        }//update()
+    }
 }//EnseignantRepository

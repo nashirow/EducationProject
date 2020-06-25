@@ -49,7 +49,7 @@ public class EnseignantService {
      * @throws DataBaseException
      */
     public Optional<Enseignant> insertEnseignant(Enseignant enseignant) throws ArgumentException, DataBaseException {
-        checkBusiness(enseignant);
+        checkBusiness(enseignant,false);
         Date now = new Date();
         enseignant.setCreationDate(now);
         enseignant.setModificationDate(now);
@@ -57,17 +57,36 @@ public class EnseignantService {
     }//insertEnseignant()
 
     /**
+     * Cette fonction permet de mettre à jour un enseignant
+     * @param enseignantToUpdate L'enseignant à mettre à jour
+     * @return Enseignant mis à jour
+     * @throws ArgumentException
+     * @throws DataBaseException
+     */
+    public Optional<Enseignant> updateEnseignant(Enseignant enseignantToUpdate) throws ArgumentException, DataBaseException {
+        checkBusiness(enseignantToUpdate, true);
+        enseignantToUpdate.setModificationDate(new Date());
+        return enseignantRepository.update(enseignantToUpdate);
+    }//updateEnseignant()
+
+    /**
      * Cette fonction permet de contrôler les règles métiers liées aux enseignants
      * @param enseignant L'enseignant à vérifier
      * @throws DataBaseException
      * @throws ArgumentException
      */
-    public void checkBusiness(Enseignant enseignant) throws DataBaseException, ArgumentException {
+    public void checkBusiness(Enseignant enseignant, boolean isUpdate) throws DataBaseException, ArgumentException {
         List<String> errors = new ArrayList<>();
         if(enseignant == null){
-            errors.add("L'enseignant est obligatoire");
+            StringBuilder sb = new StringBuilder("L'enseignant à ");
+            sb.append(isUpdate ? "mettre à jour " : "insérer ");
+            sb.append("est obligatoire");
+            errors.add(sb.toString());
         }
         else{
+            if(isUpdate && enseignant.getId() == null){
+                errors.add("L'identifiant de l'enseignant à mettre à jour est obligatoire");
+            }
             if(enseignant.getNom() == null || enseignant.getNom().isEmpty()){
                 errors.add("Le nom de l'enseignant est obligatoire");
             }

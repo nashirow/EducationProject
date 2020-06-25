@@ -44,19 +44,30 @@ public class EnseignantServiceUT {
     @Before
     public void setup(){
         this.enseignantService = new EnseignantService(enseignantRepository);
-        this.enseignantToInsert = new Enseignant("Pichon","Jean");
+        this.enseignantToInsert = new Enseignant("Marc","Denim");
     }//setup()
 
     public Enseignant initEnseignantFromBd(){
         Enseignant enseignantFromBd = new Enseignant();
         Date now = new Date();
-        enseignantFromBd.setNom("Pichon");
-        enseignantFromBd.setPrenom("Jean");
+        enseignantFromBd.setNom("Marc");
+        enseignantFromBd.setPrenom("Denim");
         enseignantFromBd.setCreationDate(now);
         enseignantFromBd.setModificationDate(now);
         enseignantFromBd.setId(1);
         return enseignantFromBd;
     }//initEnseignantFromBd()
+
+    public Enseignant initEnseignantToUpdate(){
+        Enseignant enseignantToUpdate = new Enseignant();
+        Date now = new Date();
+        enseignantToUpdate.setNom("Marc");
+        enseignantToUpdate.setPrenom("Denim");
+        enseignantToUpdate.setCreationDate(now);
+        enseignantToUpdate.setCreationDate(now);
+        enseignantToUpdate.setId(1);
+        return enseignantToUpdate;
+    }
 
     @Test
     public void insert_enseignant_should_success_when_all_fields_are_filled() throws ArgumentException, DataBaseException {
@@ -117,7 +128,75 @@ public class EnseignantServiceUT {
     @Test
     public void insert_enseignant_should_throw_exception_when_enseignant_to_insert_is_null(){
         Assertions.assertThatThrownBy(()-> enseignantService.insertEnseignant(null))
-                .hasMessage("L'enseignant est obligatoire")
+                .hasMessage("L'enseignant à insérer est obligatoire")
                 .isInstanceOf(ArgumentException.class);
     }//insert_enseignant_should_throw_exception_when_enseignant_to_insert_is_null()
+
+    @Test
+    public void update_enseignant_should_success_when_enseignant_last_name_and_first_name_are_modified() throws ArgumentException, DataBaseException {
+        Enseignant enseignantFromBd = initEnseignantFromBd();
+        Enseignant enseignantToUpdate = initEnseignantToUpdate();
+        Mockito.when(enseignantRepository.update(enseignantToUpdate)).thenReturn(Optional.of(enseignantFromBd));
+        Optional<Enseignant> optEnseignantUpdated = enseignantService.updateEnseignant(enseignantToUpdate);
+        Assertions.assertThat(optEnseignantUpdated.isPresent());
+        optEnseignantUpdated.ifPresent(enseignantUpdated -> {
+            Assertions.assertThat(enseignantUpdated.getNom()).isEqualTo(enseignantToUpdate.getNom());
+            Assertions.assertThat(enseignantUpdated.getPrenom()).isEqualTo(enseignantToUpdate.getPrenom());
+            Assertions.assertThat(enseignantUpdated.getCreationDate()).isNotNull();
+            Assertions.assertThat(enseignantUpdated.getModificationDate()).isNotNull();
+            Assertions.assertThat(enseignantUpdated.getCreationDate()).isNotEqualTo(enseignantToUpdate.getModificationDate());
+            Assertions.assertThat(enseignantUpdated.getId()).isEqualTo(enseignantToUpdate.getId());
+        });
+    }//update_enseignant_should_success_when_enseignant_last_name_and_first_name_are_modified()
+
+    @Test
+    public void update_enseignant_should_throw_exception_when_last_name_is_null(){
+        Enseignant enseignantToUpdate = initEnseignantToUpdate();
+        enseignantToUpdate.setNom(null);
+        Assertions.assertThatThrownBy(()-> enseignantService.updateEnseignant(enseignantToUpdate))
+                .hasMessage("Le nom de l'enseignant est obligatoire")
+                .isInstanceOf(ArgumentException.class);
+    }//update_enseignant_should_throw_exception_when_last_name_is_null()
+
+    @Test
+    public void update_enseignant_should_throw_exception_when_last_name_field_is_empty(){
+        Enseignant enseignantToUpdate = initEnseignantToUpdate();
+        enseignantToUpdate.setNom("");
+        Assertions.assertThatThrownBy(() -> enseignantService.updateEnseignant(enseignantToUpdate))
+                .hasMessage("Le nom de l'enseignant est obligatoire")
+                .isInstanceOf(ArgumentException.class);
+    }//update_enseignant_should_throw_exception_when_last_name_field_is_empty()
+
+    @Test
+    public void update_enseignant_should_throw_exception_when_first_name_field_is_null(){
+        Enseignant enseignantToUpdate = initEnseignantToUpdate();
+        enseignantToUpdate.setPrenom(null);
+        Assertions.assertThatThrownBy(() -> enseignantService.updateEnseignant(enseignantToUpdate))
+                .hasMessage("Le prénom de l'enseignant est obligatoire")
+                .isInstanceOf(ArgumentException.class);
+    }//update_enseignant_should_throw_exception_when_first_name_field_is_null()
+
+    @Test
+    public void update_enseignant_should_throw_exception_when_first_name_is_empty(){
+        Enseignant enseignantToUpdate = initEnseignantToUpdate();
+        enseignantToUpdate.setPrenom("");
+        Assertions.assertThatThrownBy(() -> enseignantService.updateEnseignant(enseignantToUpdate))
+                .hasMessage("Le prénom de l'enseignant est obligatoire")
+                .isInstanceOf(ArgumentException.class);
+    }
+
+    @Test
+    public void update_enseignant_should_throw_exception_when_enseignant_to_update_already_exists() throws ArgumentException, DataBaseException {
+        Enseignant enseignantToUpdate = initEnseignantToUpdate();
+        Mockito.when(enseignantRepository.isExistByName(enseignantToUpdate.getNom(),enseignantToUpdate.getPrenom())).thenReturn(true);
+        Assertions.assertThatThrownBy(() -> enseignantService.updateEnseignant(enseignantToUpdate))
+                .hasMessage("L'enseignant : " + enseignantToUpdate.getNom() + " " + enseignantToUpdate.getPrenom() + " existe déjà dans la base de données.");
+    }//update_enseignant_should_throw_exception_when_enseignant_to_update_already_exists()
+
+    @Test
+    public void update_enseignant_should_throw_exception_when_enseignant_to_update_is_null(){
+        Assertions.assertThatThrownBy(() -> enseignantService.updateEnseignant(null))
+                .hasMessage("L'enseignant à mettre à jour est obligatoire")
+                .isInstanceOf(ArgumentException.class);
+    }//update_enseignant_should_throw_exception_when_enseignant_to_update_is_null()
 }
