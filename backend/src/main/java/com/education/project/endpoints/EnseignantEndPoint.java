@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -60,4 +61,25 @@ public class EnseignantEndPoint {
         }
         return new ResponseEntity<>(new ResponseEndPoint(result,null), HttpStatus.OK);
     }//insertEnseignant()
+
+    /**
+     * Ce endpoint permet de mettre à jour un enseignant
+     * @param enseignant L'enseignant à mettre à jour
+     * @return Réponse HTTP
+     */
+    @PutMapping("/enseignant")
+    public ResponseEntity<?> updateEnseignant(@RequestBody Enseignant enseignant){
+        try {
+            Optional<Enseignant> optEnseignantToUpdate = enseignantService.updateEnseignant(enseignant);
+            if(optEnseignantToUpdate.isPresent()){
+                return new ResponseEntity<>(new ResponseEndPoint(optEnseignantToUpdate.get(),null),HttpStatus.OK);
+            }
+        } catch (ArgumentException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null,e.getErreurs()),HttpStatus.BAD_REQUEST);
+        } catch (DataBaseException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(new ResponseEndPoint(null,null),HttpStatus.INTERNAL_SERVER_ERROR);
+    }//updateEnseignant()
 }
+

@@ -395,7 +395,7 @@ public class ClasseServiceUT {
         classeToUpdate.setId(1);
         classeToUpdate.setNom("5ème A");
         classeToUpdate.setCreationDate(new Date(1592848921));
-        classeToUpdate.setModificationDate(new Date(1592852521));
+        classeToUpdate.setModificationDate(new Date(1593082253));
         return classeToUpdate;
     }// initClasseToUpdate()
 
