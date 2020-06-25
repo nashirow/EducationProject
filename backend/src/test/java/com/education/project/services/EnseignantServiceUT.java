@@ -64,7 +64,7 @@ public class EnseignantServiceUT {
         enseignantToUpdate.setNom("Marc");
         enseignantToUpdate.setPrenom("Denim");
         enseignantToUpdate.setCreationDate(now);
-        enseignantToUpdate.setCreationDate(now);
+        enseignantToUpdate.setModificationDate(now);
         enseignantToUpdate.setId(1);
         return enseignantToUpdate;
     }
