@@ -122,5 +122,22 @@ public class EnseignantEndPoint {
             return new ResponseEntity<>(new ResponseEndPoint(null, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }//getEnseignants()
+
+    /**
+     * Ce endpoint permet de récupérer le nombre total d'enseignants en base de données
+     * @param nom Nom de l'enseignant passé en paramètre (facultatif)
+     * @param prenom Prénom de l'enseignant passé en paramètre (facultatif)
+     * @return Réponse HTTP
+     */
+    @GetMapping("/count/enseignants")
+    public ResponseEntity<?> countEnseignants(@RequestParam(value = "nom", required = false) String nom,
+                                              @RequestParam(value = "prenom", required = false) String prenom){
+        try {
+            long result = enseignantService.countEnseignants(nom,prenom);
+            return new ResponseEntity<>(new ResponseEndPoint(result,null), HttpStatus.OK);
+        } catch (DataBaseException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }//countEnseignants()
 }//EnseignantEndPoint
 

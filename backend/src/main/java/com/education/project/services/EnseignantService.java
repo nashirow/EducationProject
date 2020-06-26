@@ -114,7 +114,7 @@ public class EnseignantService {
     /**
      * Cette fonction permet de récupérer un enseignant en fonction de l'identifiant passé en paramètre
      * @param id Identifiant de l'enseignant à récuperer
-     * @return
+     * @return L'enseignant récupéré
      */
     public Optional<Enseignant> getEnseignant(int id) throws DataBaseException {
         return enseignantRepository.findById(id);
@@ -131,4 +131,14 @@ public class EnseignantService {
     public List<Enseignant> getEnseignants(String nom, String prenom, Integer page, Integer nbElementsPerPage) throws DataBaseException {
         return enseignantRepository.getEnseignants(nom,prenom,page,nbElementsPerPage);
     }//getEnseignants()
+
+    /**
+     * Cette fonction permet de retourner le nombre d'enseignants en base de données
+     * @param nom Le nom de l'enseignant à chercher (facultatif)
+     * @param prenom Le prénom de l'enseignant à chercher (facultatif)
+     * @return Le nombre d'enseignants en base de données
+     */
+    public long countEnseignants(String nom, String prenom) throws DataBaseException {
+        return enseignantRepository.countEnseignants(nom,prenom);
+    }//countEnseignants()
 }//EnseignantService

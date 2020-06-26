@@ -114,7 +114,7 @@ public class ClasseEndPoint {
      * @param name Nom de la classe
      * @return Réponse HTTP
      */
-    @GetMapping("/count")
+    @GetMapping("/count/classes")
     public ResponseEntity<?> countClasses(@RequestParam(value = "name", required = false) String name){
         try {
             long count = classeService.getCount(name);
