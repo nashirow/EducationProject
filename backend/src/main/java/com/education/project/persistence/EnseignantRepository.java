@@ -23,6 +23,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -201,4 +203,63 @@ public class EnseignantRepository {
             throw new DataBaseException("Erreur technique : il est impossible de retrouver l'enseignant dans la base de données");
         }
     }//findById()
+
+    /**
+     * Cette fonction permet de retourner une liste d'enseignants avec les informations passés en paramètres
+     * @param nom Nom de l'enseignant à retourner
+     * @param prenom Prenom de l'enseignant à retourner
+     * @param page Nombre de page à afficher
+     * @param nbElementsPerPage Nombre d'éléments par pages à afficher
+     * @return Liste d'enseignants
+     * @throws DataBaseException
+     */
+    public List<Enseignant> getEnseignants(String nom, String prenom, Integer page, Integer nbElementsPerPage) throws DataBaseException {
+        List<Enseignant> resultEnseignants = new ArrayList<>();
+        StringBuilder sb = new StringBuilder("SELECT * FROM enseignant WHERE TRUE");
+        int indiceNom = 0;
+        int indicePrenom = 0;
+        if(nom != null && !nom.isEmpty()){
+            sb.append(" AND nom LIKE ? ");
+            indiceNom = 1;
+        }
+        if(prenom != null && !prenom.isEmpty()){
+            sb.append(" AND prenom LIKE ? ");
+            indicePrenom = 1;
+        }
+        if(page != null && nbElementsPerPage != null){
+            sb.append(" LIMIT ? OFFSET ? ");
+        }
+        String requestSql = sb.toString();
+        try {
+            PreparedStatement ps = this.connexion.prepareStatement(requestSql);
+            if(nom != null && !nom.isEmpty() && indiceNom == 1){
+                ps.setString(indiceNom,"%"+ nom +"%");
+            }
+            if(prenom != null && !prenom.isEmpty()){
+                if(indiceNom == 1){
+                    indicePrenom = 2;
+                }
+                ps.setString(indicePrenom,"%" + prenom + "%");
+            }
+            if(page != null && nbElementsPerPage != null){
+                int indiceMax = Math.max(indicePrenom, indiceNom);
+                ps.setInt(indiceMax+1,nbElementsPerPage);
+                ps.setInt(indiceMax+2,(page - 1) * nbElementsPerPage);
+            }
+            ResultSet resultSet = ps.executeQuery();
+            while(resultSet.next()){
+                Enseignant enseignant = new Enseignant();
+                enseignant.setId(resultSet.getInt("id"));
+                enseignant.setNom(resultSet.getString("nom"));
+                enseignant.setPrenom(resultSet.getString("prenom"));
+                enseignant.setCreationDate(resultSet.getTimestamp("creationDate"));
+                enseignant.setModificationDate(resultSet.getTimestamp("modificationDate"));
+                resultEnseignants.add(enseignant);
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Erreur technique : impossible de récupérer les enseignants",e);
+            throw new DataBaseException("Erreur technique : impossible de récuperer les enseignants");
+        }
+        return resultEnseignants;
+    }//getEnseignants()
 }//EnseignantRepository

@@ -84,7 +84,7 @@ public class EnseignantService {
      * @throws DataBaseException
      * @throws ArgumentException
      */
-    public void checkBusiness(Enseignant enseignant, boolean isUpdate) throws DataBaseException, ArgumentException {
+    private void checkBusiness(Enseignant enseignant, boolean isUpdate) throws DataBaseException, ArgumentException {
         List<String> errors = new ArrayList<>();
         if(enseignant == null){
             StringBuilder sb = new StringBuilder("L'enseignant à ");
@@ -119,4 +119,16 @@ public class EnseignantService {
     public Optional<Enseignant> getEnseignant(int id) throws DataBaseException {
         return enseignantRepository.findById(id);
     }//getEnseignant
+
+    /**
+     * Cette fonction permet de récupérer l'ensemble des enseignants en base de données
+     * @param nom Nom de l'enseignant à récupérer (facultatif)
+     * @param prenom Prenom de l'enseignant à récupérer (facultatif)
+     * @param page Nombre de pages (facultatif)
+     * @param nbElementsPerPage Nombre d'éléments à afficher par pages (facultatif)
+     * @return Liste d'enseignants
+     */
+    public List<Enseignant> getEnseignants(String nom, String prenom, Integer page, Integer nbElementsPerPage) throws DataBaseException {
+        return enseignantRepository.getEnseignants(nom,prenom,page,nbElementsPerPage);
+    }//getEnseignants()
 }//EnseignantService

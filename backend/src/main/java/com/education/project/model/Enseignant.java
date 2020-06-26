@@ -58,6 +58,14 @@ public class Enseignant {
         this.prenom = prenom;
     }//Enseignant()
 
+    public Enseignant(Integer id, String nom, String prenom, Date creationDate, Date modificationDate) {
+        this.id = id;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.creationDate = creationDate;
+        this.modificationDate = modificationDate;
+    }//Enseignant()
+
     public String getNom() {
         return nom;
     }
@@ -97,4 +105,15 @@ public class Enseignant {
     public void setModificationDate(Date modificationDate) {
         this.modificationDate = modificationDate;
     }
+
+    @Override
+    public String toString() {
+        return "Enseignant{" +
+                "id=" + id +
+                ", nom='" + nom + '\'' +
+                ", prenom='" + prenom + '\'' +
+                ", creationDate=" + creationDate +
+                ", modificationDate=" + modificationDate +
+                '}';
+    }//toString()
 }//Enseignant
