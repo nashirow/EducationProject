@@ -116,6 +116,7 @@ public class EnseignantServiceUT {
     public void update_enseignant_should_success_when_enseignant_last_name_and_first_name_are_modified() throws ArgumentException, DataBaseException {
         Enseignant enseignantFromBd = initEnseignantFromBd();
         Enseignant enseignantToUpdate = initEnseignantToUpdate();
+        enseignantFromBd.setModificationDate(new Date(1591721218));
         Mockito.when(enseignantRepository.update(enseignantToUpdate)).thenReturn(Optional.of(enseignantFromBd));
         Optional<Enseignant> optEnseignantUpdated = enseignantService.updateEnseignant(enseignantToUpdate);
         Assertions.assertThat(optEnseignantUpdated.isPresent());
@@ -349,6 +350,34 @@ public class EnseignantServiceUT {
         Assertions.assertThat(enseignants.get(2).getCreationDate()).isNotEqualTo(enseignants.get(2).getModificationDate());
     }//get_enseignants_should_return_three_enseignants_with_one_page_and_three_elements_per_page_when_no_name_given()
 
+    @Test
+    public void count_enseignants_should_return_4_when_no_filters_filled() throws DataBaseException {
+        Mockito.when(enseignantRepository.countEnseignants(null,null)).thenReturn(4L);
+        long result = enseignantService.countEnseignants(null,null);
+        Assertions.assertThat(result).isEqualTo(4L);
+    }//count_enseignants_should_return_4_when_no_filters_filled()
+
+    @Test
+    public void count_enseignants_should_return_0_when_first_name_is_apache() throws DataBaseException {
+        Mockito.when(enseignantRepository.countEnseignants("apache",null)).thenReturn(0L);
+        long result = enseignantService.countEnseignants("apache",null);
+        Assertions.assertThat(result).isEqualTo(0L);
+    }//count_enseignants_should_return_0_when_name_is_apache()
+
+    @Test
+    public void count_enseignants_should_return_1_when_last_name_is_raoul() throws DataBaseException {
+        Mockito.when(enseignantRepository.countEnseignants(null,"Raoul")).thenReturn(1L);
+        long result = enseignantService.countEnseignants(null,"Raoul");
+        Assertions.assertThat(result).isEqualTo(1L);
+    }//count_enseignants_should_return_1_when_last_name_is_raoul()
+
+    @Test
+    public void count_enseignant_should_return_1_when_first_name_is_didier_and_last_name_is_raoul() throws DataBaseException {
+        Mockito.when(enseignantRepository.countEnseignants("Didier","Raoul")).thenReturn(1L);
+        long result = enseignantService.countEnseignants("Didier","Raoul");
+        Assertions.assertThat(result).isEqualTo(1L);
+    }//count_enseignant_should_return_1_when_first_name_is_didier_and_last_name_is_raoul()
+
     private Enseignant initEnseignantFromBd(){
         Enseignant enseignantFromBd = new Enseignant();
         Date now = new Date();
@@ -365,8 +394,8 @@ public class EnseignantServiceUT {
         Date now = new Date();
         enseignantToUpdate.setNom("Marc");
         enseignantToUpdate.setPrenom("Denim");
-        enseignantToUpdate.setCreationDate(new Date(1593190018));
-        enseignantToUpdate.setModificationDate(now);
+        enseignantToUpdate.setCreationDate(now);
+        enseignantToUpdate.setModificationDate(new Date(1593190018));
         enseignantToUpdate.setId(1);
         return enseignantToUpdate;
     }

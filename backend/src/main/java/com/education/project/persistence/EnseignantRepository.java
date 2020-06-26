@@ -262,4 +262,37 @@ public class EnseignantRepository {
         }
         return resultEnseignants;
     }//getEnseignants()
+
+    public long countEnseignants(String nom, String prenom) throws DataBaseException {
+        StringBuilder sb = new StringBuilder("SELECT COUNT(id) FROM enseignant WHERE TRUE ");
+        int indiceNom = 0, indicePrenom = 0;
+
+        if(nom != null && !nom.isEmpty()){
+            sb.append("AND nom LIKE ? ");
+            indiceNom = 1;
+        }
+        if(prenom != null && !prenom.isEmpty()){
+            sb.append("AND prenom LIKE ? ");
+            indicePrenom = 1;
+        }
+        String requestSql = sb.toString();
+        try {
+            PreparedStatement ps = this.connexion.prepareStatement(requestSql);
+            if(nom != null && !nom.isEmpty() && indiceNom == 1){
+                ps.setString(indiceNom,"%" + nom + "%");
+            }
+            if(prenom != null && !prenom.isEmpty()){
+                if(indiceNom == 1){
+                    indicePrenom = 2;
+                }
+                ps.setString(indicePrenom,"%" + prenom + "%");
+            }
+            ResultSet resultSet = ps.executeQuery();
+            resultSet.next();
+            return resultSet.getLong(1);
+        } catch (SQLException e) {
+            LOGGER.error("Erreur technique : il est impossible de récupérer le nombre d'enseignants dans la base de données",e);
+            throw new DataBaseException("Erreur technique : il est impossible de récupérer le nombre d'enseignants dans la base de données");
+        }
+    }
 }//EnseignantRepository
