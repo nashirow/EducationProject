@@ -199,4 +199,18 @@ public class EnseignantServiceUT {
                 .hasMessage("L'enseignant à mettre à jour est obligatoire")
                 .isInstanceOf(ArgumentException.class);
     }//update_enseignant_should_throw_exception_when_enseignant_to_update_is_null()
+
+    @Test
+    public void delete_enseignant_should_success_when_enseignant_id_is_2() throws DataBaseException {
+        Mockito.when(enseignantRepository.delete(2)).thenReturn(true);
+        boolean isDeleted = enseignantService.deleteEnseignant(2);
+        Assertions.assertThat(isDeleted).isTrue();
+    }//delete_enseignant_should_success_when_enseignant_id_is_2()
+
+    @Test
+    public void delete_enseignant_should_sucess_when_enseignant_id_is_30() throws DataBaseException {
+        Mockito.when(enseignantRepository.delete(30)).thenReturn(false);
+        boolean isDeleted = enseignantService.deleteEnseignant(30);
+        Assertions.assertThat(isDeleted).isFalse();
+    }
 }

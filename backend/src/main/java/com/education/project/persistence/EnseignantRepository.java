@@ -131,6 +131,22 @@ public class EnseignantRepository {
         return false;
     }//isExistByName()
 
+    public boolean delete(int id) throws DataBaseException {
+        String requestSql = "DELETE FROM enseignant where id = ?";
+        try {
+            PreparedStatement ps = this.connexion.prepareStatement(requestSql);
+            ps.setInt(1,id);
+            long rowsDeleted = ps.executeUpdate();
+            if(rowsDeleted > 0){
+                return true;
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Erreur technique : il est impossible de supprimer l'enseignant ayant l'id {} de la base de donnée", id,e);
+            throw new DataBaseException("Erreur technique : il est impossible de supprimer l'enseignant ayant l'id " + id + " de la base de donnée");
+        }
+        return false;
+    }
+
     /**
      * Cette fonction permet de mettre à jour un enseignant dans la base de données.
      * @param enseignantToUpdate Enseignant à mettre à jour.

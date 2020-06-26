@@ -57,6 +57,15 @@ public class EnseignantService {
     }//insertEnseignant()
 
     /**
+     * Cette fonction permet de supprimer un enseignant dont l'identifiant est passé en paramètre
+     * @param id Identifiant de l'enseignant à supprimer
+     * @return boolean
+     */
+    public boolean deleteEnseignant(int id) throws DataBaseException {
+        return enseignantRepository.delete(id);
+    }//deleteEnseignant()
+
+    /**
      * Cette fonction permet de mettre à jour un enseignant
      * @param enseignantToUpdate L'enseignant à mettre à jour
      * @return Enseignant mis à jour
