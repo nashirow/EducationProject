@@ -47,7 +47,7 @@ public class EnseignantServiceUT {
         this.enseignantToInsert = new Enseignant("Marc","Denim");
     }//setup()
 
-    public Enseignant initEnseignantFromBd(){
+    private Enseignant initEnseignantFromBd(){
         Enseignant enseignantFromBd = new Enseignant();
         Date now = new Date();
         enseignantFromBd.setNom("Marc");
@@ -58,12 +58,12 @@ public class EnseignantServiceUT {
         return enseignantFromBd;
     }//initEnseignantFromBd()
 
-    public Enseignant initEnseignantToUpdate(){
+    private Enseignant initEnseignantToUpdate(){
         Enseignant enseignantToUpdate = new Enseignant();
         Date now = new Date();
         enseignantToUpdate.setNom("Marc");
         enseignantToUpdate.setPrenom("Denim");
-        enseignantToUpdate.setCreationDate(now);
+        enseignantToUpdate.setCreationDate(new Date(1593190018));
         enseignantToUpdate.setModificationDate(now);
         enseignantToUpdate.setId(1);
         return enseignantToUpdate;
@@ -213,4 +213,30 @@ public class EnseignantServiceUT {
         boolean isDeleted = enseignantService.deleteEnseignant(30);
         Assertions.assertThat(isDeleted).isFalse();
     }
+
+    @Test
+    public void get_enseignant_should_return_result_when_id_is_2() throws DataBaseException {
+        Enseignant enseignantFromBd = initEnseignantFromBd();
+        enseignantFromBd.setId(2);
+        enseignantFromBd.setCreationDate(new Date(1593190018));
+        Mockito.when(enseignantRepository.findById(2)).thenReturn(Optional.of(enseignantFromBd));
+        Optional<Enseignant> optResult = enseignantService.getEnseignant(2);
+        Assertions.assertThat(optResult).isPresent();
+        optResult.ifPresent(result -> {
+            Assertions.assertThat(result.getNom()).isEqualTo("Marc");
+            Assertions.assertThat(result.getPrenom()).isEqualTo("Denim");
+            Assertions.assertThat(result.getCreationDate()).isNotNull();
+            Assertions.assertThat(result.getModificationDate()).isNotNull();
+            Assertions.assertThat(result.getCreationDate()).isNotEqualTo(result.getModificationDate());
+            Assertions.assertThat(result.getId()).isEqualTo(2);
+        });
+    }//get_enseignant_should_return_result_when_id_is_2()
+
+    @Test
+    public void get_enseignant_should_return_empty_enseignant_if_id_does_not_exist() throws DataBaseException {
+        Optional<Enseignant> optResult = enseignantService.getEnseignant(30);
+        Assertions.assertThat(optResult).isNotPresent();
+    }//get_enseignant_should_return_empty_enseignant_if_id_does_not_exist()
+
+
 }

@@ -173,6 +173,32 @@ public class EnseignantRepository {
             LOGGER.error("Erreur technique : il est impossible de mettre à jour l'enseignant ayant le nom {} et le prénom {} dans la base de données"
                     ,enseignantToUpdate.getNom(),enseignantToUpdate.getPrenom(),e);
             throw new DataBaseException("Erreur technique : il est impossible de mettre à jour l'enseignant");
-        }//update()
-    }
+        }
+    }//update()
+
+    /**
+     * Cette fonction permet de récuperer un enseignant par son identifiant
+     * @param id L'identifiant à récuperer
+     * @return L'enseignant récupéré
+     * @throws DataBaseException
+     */
+    public Optional<Enseignant> findById(int id) throws DataBaseException {
+        String requestSql = "SELECT * FROM enseignant WHERE id = ?";
+        try {
+            PreparedStatement ps = this.connexion.prepareStatement(requestSql);
+            ps.setInt(1, id);
+            ResultSet resultSet = ps.executeQuery();
+            resultSet.next();
+            Enseignant enseignant = new Enseignant();
+            enseignant.setNom(resultSet.getString("nom"));
+            enseignant.setPrenom(resultSet.getString("prenom"));
+            enseignant.setId(resultSet.getInt("id"));
+            enseignant.setCreationDate(resultSet.getTimestamp("creationDate"));
+            enseignant.setModificationDate(resultSet.getTimestamp("modificationDate"));
+            return Optional.of(enseignant);
+        } catch (SQLException e) {
+            LOGGER.error("Erreur technique : il est impossible de retrouver l'enseignant d'identifiant {} dans la base de données",id,e);
+            throw new DataBaseException("Erreur technique : il est impossible de retrouver l'enseignant dans la base de données");
+        }
+    }//findById()
 }//EnseignantRepository
