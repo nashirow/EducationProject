@@ -58,4 +58,43 @@ public class EnseignantEndPoint {
         }
         return new ResponseEntity<>(new ResponseEndPoint(result,null), HttpStatus.OK);
     }//insertEnseignant()
+
+    /**
+     * Ce endpoint permet de mettre à jour un enseignant
+     * @param enseignant L'enseignant à mettre à jour
+     * @return Réponse HTTP
+     */
+    @PutMapping("/enseignant")
+    public ResponseEntity<?> updateEnseignant(@RequestBody Enseignant enseignant){
+        try {
+            Optional<Enseignant> optEnseignantToUpdate = enseignantService.updateEnseignant(enseignant);
+            if(optEnseignantToUpdate.isPresent()){
+                return new ResponseEntity<>(new ResponseEndPoint(optEnseignantToUpdate.get(),null),HttpStatus.OK);
+            }
+        } catch (ArgumentException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null,e.getErreurs()),HttpStatus.BAD_REQUEST);
+        } catch (DataBaseException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(new ResponseEndPoint(null,null),HttpStatus.INTERNAL_SERVER_ERROR);
+    }//updateEnseignant()
+
+    /**
+     * Ce endpoint permet de récupérer un enseignant avec l'identifiant passé en paramètre
+     * @param id Identifiant de l'enseignant à récuperer
+     * @return Réponse HTTP
+     */
+    @GetMapping("/enseignant/{id}")
+    public ResponseEntity<?> getEnseignant(@PathVariable("id") Integer id){
+        try {
+            Optional<Enseignant> optEnseignantToGet = enseignantService.getEnseignant(id);
+            if(optEnseignantToGet.isPresent()){
+                return new ResponseEntity<>(new ResponseEndPoint(optEnseignantToGet,null),HttpStatus.OK);
+            }
+        } catch (DataBaseException e) {
+           return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(new ResponseEndPoint(Optional.empty(), null), HttpStatus.INTERNAL_SERVER_ERROR);
+    }//getEnseignant()
 }
+

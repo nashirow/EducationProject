@@ -110,4 +110,13 @@ public class EnseignantService {
             throw new ArgumentException(errors);
         }
     }
+
+    /**
+     * Cette fonction permet de récupérer un enseignant en fonction de l'identifiant passé en paramètre
+     * @param id Identifiant de l'enseignant à récuperer
+     * @return
+     */
+    public Optional<Enseignant> getEnseignant(int id) throws DataBaseException {
+        return enseignantRepository.findById(id);
+    }//getEnseignant
 }//EnseignantService
