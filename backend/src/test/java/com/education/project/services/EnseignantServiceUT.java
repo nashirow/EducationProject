@@ -27,7 +27,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -46,28 +48,6 @@ public class EnseignantServiceUT {
         this.enseignantService = new EnseignantService(enseignantRepository);
         this.enseignantToInsert = new Enseignant("Marc","Denim");
     }//setup()
-
-    private Enseignant initEnseignantFromBd(){
-        Enseignant enseignantFromBd = new Enseignant();
-        Date now = new Date();
-        enseignantFromBd.setNom("Marc");
-        enseignantFromBd.setPrenom("Denim");
-        enseignantFromBd.setCreationDate(now);
-        enseignantFromBd.setModificationDate(now);
-        enseignantFromBd.setId(1);
-        return enseignantFromBd;
-    }//initEnseignantFromBd()
-
-    private Enseignant initEnseignantToUpdate(){
-        Enseignant enseignantToUpdate = new Enseignant();
-        Date now = new Date();
-        enseignantToUpdate.setNom("Marc");
-        enseignantToUpdate.setPrenom("Denim");
-        enseignantToUpdate.setCreationDate(new Date(1593190018));
-        enseignantToUpdate.setModificationDate(now);
-        enseignantToUpdate.setId(1);
-        return enseignantToUpdate;
-    }
 
     @Test
     public void insert_enseignant_should_success_when_all_fields_are_filled() throws ArgumentException, DataBaseException {
@@ -238,5 +218,171 @@ public class EnseignantServiceUT {
         Assertions.assertThat(optResult).isNotPresent();
     }//get_enseignant_should_return_empty_enseignant_if_id_does_not_exist()
 
+    @Test
+    public void get_enseignants_should_return_all_enseignants_when_no_filters_given() throws DataBaseException {
+        List<Enseignant> enseignantsFromBd = initGetEnseignantsFromBd();
+        Mockito.when(enseignantRepository.getEnseignants(null,null,null,null)).thenReturn(enseignantsFromBd);
+        List<Enseignant> enseignantsToGet = enseignantService.getEnseignants(null,null,null,null);
+        Assertions.assertThat(enseignantsToGet).isNotEmpty();
+        Assertions.assertThat(enseignantsToGet).hasSize(4);
 
-}
+        Assertions.assertThat(enseignantsToGet.get(0).getId()).isEqualTo(enseignantsFromBd.get(0).getId());
+        Assertions.assertThat(enseignantsToGet.get(0).getNom()).isEqualTo(enseignantsFromBd.get(0).getNom());
+        Assertions.assertThat(enseignantsToGet.get(0).getPrenom()).isEqualTo(enseignantsFromBd.get(0).getPrenom());
+        Assertions.assertThat(enseignantsToGet.get(0).getCreationDate()).isNotNull();
+        Assertions.assertThat(enseignantsToGet.get(0).getModificationDate()).isNotNull();
+        Assertions.assertThat(enseignantsToGet.get(0).getCreationDate()).isNotEqualTo(enseignantsToGet.get(0).getModificationDate());
+
+        Assertions.assertThat(enseignantsToGet.get(1).getId()).isEqualTo(enseignantsFromBd.get(1).getId());
+        Assertions.assertThat(enseignantsToGet.get(1).getNom()).isEqualTo(enseignantsFromBd.get(1).getNom());
+        Assertions.assertThat(enseignantsToGet.get(1).getPrenom()).isEqualTo(enseignantsFromBd.get(1).getPrenom());
+        Assertions.assertThat(enseignantsToGet.get(1).getCreationDate()).isNotNull();
+        Assertions.assertThat(enseignantsToGet.get(1).getModificationDate()).isNotNull();
+        Assertions.assertThat(enseignantsToGet.get(1).getCreationDate()).isNotEqualTo(enseignantsToGet.get(1).getModificationDate());
+
+        Assertions.assertThat(enseignantsToGet.get(2).getId()).isEqualTo(enseignantsFromBd.get(2).getId());
+        Assertions.assertThat(enseignantsToGet.get(2).getNom()).isEqualTo(enseignantsFromBd.get(2).getNom());
+        Assertions.assertThat(enseignantsToGet.get(2).getPrenom()).isEqualTo(enseignantsFromBd.get(2).getPrenom());
+        Assertions.assertThat(enseignantsToGet.get(2).getCreationDate()).isNotNull();
+        Assertions.assertThat(enseignantsToGet.get(2).getModificationDate()).isNotNull();
+        Assertions.assertThat(enseignantsToGet.get(2).getCreationDate()).isNotEqualTo(enseignantsToGet.get(2).getModificationDate());
+
+        Assertions.assertThat(enseignantsToGet.get(3).getId()).isEqualTo(enseignantsFromBd.get(3).getId());
+        Assertions.assertThat(enseignantsToGet.get(3).getNom()).isEqualTo(enseignantsFromBd.get(3).getNom());
+        Assertions.assertThat(enseignantsToGet.get(3).getPrenom()).isEqualTo(enseignantsFromBd.get(3).getPrenom());
+        Assertions.assertThat(enseignantsToGet.get(3).getCreationDate()).isNotNull();
+        Assertions.assertThat(enseignantsToGet.get(3).getModificationDate()).isNotNull();
+        Assertions.assertThat(enseignantsToGet.get(3).getCreationDate()).isNotEqualTo(enseignantsToGet.get(3).getModificationDate());
+    }//get_enseignants_should_return_all_enseignants_when_no_filters_given()
+
+    @Test
+    public void get_enseignants_should_return_enseignant_didier_when_name_is_didier() throws DataBaseException {
+        List<Enseignant> enseignantsFromBd = initGetEnseignantsFromBd();
+        Mockito.when(enseignantRepository.getEnseignants("Didier",null,null,null)).thenReturn(enseignantsFromBd.subList(0,1));
+        List<Enseignant> enseignantsToGet = enseignantService.getEnseignants("Didier",null,null,null);
+        Assertions.assertThat(enseignantsToGet).isNotEmpty();
+        Assertions.assertThat(enseignantsToGet).hasSize(1);
+        Assertions.assertThat(enseignantsToGet.get(0).getId()).isEqualTo(enseignantsFromBd.get(0).getId());
+        Assertions.assertThat(enseignantsToGet.get(0).getNom()).isEqualTo(enseignantsFromBd.get(0).getNom());
+        Assertions.assertThat(enseignantsToGet.get(0).getPrenom()).isEqualTo(enseignantsFromBd.get(0).getPrenom());
+        Assertions.assertThat(enseignantsToGet.get(0).getCreationDate()).isNotNull();
+        Assertions.assertThat(enseignantsToGet.get(0).getModificationDate()).isNotNull();
+        Assertions.assertThat(enseignantsToGet.get(0).getCreationDate()).isNotEqualTo(enseignantsToGet.get(0).getModificationDate());
+    }//get_enseignants_should_return_enseignant_didier_when_name_is_didier()
+
+    @Test
+    public void get_enseignants_should_return_empty_when_last_name_is_Didier_and_first_name_is_Delavega() throws DataBaseException {
+        List<Enseignant> enseignantToGet = enseignantService.getEnseignants("Didier","Delavega",null,null);
+        Assertions.assertThat(enseignantToGet).isEmpty();
+    }//get_enseignants_should_return_empty_when_last_name_is_Didier_and_first_name_is_Delavega()
+
+    @Test
+    public void get_enseignants_should_return_two_enseignants_with_one_page_and_two_elements_per_page_when_no_names_given() throws DataBaseException {
+        List<Enseignant> enseignantsFromBd = initGetEnseignantsFromBd();
+        Mockito.when(enseignantRepository.getEnseignants(null,null,1,2)).thenReturn(enseignantsFromBd.subList(0,2));
+        List<Enseignant> enseignants = enseignantService.getEnseignants(null,null,1,2);
+        Assertions.assertThat(enseignants.get(0).getId()).isEqualTo(enseignantsFromBd.get(0).getId());
+        Assertions.assertThat(enseignants.get(0).getNom()).isEqualTo(enseignantsFromBd.get(0).getNom());
+        Assertions.assertThat(enseignants.get(0).getPrenom()).isEqualTo(enseignantsFromBd.get(0).getPrenom());
+        Assertions.assertThat(enseignants.get(0).getCreationDate()).isNotNull();
+        Assertions.assertThat(enseignants.get(0).getModificationDate()).isNotNull();
+        Assertions.assertThat(enseignants.get(0).getCreationDate()).isNotEqualTo(enseignants.get(0).getModificationDate());
+
+        Assertions.assertThat(enseignants.get(1).getId()).isEqualTo(enseignantsFromBd.get(1).getId());
+        Assertions.assertThat(enseignants.get(1).getNom()).isEqualTo(enseignantsFromBd.get(1).getNom());
+        Assertions.assertThat(enseignants.get(1).getPrenom()).isEqualTo(enseignantsFromBd.get(1).getPrenom());
+        Assertions.assertThat(enseignants.get(1).getCreationDate()).isNotNull();
+        Assertions.assertThat(enseignants.get(1).getModificationDate()).isNotNull();
+        Assertions.assertThat(enseignants.get(1).getCreationDate()).isNotEqualTo(enseignants.get(1).getModificationDate());
+    }//get_enseignants_should_return_two_enseignants_with_one_page_and_two_elements_per_pages_when_no_names_given()
+
+    @Test
+    public void get_enseignants_should_return_two_enseignants_with_two_pages_and_two_elements_per_page_when_no_name_given() throws DataBaseException {
+        List<Enseignant> enseignantsFromBd = initGetEnseignantsFromBd();
+        Mockito.when(enseignantRepository.getEnseignants(null,null,2,2)).thenReturn(enseignantsFromBd.subList(2,4));
+        List<Enseignant> enseignants = enseignantService.getEnseignants(null,null,2,2);
+        Assertions.assertThat(enseignants).isNotEmpty();
+        Assertions.assertThat(enseignants).hasSize(2);
+
+        Assertions.assertThat(enseignants.get(0).getId()).isEqualTo(enseignantsFromBd.get(2).getId());
+        Assertions.assertThat(enseignants.get(0).getNom()).isEqualTo(enseignantsFromBd.get(2).getNom());
+        Assertions.assertThat(enseignants.get(0).getPrenom()).isEqualTo(enseignantsFromBd.get(2).getPrenom());
+        Assertions.assertThat(enseignants.get(0).getCreationDate()).isNotNull();
+        Assertions.assertThat(enseignants.get(0).getModificationDate()).isNotNull();
+        Assertions.assertThat(enseignants.get(0).getCreationDate()).isNotEqualTo(enseignants.get(0).getModificationDate());
+
+        Assertions.assertThat(enseignants.get(1).getId()).isEqualTo(enseignantsFromBd.get(3).getId());
+        Assertions.assertThat(enseignants.get(1).getNom()).isEqualTo(enseignantsFromBd.get(3).getNom());
+        Assertions.assertThat(enseignants.get(1).getPrenom()).isEqualTo(enseignantsFromBd.get(3).getPrenom());
+        Assertions.assertThat(enseignants.get(1).getCreationDate()).isNotNull();
+        Assertions.assertThat(enseignants.get(1).getModificationDate()).isNotNull();
+        Assertions.assertThat(enseignants.get(1).getCreationDate()).isNotEqualTo(enseignants.get(1).getModificationDate());
+    }//get_enseignants_should_return_two_enseignants_with_two_pages_and_two_elements_per_page_when_no_name_given()
+
+    @Test
+    public void get_enseignants_should_return_three_enseignants_with_one_page_and_three_elements_per_page_when_no_name_given() throws DataBaseException {
+        List<Enseignant> enseignantFromBd = initGetEnseignantsFromBd();
+        Mockito.when(enseignantRepository.getEnseignants(null,null,1,3)).thenReturn(enseignantFromBd.subList(0,3));
+        List<Enseignant> enseignants = enseignantService.getEnseignants(null,null,1,3);
+        Assertions.assertThat(enseignants).isNotEmpty();
+        Assertions.assertThat(enseignants).hasSize(3);
+
+        Assertions.assertThat(enseignants.get(0).getId()).isEqualTo(enseignantFromBd.get(0).getId());
+        Assertions.assertThat(enseignants.get(0).getNom()).isEqualTo(enseignantFromBd.get(0).getNom());
+        Assertions.assertThat(enseignants.get(0).getPrenom()).isEqualTo(enseignantFromBd.get(0).getPrenom());
+        Assertions.assertThat(enseignants.get(0).getCreationDate()).isNotNull();
+        Assertions.assertThat(enseignants.get(0).getModificationDate()).isNotNull();
+        Assertions.assertThat(enseignants.get(0).getCreationDate()).isNotEqualTo(enseignants.get(0).getModificationDate());
+
+        Assertions.assertThat(enseignants.get(1).getId()).isEqualTo(enseignantFromBd.get(1).getId());
+        Assertions.assertThat(enseignants.get(1).getNom()).isEqualTo(enseignantFromBd.get(1).getNom());
+        Assertions.assertThat(enseignants.get(1).getPrenom()).isEqualTo(enseignantFromBd.get(1).getPrenom());
+        Assertions.assertThat(enseignants.get(1).getCreationDate()).isNotNull();
+        Assertions.assertThat(enseignants.get(1).getModificationDate()).isNotNull();
+        Assertions.assertThat(enseignants.get(1).getCreationDate()).isNotEqualTo(enseignants.get(1).getModificationDate());
+
+        Assertions.assertThat(enseignants.get(2).getId()).isEqualTo(enseignantFromBd.get(2).getId());
+        Assertions.assertThat(enseignants.get(2).getNom()).isEqualTo(enseignantFromBd.get(2).getNom());
+        Assertions.assertThat(enseignants.get(2).getPrenom()).isEqualTo(enseignantFromBd.get(2).getPrenom());
+        Assertions.assertThat(enseignants.get(2).getCreationDate()).isNotNull();
+        Assertions.assertThat(enseignants.get(2).getModificationDate()).isNotNull();
+        Assertions.assertThat(enseignants.get(2).getCreationDate()).isNotEqualTo(enseignants.get(2).getModificationDate());
+    }//get_enseignants_should_return_three_enseignants_with_one_page_and_three_elements_per_page_when_no_name_given()
+
+    private Enseignant initEnseignantFromBd(){
+        Enseignant enseignantFromBd = new Enseignant();
+        Date now = new Date();
+        enseignantFromBd.setNom("Marc");
+        enseignantFromBd.setPrenom("Denim");
+        enseignantFromBd.setCreationDate(now);
+        enseignantFromBd.setModificationDate(now);
+        enseignantFromBd.setId(1);
+        return enseignantFromBd;
+    }//initEnseignantFromBd()
+
+    private Enseignant initEnseignantToUpdate(){
+        Enseignant enseignantToUpdate = new Enseignant();
+        Date now = new Date();
+        enseignantToUpdate.setNom("Marc");
+        enseignantToUpdate.setPrenom("Denim");
+        enseignantToUpdate.setCreationDate(new Date(1593190018));
+        enseignantToUpdate.setModificationDate(now);
+        enseignantToUpdate.setId(1);
+        return enseignantToUpdate;
+    }
+
+    private List<Enseignant> initGetEnseignantsFromBd(){
+        List<Enseignant> enseignants = new ArrayList<>();
+        Date now = new Date();
+        Date modifDate = new Date(1593190018);
+        Enseignant enseignant1 = new Enseignant(1,"Didier","Raoul",now,modifDate);
+        Enseignant enseignant2 = new Enseignant(2,"Alex","Dupont",now,modifDate);
+        Enseignant enseignant3 = new Enseignant(3,"Charles","Dupont",now,modifDate);
+        Enseignant enseignant4 = new Enseignant(4,"Charles","Phillipin",now,modifDate);
+        enseignants.add(enseignant1);
+        enseignants.add(enseignant2);
+        enseignants.add(enseignant3);
+        enseignants.add(enseignant4);
+        return enseignants;
+    }
+}//EnseignantServiceUT
