@@ -30,3 +30,12 @@ CREATE TABLE `enseignant` (
 )
 COLLATE='utf8mb4_0900_ai_ci';
 
+CREATE TABLE `salle` (
+	`id` INT(10,0) NOT NULL AUTO_INCREMENT,
+	`nom` VARCHAR(40) NOT NULL DEFAULT '' COMMENT 'C\'est le nom de la salle' COLLATE 'utf8mb4_0900_ai_ci',
+	`creationDate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`modificationDate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (`id`)
+)
+COLLATE='utf8mb4_0900_ai_ci'
+;
