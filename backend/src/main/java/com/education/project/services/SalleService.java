@@ -82,4 +82,8 @@ public class SalleService {
     public boolean deleteSalle(int id) throws DataBaseException {
         return salleRepository.delete(id);
     }//deleteSalle()
+
+    public Optional<Salle> getSalle(int id) throws DataBaseException {
+        return salleRepository.findById(id);
+    }//getSalle()
 }//SalleService

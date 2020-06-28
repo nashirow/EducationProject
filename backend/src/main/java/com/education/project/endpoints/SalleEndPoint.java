@@ -72,4 +72,15 @@ public class SalleEndPoint {
             return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }//deleteSalle()
+
+    @GetMapping("/salle/{id}")
+    public ResponseEntity<?> getSalle(@PathVariable Integer id){
+        try {
+            Optional<Salle> optSalle = salleService.getSalle(id);
+            Salle salle = optSalle.orElseGet(() -> new Salle());
+            return new ResponseEntity<>(new ResponseEndPoint(salle,null),HttpStatus.OK);
+        } catch (DataBaseException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }//getSalle()
 }//SalleEndPoint
