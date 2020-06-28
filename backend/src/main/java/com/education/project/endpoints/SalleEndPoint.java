@@ -10,7 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
+
 
 @RestController
 public class SalleEndPoint {
@@ -62,6 +64,28 @@ public class SalleEndPoint {
         }
         return new ResponseEntity<>(new ResponseEndPoint(null,null),HttpStatus.INTERNAL_SERVER_ERROR);
     }//updateSalle()
+
+    @GetMapping("/salles")
+    public ResponseEntity<?> getSalles(@RequestParam (value = "nom", required = false) String nom,
+                                       @RequestParam(value = "page", required = false) Integer page,
+                                       @RequestParam(value = "nbElementsPerPage",required = false) Integer nbElementsPerPage){
+        try {
+            List<Salle> resultSalles = salleService.getSalles(nom,page,nbElementsPerPage);
+            return new ResponseEntity<>(new ResponseEndPoint(resultSalles,null),HttpStatus.OK);
+        } catch (DataBaseException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }//getSalles()
+
+    @GetMapping("/salles/count")
+    public ResponseEntity<?> countSalles(@RequestParam (value = "nom", required = false) String nom){
+        try {
+            long resultCount = salleService.countSalles(nom);
+            return new ResponseEntity<>(new ResponseEndPoint(resultCount,null), HttpStatus.OK);
+        } catch (DataBaseException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }//countSalles()
 
     @DeleteMapping("/salle/{id}")
     public ResponseEntity<?> deleteSalle(@PathVariable Integer id){

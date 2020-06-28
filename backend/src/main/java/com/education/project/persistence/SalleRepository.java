@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -131,6 +133,78 @@ public class SalleRepository{
             throw new DataBaseException("Erreur technique : impossible de mettre la salle à jour en base de données");
         }
     }//update()
+
+    /**
+     * Cette fonction permet de récupérer les salles en base de données en fonction des paramètres passés (facultatif)
+     * @param nom Nom de la salle à récupérer (facultatif)
+     * @param page Nombre de page (facultatif)
+     * @param nbElementsPerPage Nombre de salles par page (facultatif)
+     * @return Les salles récupérées
+     */
+    public List<Salle> getSalles(String nom, Integer page, Integer nbElementsPerPage) throws DataBaseException {
+        List<Salle> resultSalles = new ArrayList<>();
+        StringBuilder sb = new StringBuilder("SELECT * FROM salle ");
+        int indiceNom = 0;
+        if(nom != null && !nom.isEmpty()){
+            sb.append("WHERE nom LIKE ? ");
+            indiceNom = 1;
+        }
+        if(page != null && nbElementsPerPage != null){
+            sb.append("LIMIT ? OFFSET ?");
+        }
+        String requestSql = sb.toString();
+        try {
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
+            if(nom != null && !nom.isEmpty()){
+                ps.setString(indiceNom, "%" + nom + "%");
+            }
+            if(page != null && nbElementsPerPage != null){
+                ps.setInt(indiceNom+1,nbElementsPerPage);
+                ps.setInt(indiceNom+2,(page-1) * nbElementsPerPage);
+            }
+            ResultSet resultSet = ps.executeQuery();
+            while(resultSet.next()){
+                Salle salle = new Salle();
+                salle.setId(resultSet.getInt("id"));
+                salle.setNom(resultSet.getString("nom"));
+                salle.setCreationDate(resultSet.getTimestamp("creationDate"));
+                salle.setModificationDate(resultSet.getTimestamp("modificationDate"));
+                resultSalles.add(salle);
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Erreur technique : impossible de récuperer la salle " + nom + " dans la base de données");
+            throw new DataBaseException("Erreur technique : impossible de récuperer la salle " + nom + " dans la base de données");
+        }
+        return resultSalles;
+    }//getClasses()
+
+    /**
+     * Cette fonction permet de compter le nombre de salles en base de données avec les informations passées en paramètre (facultatif)
+     * @param nom Nom de la salle à compter (facultatif)
+     * @return Le nombre de salle en base de données
+     * @throws DataBaseException
+     */
+    public long countByName(String nom) throws DataBaseException {
+        StringBuilder sb = new StringBuilder("SELECT COUNT(id) FROM salle ");
+        int indiceNom = 0;
+        if(nom != null && !nom.isEmpty()){
+            sb.append("WHERE nom LIKE ?");
+            indiceNom = 1;
+        }
+        String requestSql = sb.toString();
+        try {
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
+            if(nom != null && !nom.isEmpty()){
+                ps.setString(indiceNom,"%" + nom + "%");
+            }
+            ResultSet resultSet = ps.executeQuery();
+            resultSet.next();
+            return resultSet.getLong(1);
+        } catch (SQLException e) {
+            LOGGER.error("Erreur technique : impossible de compter le nombre de salles avec nom : " + ((nom != null) ?  nom : "") + " en base de données",e);
+            throw new DataBaseException("Erreur technique : impossible de compter le nombre de salles en base de données");
+        }
+    }//countByName()
 
     /**
      * Cette fonction permet de supprimer une salle dont l'identifiant est passé en paramètre dans la base de données

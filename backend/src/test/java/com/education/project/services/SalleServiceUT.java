@@ -13,7 +13,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -176,6 +178,121 @@ public class SalleServiceUT {
     }//update_salle_should_throw_exception_when_id_is_null()
 
     @Test
+    public void get_salles_should_return_all_results_when_no_filters_given() throws DataBaseException {
+        List<Salle> sallesFromBd = initSalles();
+        Mockito.when(salleRepository.getSalles(null,null,null)).thenReturn(sallesFromBd.subList(0,4));
+        List<Salle> salles = salleService.getSalles(null,null,null);
+        Assertions.assertThat(salles).isNotEmpty();
+        Assertions.assertThat(salles).hasSize(4);
+
+        Assertions.assertThat(salles.get(0).getId()).isEqualTo(sallesFromBd.get(0).getId());
+        Assertions.assertThat(salles.get(0).getNom()).isEqualTo(sallesFromBd.get(0).getNom());
+        Assertions.assertThat(salles.get(0).getCreationDate()).isNotNull();
+        Assertions.assertThat(salles.get(0).getModificationDate()).isNotNull();
+        Assertions.assertThat(salles.get(0).getCreationDate()).isNotEqualTo(salles.get(0).getModificationDate());
+
+        Assertions.assertThat(salles.get(1).getId()).isEqualTo(sallesFromBd.get(1).getId());
+        Assertions.assertThat(salles.get(1).getNom()).isEqualTo(sallesFromBd.get(1).getNom());
+        Assertions.assertThat(salles.get(1).getCreationDate()).isNotNull();
+        Assertions.assertThat(salles.get(1).getModificationDate()).isNotNull();
+        Assertions.assertThat(salles.get(1).getCreationDate()).isNotEqualTo(salles.get(1).getModificationDate());
+
+        Assertions.assertThat(salles.get(2).getId()).isEqualTo(sallesFromBd.get(2).getId());
+        Assertions.assertThat(salles.get(2).getNom()).isEqualTo(sallesFromBd.get(2).getNom());
+        Assertions.assertThat(salles.get(2).getCreationDate()).isNotNull();
+        Assertions.assertThat(salles.get(2).getModificationDate()).isNotNull();
+        Assertions.assertThat(salles.get(2).getCreationDate()).isNotEqualTo(salles.get(2).getModificationDate());
+
+        Assertions.assertThat(salles.get(2).getId()).isEqualTo(sallesFromBd.get(2).getId());
+        Assertions.assertThat(salles.get(2).getNom()).isEqualTo(sallesFromBd.get(2).getNom());
+        Assertions.assertThat(salles.get(2).getCreationDate()).isNotNull();
+        Assertions.assertThat(salles.get(2).getModificationDate()).isNotNull();
+        Assertions.assertThat(salles.get(2).getCreationDate()).isNotEqualTo(salles.get(2).getModificationDate());
+    }//get_salles_should_return_all_results_when_no_filters_given()
+
+    @Test
+    public void get_salles_insert_should_return_result_when_name_B240_is_given() throws DataBaseException {
+        List<Salle> sallesFromBd = initSalles();
+        Mockito.when(salleRepository.getSalles("B240",null,null)).thenReturn(sallesFromBd.subList(0,1));
+        List<Salle> salles = salleService.getSalles("B240",null,null);
+        Assertions.assertThat(salles).isNotEmpty();
+        Assertions.assertThat(salles).hasSize(1);
+        Assertions.assertThat(salles.get(0).getId()).isEqualTo(1);
+        Assertions.assertThat(salles.get(0).getNom()).isEqualTo("B240");
+        Assertions.assertThat(salles.get(0).getCreationDate()).isNotNull();
+        Assertions.assertThat(salles.get(0).getModificationDate()).isNotNull();
+        Assertions.assertThat(salles.get(0).getCreationDate()).isNotEqualTo(salles.get(0).getModificationDate());
+    }//get_salles_insert_should_return_result_when_name_B240_is_given()
+
+    @Test
+    public void get_salles_insert_should_return_result_when_name_is_null_page_is_1_and_nbElementsPerPage_is_2() throws DataBaseException {
+        List<Salle> sallesFromBd = initSalles();
+        Mockito.when(salleRepository.getSalles(null,1,2)).thenReturn(sallesFromBd.subList(0,2));
+        List<Salle> salles = salleService.getSalles(null,1,2);
+        Assertions.assertThat(salles).isNotEmpty();
+        Assertions.assertThat(salles).hasSize(2);
+        Assertions.assertThat(salles.get(0).getId()).isEqualTo(1);
+        Assertions.assertThat(salles.get(0).getNom()).isEqualTo("B240");
+        Assertions.assertThat(salles.get(0).getCreationDate()).isNotNull();
+        Assertions.assertThat(salles.get(0).getModificationDate()).isNotNull();
+        Assertions.assertThat(salles.get(0).getCreationDate()).isNotEqualTo(salles.get(0).getModificationDate());
+
+        Assertions.assertThat(salles.get(1).getId()).isEqualTo(2);
+        Assertions.assertThat(salles.get(1).getNom()).isEqualTo("Amphithéâtre B2");
+        Assertions.assertThat(salles.get(1).getCreationDate()).isNotNull();
+        Assertions.assertThat(salles.get(1).getModificationDate()).isNotNull();
+        Assertions.assertThat(salles.get(1).getCreationDate()).isNotEqualTo(salles.get(1).getModificationDate());
+    }//get_salles_insert_should_return_result_when_name_is_null_page_is_1_and_nbElementsPerPage_is_2()
+
+    @Test
+    public void get_salles_insert_should_return_when_name_is_null_page_is_2_and_nbElementsPerPage_is_2() throws DataBaseException {
+        List<Salle> sallesFromBd = initSalles();
+        Mockito.when(salleRepository.getSalles(null,2,2)).thenReturn(sallesFromBd.subList(2,4));
+        List<Salle> salles = salleService.getSalles(null,2,2);
+        Assertions.assertThat(salles).isNotEmpty();
+        Assertions.assertThat(salles).hasSize(2);
+        Assertions.assertThat(salles.get(0).getId()).isEqualTo(3);
+        Assertions.assertThat(salles.get(0).getNom()).isEqualTo("Amphithéâtre A4");
+        Assertions.assertThat(salles.get(0).getCreationDate()).isNotNull();
+        Assertions.assertThat(salles.get(0).getModificationDate()).isNotNull();
+        Assertions.assertThat(salles.get(0).getCreationDate()).isNotEqualTo(salles.get(0).getModificationDate());
+
+        Assertions.assertThat(salles.get(1).getId()).isEqualTo(4);
+        Assertions.assertThat(salles.get(1).getNom()).isEqualTo("B0-08");
+        Assertions.assertThat(salles.get(1).getCreationDate()).isNotNull();
+        Assertions.assertThat(salles.get(1).getModificationDate()).isNotNull();
+        Assertions.assertThat(salles.get(1).getCreationDate()).isNotEqualTo(salles.get(1).getModificationDate());
+    }//get_salles_insert_should_return_when_name_is_null_page_is_2_and_nbElementsPerPage_is_2()
+
+    @Test
+    public void count_salles_should_return_4_when_no_filters_is_given() throws DataBaseException {
+        Mockito.when(salleRepository.countByName(null)).thenReturn(4L);
+        long result = salleService.countSalles(null);
+        Assertions.assertThat(result).isEqualTo(4L);
+    }//count_salles_should_return_1_when_name_is_B240()
+
+    @Test
+    public void count_salles_should_return_1_when_name_is_B240() throws DataBaseException {
+        Mockito.when(salleRepository.countByName("B240")).thenReturn(1L);
+        long result = salleRepository.countByName("B240");
+        Assertions.assertThat(result).isEqualTo(1L);
+    }//count_salles_should_return_1_when_name_is_B240()
+
+    @Test
+    public void count_salles_should_return_4_when_name_is_null() throws DataBaseException {
+        Mockito.when(salleRepository.countByName(null)).thenReturn(4L);
+        long result = salleRepository.countByName(null);
+        Assertions.assertThat(result).isEqualTo(4L);
+    }//count_salles_should_return_4_when_name_is_null()
+
+    @Test
+    public void count_salles_should_return_4_when_name_is_empty() throws DataBaseException {
+        Mockito.when(salleRepository.countByName("")).thenReturn(4L);
+        long result = salleRepository.countByName("");
+        Assertions.assertThat(result).isEqualTo(4L);
+    }//count_salles_should_return_4_when_name_is_empty()
+
+    @Test
     public void delete_salle_should_success_when_id_is_2() throws DataBaseException {
         Mockito.when(salleRepository.delete(2)).thenReturn(true);
         boolean isDeleted = salleService.deleteSalle(2);
@@ -246,6 +363,17 @@ public class SalleServiceUT {
         salle.setModificationDate(now);
         return salle;
     }
+
+    private List<Salle> initSalles(){
+        List<Salle> salle = new ArrayList<>();
+        Date now = new Date();
+        Salle salle1 = new Salle(1,"B240",new Date(1593358317),now);
+        Salle salle2 = new Salle(2,"Amphithéâtre B2", new Date(1593358317), now);
+        Salle salle3 = new Salle(3,"Amphithéâtre A4", new Date(1593358317), now);
+        Salle salle4 = new Salle(4,"B0-08", new Date(1593358317), now);
+        salle.add(salle1); salle.add(salle2); salle.add(salle3); salle.add(salle4);
+        return salle;
+    }//initSalles()
 
     private Salle initSalleFromBd(){
         Date now = new Date();
