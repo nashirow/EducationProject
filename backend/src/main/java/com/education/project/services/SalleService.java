@@ -30,12 +30,19 @@ public class SalleService {
      * @throws DataBaseException
      */
     public Optional<Salle> insertSalle(Salle salleToInsert) throws ArgumentException, DataBaseException {
-        checkBusiness(salleToInsert);
+        checkBusiness(salleToInsert, false);
         Date now = new Date();
         salleToInsert.setCreationDate(now);
         salleToInsert.setModificationDate(now);
         return salleRepository.insert(salleToInsert);
     }//insertSalle()
+
+    public Optional<Salle> updateSalle(Salle salleToUpdate) throws ArgumentException, DataBaseException {
+        checkBusiness(salleToUpdate,true);
+        Date now = new Date();
+        salleToUpdate.setModificationDate(now);
+        return salleRepository.update(salleToUpdate);
+    }//updateSalle()
 
     /**
      * Cette fonction permet de vérifier les règles métiers liées aux salles
@@ -43,12 +50,18 @@ public class SalleService {
      * @throws ArgumentException
      * @throws DataBaseException
      */
-    private void checkBusiness(Salle salle) throws ArgumentException, DataBaseException {
+    private void checkBusiness(Salle salle, boolean isUpdate) throws ArgumentException, DataBaseException {
         List<String> errors = new ArrayList<>();
         if(salle == null){
-            errors.add("La salle est obligatoire");
+            StringBuilder sb = new StringBuilder("La salle à ");
+            sb.append(isUpdate ? "mettre à jour " : "insérer ");
+            sb.append("est obligatoire");
+            errors.add(sb.toString());
         }
         else{
+            if(isUpdate && salle.getId() == null){
+                errors.add("L'identifiant de la salle est obligatoire");
+            }
             if(salle.getNom() == null || salle.getNom().isEmpty()){
                 errors.add("Le nom d'une salle est obligatoire");
             }

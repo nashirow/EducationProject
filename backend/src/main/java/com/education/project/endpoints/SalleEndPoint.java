@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -44,4 +45,24 @@ public class SalleEndPoint {
         }
         return new ResponseEntity<>(new ResponseEndPoint(result,null),HttpStatus.OK);
     }//insertSalle()
+
+    /**
+     * Ce endpoint permet de mettre à jour une salle
+     * @param salle La salle à mettre à jour
+     * @return Réponse HTTP
+     */
+    @PutMapping("/salle")
+    public ResponseEntity<?> updateSalle(@RequestBody Salle salle){
+        try {
+            Optional<Salle> optSalle = salleService.updateSalle(salle);
+            if(optSalle.isPresent()){
+                return new ResponseEntity<>(new ResponseEndPoint(optSalle.get(),null), HttpStatus.OK);
+            }
+        } catch (ArgumentException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null,e.getErreurs()),HttpStatus.BAD_REQUEST);
+        } catch (DataBaseException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(new ResponseEndPoint(null,null),HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }//SalleEndPoint
