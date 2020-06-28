@@ -8,10 +8,7 @@ import com.education.project.services.SalleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -64,5 +61,15 @@ public class SalleEndPoint {
             return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(new ResponseEndPoint(null,null),HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    }//updateSalle()
+
+    @DeleteMapping("/salle/{id}")
+    public ResponseEntity<?> deleteSalle(@PathVariable Integer id){
+        try {
+            boolean result = salleService.deleteSalle(id);
+            return new ResponseEntity<>(new ResponseEndPoint(result,null),HttpStatus.OK);
+        } catch (DataBaseException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }//deleteSalle()
 }//SalleEndPoint

@@ -73,4 +73,13 @@ public class SalleService {
             throw new ArgumentException(errors);
         }
     }//checkBusiness()
+
+    /**
+     * Cette fonction permet de supprimer une salle avec son identifiant passé en paramètre
+     * @param id Identifiant de la salle à supprimer
+     * @return boolean
+     */
+    public boolean deleteSalle(int id) throws DataBaseException {
+        return salleRepository.delete(id);
+    }//deleteSalle()
 }//SalleService
