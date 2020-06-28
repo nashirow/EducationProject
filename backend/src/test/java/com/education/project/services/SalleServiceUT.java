@@ -13,7 +13,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -176,6 +178,38 @@ public class SalleServiceUT {
     }//update_salle_should_throw_exception_when_id_is_null()
 
     @Test
+    public void get_salles_should_return_all_results_when_no_filters_given(){
+        List<Salle> salles = salleService.getSalles(null,null,null);
+        Assertions.assertThat(salles).isNotEmpty();
+        Assertions.assertThat(salles).hasSize(4);
+
+        Assertions.assertThat(salles.get(0).getId()).isEqualTo(1);
+        Assertions.assertThat(salles.get(0).getNom()).isEqualTo("B240");
+        Assertions.assertThat(salles.get(0).getCreationDate()).isNotNull();
+        Assertions.assertThat(salles.get(0).getModificationDate()).isNotNull();
+        Assertions.assertThat(salles.get(0).getCreationDate()).isNotEqualTo(salles.get(0).getModificationDate());
+
+        Assertions.assertThat(salles.get(1).getId()).isEqualTo(2);
+        Assertions.assertThat(salles.get(1).getNom()).isEqualTo("Amphithéâtre B2");
+        Assertions.assertThat(salles.get(1).getCreationDate()).isNotNull();
+        Assertions.assertThat(salles.get(1).getModificationDate()).isNotNull();
+        Assertions.assertThat(salles.get(1).getCreationDate()).isNotEqualTo(salles.get(1).getModificationDate());
+
+        Assertions.assertThat(salles.get(2).getId()).isEqualTo(3);
+        Assertions.assertThat(salles.get(2).getNom()).isEqualTo("Amphithéâtre A4");
+        Assertions.assertThat(salles.get(2).getCreationDate()).isNotNull();
+        Assertions.assertThat(salles.get(2).getModificationDate()).isNotNull();
+        Assertions.assertThat(salles.get(2).getCreationDate()).isNotEqualTo(salles.get(2).getModificationDate());
+
+        Assertions.assertThat(salles.get(3).getId()).isEqualTo(4);
+        Assertions.assertThat(salles.get(3).getNom()).isEqualTo("B0-08");
+        Assertions.assertThat(salles.get(3).getCreationDate()).isNotNull();
+        Assertions.assertThat(salles.get(3).getModificationDate()).isNotNull();
+        Assertions.assertThat(salles.get(3).getCreationDate()).isNotEqualTo(salles.get(3).getModificationDate());
+    }//get_salles_should_return_all_results_when_no_filters_given()
+
+
+    @Test
     public void delete_salle_should_success_when_id_is_2() throws DataBaseException {
         Mockito.when(salleRepository.delete(2)).thenReturn(true);
         boolean isDeleted = salleService.deleteSalle(2);
@@ -246,6 +280,17 @@ public class SalleServiceUT {
         salle.setModificationDate(now);
         return salle;
     }
+
+    private List<Salle> initSalles(){
+        List<Salle> salle = new ArrayList<>();
+        Date now = new Date();
+        Salle salle1 = new Salle(1,"B240",new Date(1593358317),now);
+        Salle salle2 = new Salle(2,"Amphithéâtre B2", new Date(1593358317), now);
+        Salle salle3 = new Salle(3,"Amphithéâtre A4", new Date(1593358317), now);
+        Salle salle4 = new Salle(4,"B0-08", new Date(1593358317), now);
+        salle.add(salle1); salle.add(salle2); salle.add(salle3); salle.add(salle4);
+        return salle;
+    }//initSalles()
 
     private Salle initSalleFromBd(){
         Date now = new Date();

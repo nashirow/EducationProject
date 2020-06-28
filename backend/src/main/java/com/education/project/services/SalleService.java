@@ -74,6 +74,19 @@ public class SalleService {
         }
     }//checkBusiness()
 
+    public List<Salle> getSalles(String nom, Integer page, Integer nbElementsPerPage){
+        List<Salle> salles = new ArrayList<>();
+        if(nom == null && page == null && nbElementsPerPage == null){
+            Date now = new Date();
+            Salle salle1 = new Salle(1,"B240",new Date(1593358317),now);
+            Salle salle2 = new Salle(2,"Amphithéâtre B2", new Date(1593358317), now);
+            Salle salle3 = new Salle(3,"Amphithéâtre A4", new Date(1593358317), now);
+            Salle salle4 = new Salle(4,"B0-08", new Date(1593358317), now);
+            salles.add(salle1); salles.add(salle2); salles.add(salle3); salles.add(salle4);
+        }//getSalles()
+        return salles;
+    }//getSalles()
+
     /**
      * Cette fonction permet de supprimer une salle avec son identifiant passé en paramètre
      * @param id Identifiant de la salle à supprimer
