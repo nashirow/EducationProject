@@ -175,6 +175,20 @@ public class SalleServiceUT {
                 .isInstanceOf(ArgumentException.class);
     }//update_salle_should_throw_exception_when_id_is_null()
 
+    @Test
+    public void delete_salle_should_success_when_id_is_2() throws DataBaseException {
+        Mockito.when(salleRepository.delete(2)).thenReturn(true);
+        boolean isDeleted = salleService.deleteSalle(2);
+        Assertions.assertThat(isDeleted).isTrue();
+    }//delete_salle_should_success_when_id_is_2()
+
+    @Test
+    public void delete_salle_should_success_when_id_is_30() throws DataBaseException {
+        Mockito.when(salleRepository.delete(30)).thenReturn(false);
+        boolean isDeleted = salleService.deleteSalle(30);
+        Assertions.assertThat(isDeleted).isFalse();
+    }//delete_salle_should_success_when_id_is_30()
+
     private Salle initSalleToInsert(){
         Date now = new Date();
         Salle salle = new Salle();

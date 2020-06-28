@@ -131,4 +131,22 @@ public class SalleRepository{
             throw new DataBaseException("Erreur technique : impossible de mettre la salle à jour en base de données");
         }
     }//update()
+
+    /**
+     * Cette fonction permet de supprimer une salle dont l'identifiant est passé en paramètre dans la base de données
+     * @param id Identifiant de la salle à supprimer
+     * @return boolean
+     */
+    public boolean delete(int id) throws DataBaseException {
+        String requestSql = "DELETE FROM salle WHERE id = ?";
+        try {
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
+            ps.setInt(1,id);
+            int rowsDeleted = ps.executeUpdate();
+            return rowsDeleted > 0;
+        } catch (SQLException e) {
+            LOGGER.error("Erreur technique : impossible de supprimer la salle " + id + "de la base de données",e);
+            throw new DataBaseException("Erreur technique : impossible de supprimer la salle " + id + " de la base de données");
+        }
+    }//delete()
 }//SalleRepository
