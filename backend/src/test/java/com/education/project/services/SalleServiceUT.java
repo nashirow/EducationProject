@@ -5,6 +5,7 @@ import com.education.project.exceptions.DataBaseException;
 import com.education.project.model.Salle;
 import com.education.project.persistence.SalleRepository;
 import org.assertj.core.api.Assertions;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -104,7 +105,7 @@ public class SalleServiceUT {
     public void insert_salle_should_throw_exception_when_salle_is_null() throws ArgumentException {
         Salle salleToInsert = null;
         Assertions.assertThatThrownBy(() -> salleService.insertSalle(salleToInsert))
-                .hasMessage("La salle est obligatoire")
+                .hasMessage("La salle à insérer est obligatoire")
                 .isInstanceOf(ArgumentException.class);
     }//insert_salle_should_throw_exception_when_salle_is_null()
 
@@ -117,6 +118,62 @@ public class SalleServiceUT {
                 .hasMessage("Le nom de la salle existe déjà en base de données")
                 .isInstanceOf(ArgumentException.class);
     }//insert_salle_should_throw_exception_when_name_already_exists()
+
+    @Test
+    public void update_salle_should_success_when_name_is_beaufort() throws ArgumentException, DataBaseException {
+        Salle salleToUpdate = initSalleToUpdate();
+        salleToUpdate.setNom("Beaufort");
+        Salle salleFromBd = initSalleToInsertFromBD();
+        salleFromBd.setNom("Beaufort");
+        Mockito.when(salleRepository.update(salleToUpdate)).thenReturn(Optional.of(salleFromBd));
+        Optional <Salle> optSalle = salleService.updateSalle(salleToUpdate);
+        Assertions.assertThat(optSalle.isPresent()).isTrue();
+    }//update_salle_should_success_when_name_is_beaufort()
+
+    @Test
+    public void update_salle_should_throw_exception_when_salle_is_null(){
+        Salle salleToUpdate = null;
+        Assertions.assertThatThrownBy(() -> salleService.updateSalle(salleToUpdate))
+                .hasMessage("La salle à mettre à jour est obligatoire")
+                .isInstanceOf(ArgumentException.class);
+    }//update_salle_should_throw_exception_when_salle_is_null()
+
+    @Test
+    public void update_salle_should_throw_exception_when_name_is_empty(){
+        Salle salleToUpdate = initSalleToUpdate();
+        salleToUpdate.setNom("");
+        Assertions.assertThatThrownBy(() -> salleService.updateSalle(salleToUpdate))
+                .hasMessage("Le nom d'une salle est obligatoire")
+                .isInstanceOf(ArgumentException.class);
+    }//update_salle_should_throw_exception_when_name_is_empty()
+
+    @Test
+    public void update_salle_should_throw_exception_when_name_is_null(){
+        Salle salleToUpdate = initSalleToUpdate();
+        salleToUpdate.setNom(null);
+        Assertions.assertThatThrownBy(() -> salleService.updateSalle(salleToUpdate))
+                .hasMessage("Le nom d'une salle est obligatoire")
+                .isInstanceOf(ArgumentException.class);
+    }//update_salle_should_throw_exception_when_name_is_null()
+
+    @Test
+    public void update_salle_should_throw_exception_when_name_already_exists() throws DataBaseException {
+        Salle salleToUpdate = initSalleToUpdate();
+        salleToUpdate.setNom("2");
+        Mockito.when(salleRepository.isExistByName(salleToUpdate.getNom())).thenReturn(true);
+        Assertions.assertThatThrownBy(() -> salleService.updateSalle(salleToUpdate))
+                .hasMessage("Le nom de la salle existe déjà en base de données")
+                .isInstanceOf(ArgumentException.class);
+    }//update_salle_should_throw_exception_when_name_already_exists()
+
+    @Test
+    public void update_salle_should_throw_exception_when_id_is_null(){
+        Salle salleToUpdate = initSalleToUpdate();
+        salleToUpdate.setId(null);
+        Assertions.assertThatThrownBy(() -> salleService.updateSalle(salleToUpdate))
+                .hasMessage("L'identifiant de la salle est obligatoire")
+                .isInstanceOf(ArgumentException.class);
+    }//update_salle_should_throw_exception_when_id_is_null()
 
     private Salle initSalleToInsert(){
         Date now = new Date();
@@ -133,4 +190,24 @@ public class SalleServiceUT {
         Salle salle = new Salle(1,"B024",now,now);
         return salle;
     }//initSalleToInsertFromBD()
+
+    private Salle initSalleToUpdate(){
+        Date now = new Date();
+        Salle salle = new Salle();
+        salle.setNom("Beaufort");
+        salle.setId(1);
+        salle.setCreationDate(new Date(1593293125));
+        salle.setModificationDate(now);
+        return salle;
+    }//initSalleToUpdate()
+
+    private Salle initSalleToUpdateFromBd(){
+        Date now = new Date();
+        Salle salle = new Salle();
+        salle.setNom("2");
+        salle.setId(1);
+        salle.setCreationDate(new Date(1593293125));
+        salle.setModificationDate(now);
+        return salle;
+    }
 }//SalleServiceUT

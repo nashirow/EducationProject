@@ -104,4 +104,31 @@ public class SalleRepository{
             throw new DataBaseException("Erreur technique : impossible d'insérer la salle en base de données");
         }
     }//insert()
+
+    /**
+     * Cette fonction permet de mettre à jour une salle en base de données
+     * @param salleToUpdate La salle à mettre à jour
+     * @return La salle mise à jour
+     * @throws DataBaseException
+     */
+    public Optional<Salle> update(Salle salleToUpdate) throws DataBaseException {
+        String requestSql = "UPDATE salle SET nom = ?, modificationDate = ? WHERE id = ?";
+        try {
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
+            ps.setString(1,salleToUpdate.getNom());
+            ps.setTimestamp(2, new Timestamp(salleToUpdate.getModificationDate().getTime()));
+            ps.setInt(3,salleToUpdate.getId());
+            int RowsUpdated = ps.executeUpdate();
+            if(RowsUpdated > 0){
+                return Optional.of(salleToUpdate);
+            }
+            else
+            {
+                throw new DataBaseException("Erreur technique : impossible de mettre à jour la salle en base de données.");
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Erreur techinque : impossible de mettre à jour la salle " + salleToUpdate.toString() + " en base de données",e);
+            throw new DataBaseException("Erreur technique : impossible de mettre la salle à jour en base de données");
+        }
+    }//update()
 }//SalleRepository
