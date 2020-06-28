@@ -149,4 +149,30 @@ public class SalleRepository{
             throw new DataBaseException("Erreur technique : impossible de supprimer la salle " + id + " de la base de données");
         }
     }//delete()
+
+    /**
+     * Cette fonction permet de récupérer une salle avec l'identifiant passé en paramètre
+     * @param id Identifiant de la salle passé en paramètre
+     * @return La salle récupérée
+     */
+    public Optional<Salle> findById(int id) throws DataBaseException {
+        String requeteSql = "SELECT * FROM salle WHERE id = ?";
+        try {
+            PreparedStatement ps = this.connection.prepareStatement(requeteSql);
+            ps.setInt(1,id);
+            ResultSet resultSet = ps.executeQuery();
+            if(resultSet.next()){
+                Salle salle = new Salle();
+                salle.setNom(resultSet.getString("nom"));
+                salle.setCreationDate(resultSet.getTimestamp("creationDate"));
+                salle.setModificationDate(resultSet.getTimestamp("modificationDate"));
+                salle.setId(resultSet.getInt("id"));
+                return Optional.of(salle);
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Erreur technique : impossible de retrouver la salle d'identifiant " + id + " dans la base de données");
+            throw new DataBaseException("Erreur technique : impossible de retrouver la salle d'identifiant " + id + " dans la base de données");
+        }
+        return Optional.empty();
+    }//findById()
 }//SalleRepository

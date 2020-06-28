@@ -189,6 +189,28 @@ public class SalleServiceUT {
         Assertions.assertThat(isDeleted).isFalse();
     }//delete_salle_should_success_when_id_is_30()
 
+    @Test
+    public void get_salle_should_return_salle_when_id_is_1() throws DataBaseException {
+        Salle salleFromBd = initSalleFromBd();
+        Mockito.when(salleRepository.findById(1)).thenReturn(Optional.of(salleFromBd));
+        Optional<Salle> optSalle = salleService.getSalle(1);
+        Assertions.assertThat(optSalle.isPresent()).isTrue();
+        optSalle.ifPresent(salle ->{
+            Assertions.assertThat(salle.getId()).isEqualTo(salleFromBd.getId());
+            Assertions.assertThat(salle.getNom()).isEqualTo(salleFromBd.getNom());
+            Assertions.assertThat(salle.getCreationDate()).isNotNull();
+            Assertions.assertThat(salle.getModificationDate()).isNotNull();
+            Assertions.assertThat(salle.getCreationDate()).isNotEqualTo(salle.getModificationDate());
+        });
+    }//get_salle_should_return_salle_when_id_is_1()
+
+    @Test
+    public void get_salle_should_return_empty_salle_when_id_is_30() throws DataBaseException {
+        Mockito.when(salleRepository.findById(30)).thenReturn(Optional.empty());
+        Optional <Salle> optSalle = salleService.getSalle(30);
+        Assertions.assertThat(optSalle).isNotPresent();
+    }//get_salle_should_return_empty_salle_when_id_is_30()
+
     private Salle initSalleToInsert(){
         Date now = new Date();
         Salle salle = new Salle();
@@ -224,4 +246,14 @@ public class SalleServiceUT {
         salle.setModificationDate(now);
         return salle;
     }
+
+    private Salle initSalleFromBd(){
+        Date now = new Date();
+        Salle salle = new Salle();
+        salle.setNom("B243");
+        salle.setCreationDate(new Date(1593358317));
+        salle.setModificationDate(now);
+        salle.setId(1);
+        return salle;
+    }//initSalleFromBd()
 }//SalleServiceUT
