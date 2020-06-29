@@ -23,7 +23,7 @@ CREATE TABLE `classe` (
 CREATE TABLE `enseignant` (
 	`id` INT(10,0) NOT NULL AUTO_INCREMENT,
 	`nom` VARCHAR(40) NOT NULL DEFAULT '' COMMENT 'C\'est le nom de l\'enseignant' COLLATE 'utf8mb4_0900_ai_ci',
-	`prenom` VARCHAR(40) NOT NULL DEFAULT '' COMMENT 'C\'est le prenom de l\'enseignant' COLLATE 'utf8mb4_0900_ai_ci',
+	`prenom` VARCHAR(40) NOT NULL DEFAULT '' COMMENT 'C\'est le prénom de l\'enseignant' COLLATE 'utf8mb4_0900_ai_ci',
 	`creationDate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`modificationDate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (`id`)
@@ -39,3 +39,13 @@ CREATE TABLE `salle` (
 )
 COLLATE='utf8mb4_0900_ai_ci'
 ;
+
+CREATE TABLE `options` (
+    `id` INT NOT NULL,
+    `splitPlanning` INT NOT NULL DEFAULT 60 COMMENT 'Temps de découpage du planning' COLLATE 'utf8mb4_0900_ai_ci',
+    `startHourPlanning` TIME NOT NULL DEFAULT '08:00:00' COMMENT 'Heure de début du planning' COLLATE 'utf8mb4_0900_ai_ci',
+    `endHourPlanning` TIME NOT NULL DEFAULT '17:00:00' COMMENT 'Heure de fin du planning' COLLATE 'utf8mb4_0900_ai_ci',
+    PRIMARY KEY (`id`)
+)COLLATE='utf8mb4_0900_ai_ci';
+
+INSERT INTO `options` (`id`, `splitplanning`, `starthourplanning`, `endhourplanning`) VALUES (1, 60, '08:00:00', '17:00:00');
