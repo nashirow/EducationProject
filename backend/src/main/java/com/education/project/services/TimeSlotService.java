@@ -78,4 +78,14 @@ public class TimeSlotService {
         }
     }// checkBusiness()
 
+    /**
+     * Retourne le nombre total de créneaux horaires stockés
+     * dans l'application.
+     * @return nombre total
+     * @throws DataBaseException
+     */
+    public long count() throws DataBaseException {
+        return this.timeSlotRepository.count();
+    }// count()
+
 }// TimeSlotService

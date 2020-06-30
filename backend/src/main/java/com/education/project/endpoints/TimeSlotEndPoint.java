@@ -53,4 +53,17 @@ public class TimeSlotEndPoint {
         }
     }//deleteTimeSlot()
 
+    /**
+     * Compte le nombre total de créneaux horaires dont dispose l'application.
+     * @return Réponse HTTP
+     */
+    @GetMapping("/timeslot/count")
+    public ResponseEntity<?> countTimeSlots(){
+        try {
+            return new ResponseEntity<>(new ResponseEndPoint(this.timeSlotService.count(), null), HttpStatus.OK);
+        } catch (DataBaseException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }//countTimeSlots()
+
 }// TimeSlotEndPoint

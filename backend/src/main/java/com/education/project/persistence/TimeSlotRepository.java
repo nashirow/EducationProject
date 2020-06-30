@@ -45,11 +45,11 @@ public class TimeSlotRepository {
                 ts.setId(resultSet.getInt(1));
                 return Optional.of(ts);
             }else{
-                throw new DataBaseException("Impossible de créer un nouveau créneau horaire : " + ts.toString());
+                throw new DataBaseException("Erreur technique : Impossible de créer un nouveau créneau horaire : " + ts.toString());
             }
         } catch (SQLException e) {
             LOGGER.error(e.getMessage(), e);
-            throw new DataBaseException("Impossible de créer un nouveau créneau horaire : " + ts.toString());
+            throw new DataBaseException("Erreur technique : Impossible de créer un nouveau créneau horaire : " + ts.toString());
         }
     }// insert()
 
@@ -70,9 +70,27 @@ public class TimeSlotRepository {
             return count > 0;
         } catch (SQLException e) {
             LOGGER.error(e.getMessage(), e);
-            throw new DataBaseException("Impossible de vérifier si le créneau horaire " + ts.toString() + " existe en base de données");
+            throw new DataBaseException("Erreur technique : Impossible de vérifier si le créneau horaire " + ts.toString() + " existe en base de données");
         }
     }// exists()
+
+    /**
+     * Compte le nombre de créneaux horaires disponibles.
+     * @return total
+     * @throws DataBaseException
+     */
+    public long count() throws DataBaseException {
+        String requestSql = "SELECT COUNT(id) FROM timeslot";
+        try {
+            Statement s = this.connection.createStatement();
+            ResultSet resultSet = s.executeQuery(requestSql);
+            resultSet.next();
+            return resultSet.getLong(1);
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new DataBaseException("Erreur technique : Impossible de compter le nombre total de créneaux horaires");
+        }
+    }// count()
 
     /**
      * Supprime un créneau horaire dans la base de données.
