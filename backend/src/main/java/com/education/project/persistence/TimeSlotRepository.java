@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -109,4 +111,39 @@ public class TimeSlotRepository {
             throw new DataBaseException("Impossible de supprimer le créneau horaire n°" + id);
         }
     }// delete()
+
+    /**
+     * Récupère les créneaux horaires stockés dans la base de données
+     * @param page n° de la page (facultatif)
+     * @param nbElementsPerPage Nombre de créneaux horaires par page (facultatif)
+     * @return créneaux horaires
+     * @throws DataBaseException
+     */
+    public List<TimeSlot> findAll(Integer page, Integer nbElementsPerPage) throws DataBaseException {
+        List<TimeSlot> results = new ArrayList<>();
+        StringBuilder sb = new StringBuilder("SELECT * FROM timeslot");
+        if(page != null && nbElementsPerPage != null){
+            sb.append(" LIMIT ? OFFSET ? ");
+        }
+        String requestSql = sb.toString();
+        try {
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
+            if(page != null && nbElementsPerPage != null){
+                ps.setInt(1, nbElementsPerPage);
+                ps.setInt(2, (page - 1) * nbElementsPerPage);
+            }
+            ResultSet resultSet = ps.executeQuery();
+            while (resultSet.next()){
+                results.add(
+                    new TimeSlot(resultSet.getInt("id"),
+                                 resultSet.getTime("starthour").toLocalTime(),
+                                 resultSet.getTime("endhour").toLocalTime())
+                );
+            }
+            return results;
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new DataBaseException("Erreur Technique : Impossible de récupérer les créneaux horaires");
+        }
+    }// findAll()
 }// TimeSlotRepository

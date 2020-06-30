@@ -15,7 +15,10 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -112,5 +115,48 @@ public class TimeSlotServiceUT {
     public void delete_time_slot_should_return_false_if_id_is_2() throws DataBaseException {
         Assertions.assertThat(timeSlotService.delete(1)).isFalse();
     }//delete_time_slot_should_return_false_if_id_is_2()
+
+    @Test
+    public void get_time_slots_should_return_2_time_slots_without_pagination() throws DataBaseException{
+       List<TimeSlot> mockTimeSlots = mockTimeSlotsFromDataBase();
+        Mockito.when(timeSlotRepository.findAll(null, null)).thenReturn(mockTimeSlots);
+        List<TimeSlot> timeSlotList = timeSlotService.getTimeSlots(null, null);
+        Assertions.assertThat(timeSlotList).isNotEmpty();
+        Assertions.assertThat(timeSlotList).isNotNull();
+        Assertions.assertThat(timeSlotList).hasSize(2);
+        for(int i = 0; i < 2; ++i){
+            Assertions.assertThat(timeSlotList.get(i).getId()).isEqualTo(mockTimeSlots.get(i).getId());
+            Assertions.assertThat(timeSlotList.get(i).getStart()).isEqualTo(mockTimeSlots.get(i).getStart());
+            Assertions.assertThat(timeSlotList.get(i).getEnd()).isEqualTo(mockTimeSlots.get(i).getEnd());
+        }
+    }// get_time_slots_should_return_2_time_slots_without_pagination()
+
+    @Test
+    public void get_time_slots_should_return_2_time_slots_with_pagination_1_element_per_page() throws DataBaseException{
+        List<TimeSlot> mockTimeSlots = mockTimeSlotsFromDataBase();
+        Mockito.when(timeSlotRepository.findAll(1, 1)).thenReturn(mockTimeSlots.subList(0, 1));
+        List<TimeSlot> timeSlotList = timeSlotService.getTimeSlots(1, 1);
+        Assertions.assertThat(timeSlotList).isNotEmpty();
+        Assertions.assertThat(timeSlotList).isNotNull();
+        Assertions.assertThat(timeSlotList).hasSize(1);
+        Assertions.assertThat(timeSlotList.get(0).getId()).isEqualTo(mockTimeSlots.get(0).getId());
+        Assertions.assertThat(timeSlotList.get(0).getStart()).isEqualTo(mockTimeSlots.get(0).getStart());
+        Assertions.assertThat(timeSlotList.get(0).getEnd()).isEqualTo(mockTimeSlots.get(0).getEnd());
+
+        Mockito.when(timeSlotRepository.findAll(2, 1)).thenReturn(mockTimeSlots.subList(1, 2));
+        timeSlotList = timeSlotService.getTimeSlots(2, 1);
+        Assertions.assertThat(timeSlotList).isNotEmpty();
+        Assertions.assertThat(timeSlotList).isNotNull();
+        Assertions.assertThat(timeSlotList).hasSize(1);
+        Assertions.assertThat(timeSlotList.get(0).getId()).isEqualTo(mockTimeSlots.get(1).getId());
+        Assertions.assertThat(timeSlotList.get(0).getStart()).isEqualTo(mockTimeSlots.get(1).getStart());
+        Assertions.assertThat(timeSlotList.get(0).getEnd()).isEqualTo(mockTimeSlots.get(1).getEnd());
+    }// get_time_slots_should_return_2_time_slots_without_pagination()
+
+    private List<TimeSlot> mockTimeSlotsFromDataBase(){
+        return Stream.of(new TimeSlot(1, LocalTime.of(8, 0), LocalTime.of(9, 0)),
+                new TimeSlot(2, LocalTime.of(9, 0), LocalTime.of(12, 0))
+                ).collect(Collectors.toList());
+    }// mockTimeSlotsFromDataBase()
 
 }// TimeSlotServiceUT

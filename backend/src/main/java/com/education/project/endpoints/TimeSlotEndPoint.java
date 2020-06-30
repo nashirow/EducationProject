@@ -54,6 +54,22 @@ public class TimeSlotEndPoint {
     }//deleteTimeSlot()
 
     /**
+     * Récupère l'ensemble des créneaux horaires de l'application
+     * @param page n° de la page (facultatif)
+     * @param nbElementsPerPage Nombre de créneaux horaires par page (facultatif)
+     * @return Réponse HTTP
+     */
+    @GetMapping("/timeslots")
+    public ResponseEntity<?> getTimeSlots(@RequestParam(value = "page", required = false) Integer page,
+                                          @RequestParam(value = "nbElementsPerPage", required = false) Integer nbElementsPerPage){
+        try {
+            return new ResponseEntity<>(new ResponseEndPoint(this.timeSlotService.getTimeSlots(page, nbElementsPerPage), null), HttpStatus.OK);
+        } catch (DataBaseException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }// getTimeSlots()
+
+    /**
      * Compte le nombre total de créneaux horaires dont dispose l'application.
      * @return Réponse HTTP
      */

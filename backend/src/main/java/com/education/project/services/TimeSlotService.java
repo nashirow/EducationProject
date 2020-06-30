@@ -79,6 +79,16 @@ public class TimeSlotService {
     }// checkBusiness()
 
     /**
+     * Récupère l'ensemble des créneaux horaires de l'application.
+     * @param page n° de la page (facultatif)
+     * @param nbElementsPerPage Nombre de créneaux horaires par page (facultatif)
+     * @return créneaux horaires
+     */
+    public List<TimeSlot> getTimeSlots(Integer page, Integer nbElementsPerPage) throws DataBaseException {
+        return timeSlotRepository.findAll(page, nbElementsPerPage);
+    }// getTimeSlots()
+
+    /**
      * Retourne le nombre total de créneaux horaires stockés
      * dans l'application.
      * @return nombre total
