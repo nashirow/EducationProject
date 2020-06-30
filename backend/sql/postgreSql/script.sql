@@ -58,3 +58,12 @@ COMMENT ON COLUMN options.startHourPlanning is 'Heure de début du planning';
 COMMENT ON COLUMN options.endHourPlanning is 'Heure de fin du planning';
 
 INSERT INTO options(id, splitplanning, starthourplanning, endhourplanning) VALUES (1, 60, '08:00:00', '17:00:00');
+
+CREATE TABLE timeslot (
+    id SERIAL PRIMARY KEY NOT NULL,
+    startHour TIME NOT NULL,
+    endHour TIME NOT NULL
+);
+
+COMMENT ON COLUMN timeslot.startHour is 'Heure de début';
+COMMENT ON COLUMN timeslot.endHour is 'Heure de fin';

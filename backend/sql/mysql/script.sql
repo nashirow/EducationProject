@@ -49,3 +49,10 @@ CREATE TABLE `options` (
 )COLLATE='utf8mb4_0900_ai_ci';
 
 INSERT INTO `options` (`id`, `splitplanning`, `starthourplanning`, `endhourplanning`) VALUES (1, 60, '08:00:00', '17:00:00');
+
+CREATE TABLE `timeslot` (
+    `id` INT NOT NULL,
+    `startHour` TIME NOT NULL COMMENT 'Heure de début' COLLATE 'utf8mb4_0900_ai_ci',
+    `endHour` TIME NOT NULL COMMENT 'Heure de fin' COLLATE 'utf8mb4_0900_ai_ci',
+    PRIMARY KEY (`id`)
+)COLLATE='utf8mb4_0900_ai_ci';

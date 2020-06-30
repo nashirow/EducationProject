@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
-import java.time.LocalTime;
 import java.util.Optional;
 
 /**
