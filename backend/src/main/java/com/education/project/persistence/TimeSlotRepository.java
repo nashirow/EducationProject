@@ -73,4 +73,22 @@ public class TimeSlotRepository {
             throw new DataBaseException("Impossible de vérifier si le créneau horaire " + ts.toString() + " existe en base de données");
         }
     }// exists()
+
+    /**
+     * Supprime un créneau horaire dans la base de données.
+     * @param id Identifiant du créneau horaire à supprimer
+     * @return boolean
+     * @throws DataBaseException
+     */
+    public boolean delete(int id) throws DataBaseException {
+        String requestSql = "DELETE FROM timeslot WHERE id = ?";
+        try{
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
+            ps.setInt(1, id);
+            return ps.executeUpdate() == 1;
+        }catch(SQLException e){
+            LOGGER.error(e.getMessage(), e);
+            throw new DataBaseException("Impossible de supprimer le créneau horaire n°" + id);
+        }
+    }// delete()
 }// TimeSlotRepository
