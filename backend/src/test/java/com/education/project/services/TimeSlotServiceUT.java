@@ -96,4 +96,15 @@ public class TimeSlotServiceUT {
                 .isInstanceOf(ArgumentException.class);
     }// insert_time_slot_should_throw_argument_exception_when_start_hour_and_end_hour_dont_respect_split_planning_time_when_split_is_1()
 
+    @Test
+    public void delete_time_slot_should_return_true_if_id_is_1() throws DataBaseException {
+        Mockito.when(timeSlotRepository.delete(1)).thenReturn(true);
+        Assertions.assertThat(timeSlotService.delete(1)).isTrue();
+    }//delete_time_slot_should_return_true_if_id_is_1()
+
+    @Test
+    public void delete_time_slot_should_return_false_if_id_is_2() throws DataBaseException {
+        Assertions.assertThat(timeSlotService.delete(1)).isFalse();
+    }//delete_time_slot_should_return_false_if_id_is_2()
+
 }// TimeSlotServiceUT

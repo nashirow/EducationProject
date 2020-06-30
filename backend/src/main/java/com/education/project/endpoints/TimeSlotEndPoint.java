@@ -8,9 +8,7 @@ import com.education.project.services.TimeSlotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Contrôleur gérant les créneaux horaires de l'application.
@@ -26,7 +24,7 @@ public class TimeSlotEndPoint {
     }// TimeSlotEndPoint()
 
     /**
-     * Insert un créneau horaire dans l'application.
+     * Insère un créneau horaire dans l'application.
      * @param timeSlot Créneau horaire à insérer
      * @return Réponse HTTP
      */
@@ -40,5 +38,19 @@ public class TimeSlotEndPoint {
             return new ResponseEntity<>(new ResponseEndPoint(null, e.getErreurs()), HttpStatus.BAD_REQUEST);
         }
     }//insertTimeSlot()
+
+    /**
+     * Supprime un créneau horaire dans l'application.
+     * @param id Identifiant du créneau horaire à supprimer
+     * @return Réponse HTTP
+     */
+    @DeleteMapping("/timeslot/{id}")
+    public ResponseEntity<?> deleteTimeSlot(@PathVariable("id") Integer id){
+        try {
+            return new ResponseEntity<>(new ResponseEndPoint(this.timeSlotService.delete(id), null), HttpStatus.OK);
+        } catch (DataBaseException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }//deleteTimeSlot()
 
 }// TimeSlotEndPoint

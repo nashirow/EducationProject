@@ -41,6 +41,16 @@ public class TimeSlotService {
         return timeSlotRepository.insert(ts);
     }// insert()
 
+    /**
+     * Supprime un créneau horaire
+     * @param id Identifiant du créneau horaire à supprimer
+     * @return boolean
+     * @throws DataBaseException
+     */
+    public boolean delete(int id) throws DataBaseException {
+        return timeSlotRepository.delete(id);
+    }// delete()
+
     private void checkBusiness(TimeSlot ts) throws ArgumentException, DataBaseException {
         List<String> errors = new ArrayList<>();
         if(ts == null){
