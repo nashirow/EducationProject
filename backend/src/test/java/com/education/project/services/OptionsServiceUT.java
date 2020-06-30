@@ -14,6 +14,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalTime;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RunWith(MockitoJUnitRunner.class)
 public class OptionsServiceUT {
@@ -27,7 +29,7 @@ public class OptionsServiceUT {
 
     @Before
     public void setUp() throws DataBaseException {
-        this.optionsService = new OptionsService(optionsRepository);
+        this.optionsService = new OptionsService(optionsRepository, Stream.of(15, 20, 30, 60).collect(Collectors.toList()) );
         this.fullOptions = new Options(60, LocalTime.of(9, 0), LocalTime.of(19, 0));
         Mockito.when(optionsRepository.update(this.fullOptions)).thenReturn(true);
     }// setUp()
@@ -139,15 +141,15 @@ public class OptionsServiceUT {
     }// change_options_should_throw_argument_exception_when_end_hour_is_lte_existant_start_hour()
 
     @Test
-    public void change_options_should_throw_argument_exception_when_start_hour_and_end_hour_doesnt_respect_split_planning_time(){
+    public void change_options_should_throw_argument_exception_when_start_hour_and_end_hour_dont_respect_split_planning_time(){
         this.fullOptions.setStartHourPlanning(LocalTime.of(8, 11));
         Assertions.assertThatThrownBy(() -> this.optionsService.changeOptions(this.fullOptions))
                 .isInstanceOf(ArgumentException.class)
                 .hasMessage("L'heure de fin du planning et son heure de début doivent être cohérents avec le découpage du planning");
-    }// change_options_should_throw_argument_exception_when_start_hour_and_end_hour_doesnt_respect_split_planning_time()
+    }// change_options_should_throw_argument_exception_when_start_hour_and_end_hour_dont_respect_split_planning_time()
 
     @Test
-    public void change_options_should_throw_argument_exception_when_start_hour_and_existant_end_hour_doesnt_respect_split_planning_time() throws DataBaseException {
+    public void change_options_should_throw_argument_exception_when_start_hour_and_existant_end_hour_dont_respect_split_planning_time() throws DataBaseException {
         Options optionsFromBD = new Options(60, LocalTime.of(5, 0), LocalTime.of(15,0));
         this.fullOptions.setEndHourPlanning(null);
         this.fullOptions.setStartHourPlanning(LocalTime.of(5, 23));
@@ -155,10 +157,10 @@ public class OptionsServiceUT {
         Assertions.assertThatThrownBy(() -> this.optionsService.changeOptions(this.fullOptions))
                 .isInstanceOf(ArgumentException.class)
                 .hasMessage("L'heure de fin du planning et son heure de début doivent être cohérents avec le découpage du planning");
-    }// change_options_should_throw_argument_exception_when_start_hour_and_existant_end_hour_doesnt_respect_split_planning_time()
+    }// change_options_should_throw_argument_exception_when_start_hour_and_existant_end_hour_dont_respect_split_planning_time()
 
     @Test
-    public void change_options_should_throw_argument_exception_when_end_hour_and_existant_start_hour_doesnt_respect_split_planning_time() throws DataBaseException {
+    public void change_options_should_throw_argument_exception_when_end_hour_and_existant_start_hour_dont_respect_split_planning_time() throws DataBaseException {
         Options optionsFromBD = new Options(60, LocalTime.of(5, 0), LocalTime.of(15,0));
         this.fullOptions.setStartHourPlanning(null);
         this.fullOptions.setEndHourPlanning(LocalTime.of(5, 23));
@@ -166,7 +168,7 @@ public class OptionsServiceUT {
         Assertions.assertThatThrownBy(() -> this.optionsService.changeOptions(this.fullOptions))
                 .isInstanceOf(ArgumentException.class)
                 .hasMessage("L'heure de fin du planning et son heure de début doivent être cohérents avec le découpage du planning");
-    }// change_options_should_throw_argument_exception_when_end_hour_and_existant_start_hour_doesnt_respect_split_planning_time()
+    }// change_options_should_throw_argument_exception_when_end_hour_and_existant_start_hour_dont_respect_split_planning_time()
 
     /**
      * En dehors des problèmes réseaux / infrastructure, cette fonction doit

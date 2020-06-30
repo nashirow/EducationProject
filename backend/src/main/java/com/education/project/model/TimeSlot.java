@@ -4,6 +4,8 @@ import java.time.LocalTime;
 
 public class TimeSlot {
 
+    private Integer id;
+
     /**
      * Heure de début du créneau horaire.
      */
@@ -14,7 +16,16 @@ public class TimeSlot {
      */
     private LocalTime end;
 
+    public TimeSlot() {
+    }// TimeSlot()
+
     public TimeSlot(LocalTime start, LocalTime end) {
+        this.start = start;
+        this.end = end;
+    }// TimeSlot()
+
+    public TimeSlot(Integer id, LocalTime start, LocalTime end) {
+        this.id = id;
         this.start = start;
         this.end = end;
     }// TimeSlot()
@@ -34,5 +45,22 @@ public class TimeSlot {
     public void setEnd(LocalTime end) {
         this.end = end;
     }// setEnd()
+
+    public Integer getId() {
+        return id;
+    }// getId()
+
+    public void setId(Integer id) {
+        this.id = id;
+    }// setId()
+
+    @Override
+    public String toString() {
+        return "TimeSlot{" +
+                "id=" + id +
+                ", start=" + start +
+                ", end=" + end +
+                '}';
+    }// toString()
 
 }// TimeSlot

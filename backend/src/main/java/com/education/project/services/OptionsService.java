@@ -27,9 +27,9 @@ public class OptionsService {
     private List<Integer> valuesSplitPlanningAccepted;
 
     @Autowired
-    public OptionsService(OptionsRepository optionsRepository){
+    public OptionsService(OptionsRepository optionsRepository, @Value("${options.valid.split.time.values}") List<Integer> valuesSplitPlanningAccepted){
         this.optionsRepository = optionsRepository;
-        this.valuesSplitPlanningAccepted = Stream.of(15, 20, 30, 60).collect(Collectors.toList());
+        this.valuesSplitPlanningAccepted = valuesSplitPlanningAccepted;
     }// OptionsService()
 
     /**
