@@ -1,0 +1,34 @@
+#home{
+
+    display: flex;
+    flex-wrap: wrap;
+    width: 80%;
+    margin: 30px auto;
+
+    .cta{
+        &#cta-classe{
+            background-color: #ff0052;
+        }
+        &#cta-hours{
+            background-color: #04c3ef;
+        }
+        &#cta-teachers{
+            background-color: #585458;
+        }
+        &#cta-disciplines{
+            background-color: #4b920b;
+        }
+        &#cta-options{
+            background-color: #000;
+        }
+        &#cta-planning{
+            background-color: #640b92;
+        }
+        &#cta-room{
+            background-color: #dcba12;
+        }
+        &#cta-slots{
+            background-color: #1263dc;
+        }
+    }
+}
