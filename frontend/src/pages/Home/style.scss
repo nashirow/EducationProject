@@ -1,3 +1,5 @@
+@import '../../common.scss';
+
 #home{
 
     display: flex;
@@ -5,9 +7,13 @@
     width: 80%;
     margin: 30px auto;
 
+    a.home-cta{
+        display: flex;
+    }
+
     .cta{
         &#cta-classe{
-            background-color: #ff0052;
+            background-color: $colorClasses;
         }
         &#cta-hours{
             background-color: #04c3ef;

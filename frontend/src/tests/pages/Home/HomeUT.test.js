@@ -3,11 +3,12 @@ import { mount } from 'enzyme';
 import { Home } from '../../../pages/Home/Home';
 
 import '../../configure';
+import { BrowserRouter } from 'react-router-dom';
 
 let wrapper;
 
 beforeEach(() => {
-    wrapper = mount(<Home />);
+    wrapper = mount(<BrowserRouter><Home /></BrowserRouter>);
 });
 
 describe('Testing Home page', () => {
@@ -22,6 +23,10 @@ describe('Testing Home page', () => {
 
     test('CTA Classe must have icon fa-superscript', () => {
         expect(wrapper.find('#cta-classe i.fa-superscript').exists()).toBeTruthy();
+    });
+
+    test('CTA Classe should have link /classes', () => {
+        expect(wrapper.find('a[href="/classes"]').exists()).toBeTruthy();
     });
 
     test('CTA Hours must be present', () => {
@@ -107,4 +112,5 @@ describe('Testing Home page', () => {
     test('CTA Slots must have icon fa-list-alt', () => {
         expect(wrapper.find('#cta-slots i.fa-list-alt').exists()).toBeTruthy();
     });
+
 });

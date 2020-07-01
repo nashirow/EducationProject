@@ -1,0 +1,19 @@
+@import '../../common.scss';
+
+#table-classes{
+
+    width: 70%;
+    margin: 30px auto;
+      
+    tr:nth-child(even){ 
+        background-color: #f2f2f2; 
+    }
+      
+    tr:hover { 
+        background-color: #d1a4b3be; 
+    }
+      
+    th {
+        background-color: $colorClasses;
+    }
+}
