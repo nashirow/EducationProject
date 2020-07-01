@@ -3,8 +3,6 @@ CREATE DATABASE EducationProject;
 CREATE TABLE matiere (
 	id SERIAL PRIMARY KEY NOT NULL,
 	nom VARCHAR(40) NOT NULL DEFAULT '',
-	couleurFond VARCHAR(15) NOT NULL DEFAULT '',
-	couleurPolice VARCHAR(15) NOT NULL DEFAULT '',
 	volumeHoraire VARCHAR(5) NULL DEFAULT '',
 	description VARCHAR(255) NULL DEFAULT '',
 	creationDate TIMESTAMP NOT NULL DEFAULT NOW(),
@@ -12,8 +10,6 @@ CREATE TABLE matiere (
 );
 
 COMMENT ON COLUMN matiere.nom is 'C''est le nom de la matière.';
-COMMENT ON COLUMN matiere.couleurFond is 'C''est la couleur de fond de la matière.';
-COMMENT ON COLUMN matiere.couleurPolice is 'C''est la couleur de la police de la matière.';
 COMMENT ON COLUMN matiere.volumeHoraire is 'C''est le volume horaire d''une matière.';
 COMMENT ON COLUMN matiere.description is 'C''est la description d''une matière.';
 
@@ -67,3 +63,24 @@ CREATE TABLE timeslot (
 
 COMMENT ON COLUMN timeslot.startHour is 'Heure de début';
 COMMENT ON COLUMN timeslot.endHour is 'Heure de fin';
+
+CREATE TABLE slot (
+    id SERIAL PRIMARY KEY NOT NULL,
+    comment VARCHAR(50),
+    creationDate TIMESTAMP NOT NULL DEFAULT NOW(),
+    modificationDate TIMESTAMP NOT NULL DEFAULT NOW(),
+    couleurFond VARCHAR(15) NOT NULL DEFAULT '',
+    couleurPolice VARCHAR(15) NOT NULL DEFAULT '',
+    idTimeslot INT NOT NULL,
+    idMatiere INT NOT NULL,
+    idEnseignant INT NOT NULL,
+    idSalle INT NOT NULL
+    FOREIGN KEY(idTimeslot) REFERENCES timeslot(id),
+    FOREIGN KEY(idMatiere) REFERENCES matiere(id),
+    FOREIGN KEY(idEnseignant) REFERENCES enseignant(id),
+    FOREIGN KEY(idSalle) REFERENCES salle(id)
+);
+
+COMMENT ON COLUMN slot.comment is 'Commentaire du slot : groupes multiples, autres tâches etc.';
+COMMENT ON COLUMN slot.couleurFond is 'C''est la couleur de fond de la matière.';
+COMMENT ON COLUMN slot.couleurPolice is 'C''est la couleur de la police de la matière.';
