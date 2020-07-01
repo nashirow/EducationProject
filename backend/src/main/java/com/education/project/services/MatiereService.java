@@ -19,7 +19,6 @@ import com.education.project.exceptions.ArgumentException;
 import com.education.project.exceptions.DataBaseException;
 import com.education.project.model.Matiere;
 import com.education.project.persistence.MatiereRepository;
-import com.education.project.utils.ColorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -67,8 +66,6 @@ public class MatiereService {
         if(matiereFromBd.isPresent()){
             Matiere matFromBd = matiereFromBd.get();
             matFromBd.setNom(matiere.getNom());
-            matFromBd.setCouleurFond(matiere.getCouleurFond());
-            matFromBd.setCouleurPolice(matiere.getCouleurPolice());
             if(matiere.getVolumeHoraire() != null){
                 matFromBd.setVolumeHoraire(matiere.getVolumeHoraire());
             }
@@ -108,11 +105,10 @@ public class MatiereService {
     /**
      * Cette fonction permet de récupérer un ensemble de matières grâce à un nom et la couleur de police passés en paramètre
      * @param nom Le nom permettant de récupérer un ensemble de matière
-     * @param couleurPolice La couleur de police permettant de récuperer un ensemble de matière
      * @return List (toutes les matières si pas de nom et pas de couleur de police)
      */
-    public List<Matiere> getMatieres(String nom, String couleurPolice) throws DataBaseException {
-        return matiereRepository.findAll(nom, couleurPolice);
+    public List<Matiere> getMatieres(String nom) throws DataBaseException {
+        return matiereRepository.findAll(nom);
     }//getMatieres()
 
     /**
@@ -131,21 +127,6 @@ public class MatiereService {
             }
             if(matiereRepository.isExistByName(matiere.getNom())){
                 erreurs.add("Cette matière existe déjà");
-            }
-            if (matiere.getCouleurFond() == null || matiere.getCouleurFond().isEmpty()) {
-                erreurs.add("La couleur de fond est obligatoire");
-            }
-            if (matiere.getCouleurPolice() == null || matiere.getCouleurPolice().isEmpty()) {
-                erreurs.add("La couleur de la police est obligatoire");
-            }
-            if(matiere.getCouleurFond() != null && matiere.getCouleurPolice() != null && matiere.getCouleurFond().equals(matiere.getCouleurPolice())){
-                erreurs.add("La couleur du fond et de la police ne peuvent pas être la même");
-            }
-            if(matiere.getCouleurFond() != null && !matiere.getCouleurFond().isEmpty() && !ColorUtils.isHex(matiere.getCouleurFond())){
-                erreurs.add("La couleur de fond doit être au format hexadécimal");
-            }
-            if(matiere.getCouleurPolice() != null && !matiere.getCouleurPolice().isEmpty() && !ColorUtils.isHex(matiere.getCouleurPolice())){
-                erreurs.add("La couleur de la police doit être au format hexadécimal");
             }
             if(matiere.getDescription() != null && (matiere.getDescription().length() < 10 || matiere.getDescription().length() > 255)){
                 erreurs.add("La description doit être comprise entre 10 et 255 caractères");

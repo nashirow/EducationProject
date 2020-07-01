@@ -16,7 +16,6 @@
 package com.education.project.services;
 import com.education.project.exceptions.ArgumentException;
 import com.education.project.exceptions.DataBaseException;
-import com.education.project.model.Enseignant;
 import com.education.project.model.Matiere;
 import com.education.project.persistence.MatiereRepository;
 import org.assertj.core.api.Assertions;
@@ -51,27 +50,27 @@ public class MatiereServiceUT {
     @Before
     public void setup() throws DataBaseException {
          this.matiereService = new MatiereService(this.matiereRepository);
-         this.matiereToCreate = new Matiere("matiere","#fff","#ddd","1H30","Prendre les élèves dyslexiques en groupe");
-         this.matiereToUpdate = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+         this.matiereToCreate = new Matiere("matiere","1H30","Prendre les élèves dyslexiques en groupe");
+         this.matiereToUpdate = new Matiere("matiere","1H30","la classe à modifier");
          this.matiereToUpdate.setId(1);
          this.matiereToUpdate.setCreationDate(new Date());
          this.matiereToUpdate.setModificationDate(new Date());
-         this.matiereMathematiques = new Matiere("Mathématiques","#gff","#fff","1H30","C'est la matière mathématiques");
+         this.matiereMathematiques = new Matiere("Mathématiques","1H30","C'est la matière mathématiques");
          this.matiereMathematiques.setId(3); this.matiereMathematiques.setCreationDate(new Date()); this.matiereMathematiques.setModificationDate(new Date());
-         this.matiereFrancais = new Matiere("Français","#ddd","#fff","1H30","C'est la matière français");
+         this.matiereFrancais = new Matiere("Français","1H30","C'est la matière français");
          this.matiereFrancais.setId(2); this.matiereFrancais.setCreationDate(new Date()); this.matiereFrancais.setModificationDate(new Date());
-         this.matiereGeographie = new Matiere("Géographie","#eee","#ggg","1H30","C'est la matière géographie");
+         this.matiereGeographie = new Matiere("Géographie","1H30","C'est la matière géographie");
          this.matiereGeographie.setId(1); this.matiereGeographie.setCreationDate(new Date()); this.matiereGeographie.setModificationDate(new Date());
          List<Matiere> results = new ArrayList<>();
          results.add(this.matiereFrancais); results.add(this.matiereGeographie); results.add(this.matiereMathematiques);
-         Mockito.when(matiereRepository.findAll("","")).thenReturn(results);
-         Mockito.when(matiereRepository.findAll(null,null)).thenReturn(results);
+         Mockito.when(matiereRepository.findAll("")).thenReturn(results);
+         Mockito.when(matiereRepository.findAll(null)).thenReturn(results);
     }//setup()
 
 
     @Test
     public void insert_matiere_should_success_when_all_fields_filled() throws ArgumentException, DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","Prendre les élèves dyslexiques en groupe");
+        Matiere matiereFromBd = new Matiere("matiere","1H30","Prendre les élèves dyslexiques en groupe");
         matiereFromBd.setId(1);
         Mockito.when(matiereRepository.insert(Mockito.any(Matiere.class))).thenReturn(Optional.of(matiereFromBd));
         Optional<Matiere> optMatiereCreated = matiereService.insertMatiere(this.matiereToCreate);
@@ -79,8 +78,6 @@ public class MatiereServiceUT {
         optMatiereCreated.ifPresent((matiereCreated)-> {
             Assertions.assertThat(matiereCreated).isNotNull();
             Assertions.assertThat(matiereCreated.getNom()).isEqualTo("matiere");
-            Assertions.assertThat(matiereCreated.getCouleurFond()).isEqualTo("#fff");
-            Assertions.assertThat(matiereCreated.getCouleurPolice()).isEqualTo("#ddd");
             Assertions.assertThat(matiereCreated.getVolumeHoraire()).isEqualTo("1H30");
             Assertions.assertThat(matiereCreated.getDescription()).isEqualTo("Prendre les élèves dyslexiques en groupe");
             Assertions.assertThat(matiereCreated.getId()).isEqualTo(1);
@@ -104,98 +101,8 @@ public class MatiereServiceUT {
     }//insert_matiere_should_throw_exception_when_name_is_null()
 
     @Test
-    public void insert_matiere_should_throw_exception_when_color_background_is_empty(){
-        this.matiereToCreate.setCouleurFond("");
-        Assertions.assertThatThrownBy(()-> matiereService.insertMatiere(this.matiereToCreate))
-                .hasMessage("La couleur de fond est obligatoire")
-                .isInstanceOf(ArgumentException.class);
-    }//insert_matiere_should_throw_exception_when_color_background_is_empty()
-
-    @Test
-    public void insert_matiere_should_throw_exception_when_color_background_is_null(){
-        this.matiereToCreate.setCouleurFond(null);
-        Assertions.assertThatThrownBy(()-> matiereService.insertMatiere(this.matiereToCreate))
-                .hasMessage("La couleur de fond est obligatoire")
-                .isInstanceOf(ArgumentException.class);
-    }//insert_matiere_should_throw_exception_when_color_background_is_null()
-
-    @Test
-    public void insert_matiere_should_throw_exception_when_color_font_is_empty(){
-        this.matiereToCreate.setCouleurFond("");
-        Assertions.assertThatThrownBy(()-> matiereService.insertMatiere(this.matiereToCreate))
-                .hasMessage("La couleur de fond est obligatoire")
-                .isInstanceOf(ArgumentException.class);
-    }//insert_matiere_should_throw_exception_when_color_font_is_empty()
-
-    @Test
-    public void insert_matiere_should_throw_exception_when_color_font_is_null(){
-        this.matiereToCreate.setCouleurFond(null);
-        Assertions.assertThatThrownBy(()-> matiereService.insertMatiere(this.matiereToCreate))
-                .hasMessage("La couleur de fond est obligatoire")
-                .isInstanceOf(ArgumentException.class);
-    }//insert_matiere_should_throw_exception_when_color_font_is_null()
-
-    @Test
-    public void insert_matiere_should_throw_exception_when_color_font_is_null_and_name_is_null(){
-        this.matiereToCreate.setCouleurFond(null);
-        this.matiereToCreate.setNom(null);
-        Assertions.assertThatThrownBy(()-> matiereService.insertMatiere(this.matiereToCreate))
-                .hasMessage("Le nom de la matière est obligatoire,La couleur de fond est obligatoire")
-                .isInstanceOf(ArgumentException.class);
-    }//insert_matiere_should_throw_exception_when_color_font_is_null_and_name_is_null()
-
-    @Test
-    public void insert_matiere_should_throw_exception_when_color_font_and_color_police_are_the_same(){
-        this.matiereToCreate.setCouleurFond("#fff");
-        this.matiereToCreate.setCouleurPolice("#fff");
-        Assertions.assertThatThrownBy(()-> matiereService.insertMatiere(this.matiereToCreate))
-                .hasMessage("La couleur du fond et de la police ne peuvent pas être la même")
-                .isInstanceOf(ArgumentException.class);
-    }//insert_matiere_should_throw_exception_when_color_font_and_color_police_are_the_same()
-
-    @Test
-    public void insert_matiere_should_throw_exception_when_background_color_type_is_not_hexadecimal(){
-        this.matiereToCreate.setCouleurFond("ff#253");
-        Assertions.assertThatThrownBy(() -> matiereService.insertMatiere(this.matiereToCreate))
-                .hasMessage("La couleur de fond doit être au format hexadécimal")
-                .isInstanceOf(ArgumentException.class);
-    }//insert_matiere_should_throw_exception_when_background_color_type_is_not_hexadecimal()
-
-    @Test
-    public void insert_matiere_should_throw_exception_when_police_color_type_is_not_hexadecimal(){
-        this.matiereToCreate.setCouleurPolice("dd#321");
-        Assertions.assertThatThrownBy(() -> matiereService.insertMatiere(this.matiereToCreate))
-                .hasMessage("La couleur de la police doit être au format hexadécimal")
-                .isInstanceOf(ArgumentException.class);
-    }//insert_matiere_should_throw_exception_when_police_color_type_is_not_hexadecimal()
-
-    @Test
-    public void insert_matiere_should_throw_exception_when_police_color_type_is_RGB_255_87_51(){
-        this.matiereToCreate.setCouleurPolice("255,87,51");
-        Assertions.assertThatThrownBy(() -> matiereService.insertMatiere(this.matiereToCreate))
-                .hasMessage("La couleur de la police doit être au format hexadécimal")
-                .isInstanceOf(ArgumentException.class);
-    }//insert_matiere_should_throw_exception_when_police_color_type_is_RGB_255_87_51()
-
-    @Test
-    public void insert_matiere_should_throw_exception_when_police_color_type_is_HSL_10_80_p_60_p(){
-        this.matiereToCreate.setCouleurPolice("11,80%,60%");
-        Assertions.assertThatThrownBy(() -> matiereService.insertMatiere(this.matiereToCreate))
-                .hasMessage("La couleur de la police doit être au format hexadécimal")
-                .isInstanceOf(ArgumentException.class);
-    }//insert_matiere_should_throw_exception_when_police_color_type_is_HSL_10_80_p_60_p()
-
-    @Test
-    public void insert_matiere_should_throw_exception_when_police_color_type_is_CMYK_0_66_100_0(){
-        this.matiereToCreate.setCouleurPolice("0,66,100,0");
-        Assertions.assertThatThrownBy(() -> matiereService.insertMatiere(this.matiereToCreate))
-                .hasMessage("La couleur de la police doit être au format hexadécimal")
-                .isInstanceOf(ArgumentException.class);
-    }//insert_matiere_should_throw_exception_when_police_color_type_is_CMYK_0_66_100_0()
-
-    @Test
     public void insert_matiere_should_success_when_description_length_is_between_10_and_255() throws ArgumentException, DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","Mathématiques");
+        Matiere matiereFromBd = new Matiere("matiere","1H30","Mathématiques");
         matiereFromBd.setId(1);
         Mockito.when(matiereRepository.insert(Mockito.any(Matiere.class))).thenReturn(Optional.of(matiereFromBd));
         Optional<Matiere> optMatiereCreated = matiereService.insertMatiere(this.matiereToCreate);
@@ -203,8 +110,6 @@ public class MatiereServiceUT {
         optMatiereCreated.ifPresent(matiereCreated -> {
             Assertions.assertThat(matiereCreated).isNotNull();
             Assertions.assertThat(matiereCreated.getNom()).isEqualTo("matiere");
-            Assertions.assertThat(matiereCreated.getCouleurFond()).isEqualTo("#fff");
-            Assertions.assertThat(matiereCreated.getCouleurPolice()).isEqualTo("#ddd");
             Assertions.assertThat(matiereCreated.getVolumeHoraire()).isEqualTo("1H30");
             Assertions.assertThat(matiereCreated.getDescription()).isEqualTo("Mathématiques");
             Assertions.assertThat(matiereCreated.getId()).isEqualTo(1);
@@ -233,7 +138,7 @@ public class MatiereServiceUT {
 
     @Test
     public void insert_matiere_should_success_when_name_matiere_is_between_3_and_40() throws ArgumentException, DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","Mathématiques");
+        Matiere matiereFromBd = new Matiere("matiere","1H30","Mathématiques");
         matiereFromBd.setId(1);
         Mockito.when(matiereRepository.insert(Mockito.any(Matiere.class))).thenReturn(Optional.of(matiereFromBd));
         Optional<Matiere> optMatiereCreated = matiereService.insertMatiere(this.matiereToCreate);
@@ -241,8 +146,6 @@ public class MatiereServiceUT {
         optMatiereCreated.ifPresent(matiereCreated -> {
             Assertions.assertThat(matiereCreated).isNotNull();
             Assertions.assertThat(matiereCreated.getNom()).isEqualTo("matiere");
-            Assertions.assertThat(matiereCreated.getCouleurFond()).isEqualTo("#fff");
-            Assertions.assertThat(matiereCreated.getCouleurPolice()).isEqualTo("#ddd");
             Assertions.assertThat(matiereCreated.getVolumeHoraire()).isEqualTo("1H30");
             Assertions.assertThat(matiereCreated.getDescription()).isEqualTo("Mathématiques");
             Assertions.assertThat(matiereCreated.getId()).isEqualTo(1);
@@ -267,7 +170,7 @@ public class MatiereServiceUT {
 
     @Test
     public void update_matiere_should_success_when_matiere_is_modified() throws DataBaseException, ArgumentException {
-        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        Matiere matiereFromBd = new Matiere("matiere","1H30","la classe à modifier");
         matiereFromBd.setId(1);
         matiereFromBd.setCreationDate(new Date(1592149308));
         matiereFromBd.setModificationDate(new Date());
@@ -279,8 +182,6 @@ public class MatiereServiceUT {
             Assertions.assertThat(matiereModifier).isNotNull();
             Assertions.assertThat(matiereModifier.getId()).isEqualTo(1);
             Assertions.assertThat(matiereModifier.getNom()).isEqualTo("matiere");
-            Assertions.assertThat(matiereModifier.getCouleurFond()).isEqualTo("#fff");
-            Assertions.assertThat(matiereModifier.getCouleurPolice()).isEqualTo("#ddd");
             Assertions.assertThat(matiereModifier.getVolumeHoraire()).isEqualTo("1H30");
             Assertions.assertThat(matiereModifier.getDescription()).isEqualTo("la classe à modifier");
             Assertions.assertThat(matiereModifier.getCreationDate().getTime()).isNotEqualTo(matiereModifier.getModificationDate().getTime());
@@ -297,7 +198,7 @@ public class MatiereServiceUT {
 
     @Test
     public void update_matiere_should_throw_exception_when_name_matiere_is_null() throws DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        Matiere matiereFromBd = new Matiere("matiere","1H30","la classe à modifier");
         matiereFromBd.setId(1);
         matiereFromBd.setCreationDate(new Date(1592149308));
         matiereFromBd.setModificationDate(new Date());
@@ -310,7 +211,7 @@ public class MatiereServiceUT {
 
     @Test
     public void update_matiere_should_throw_exception_when_matiere_is_empty() throws DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        Matiere matiereFromBd = new Matiere("matiere","1H30","la classe à modifier");
         matiereFromBd.setId(1);
         matiereFromBd.setCreationDate(new Date(1592149308));
         matiereFromBd.setModificationDate(new Date());
@@ -322,142 +223,8 @@ public class MatiereServiceUT {
     }//update_matiere_should_throw_exception_when_matiere_is_empty()
 
     @Test
-    public void update_matiere_should_throw_exception_when_background_color_is_null() throws DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
-        matiereFromBd.setId(1);
-        matiereFromBd.setCreationDate(new Date(1592149308));
-        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
-        this.matiereToUpdate.setCouleurFond(null);
-        Assertions.assertThatThrownBy(() -> matiereService.updateMatiere(this.matiereToUpdate))
-                .hasMessage("La couleur de fond est obligatoire")
-                .isInstanceOf(ArgumentException.class);
-    }//update_matiere_should_throw_exception_when_background_color_is_null()
-
-    @Test
-    public void update_matiere_should_throw_exception_when_background_color_is_empty() throws DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
-        matiereFromBd.setId(1);
-        matiereFromBd.setCreationDate(new Date(1592149308));
-        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
-        this.matiereToUpdate.setCouleurFond("");
-        Assertions.assertThatThrownBy(() -> matiereService.updateMatiere(this.matiereToUpdate))
-                .hasMessage("La couleur de fond est obligatoire")
-                .isInstanceOf(ArgumentException.class);
-    }//update_matiere_should_throw_exception_when_background_color_is_empty()
-
-    @Test
-    public void update_matiere_should_throw_exception_when_color_font_is_empty() throws DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
-        matiereFromBd.setId(1);
-        matiereFromBd.setCreationDate(new Date(1592149308));
-        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
-        this.matiereToUpdate.setCouleurPolice("");
-        Assertions.assertThatThrownBy(() -> matiereService.updateMatiere(this.matiereToUpdate))
-                .hasMessage("La couleur de la police est obligatoire")
-                .isInstanceOf(ArgumentException.class);
-    }//update_matiere_should_throw_exception_when_color_font_is_empty()
-
-    @Test
-    public void update_matiere_should_throw_exception_when_color_font_is_null() throws DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
-        matiereFromBd.setId(1);
-        matiereFromBd.setCreationDate(new Date(1592149308));
-        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
-        this.matiereToUpdate.setCouleurPolice(null);
-        Assertions.assertThatThrownBy(() -> matiereService.updateMatiere(this.matiereToUpdate))
-                .hasMessage("La couleur de la police est obligatoire")
-                .isInstanceOf(ArgumentException.class);
-    }//update_matiere_should_throw_exception_when_color_font_is_null()
-
-    @Test
-    public void update_matiere_should_throw_exception_when_color_font_is_null_and_name_is_null() throws DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
-        matiereFromBd.setId(1);
-        matiereFromBd.setCreationDate(new Date(1592149308));
-        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
-        this.matiereToUpdate.setCouleurPolice(null);
-        this.matiereToUpdate.setCouleurFond(null);
-        Assertions.assertThatThrownBy(() -> matiereService.updateMatiere(this.matiereToUpdate))
-                .hasMessage("La couleur de fond est obligatoire,La couleur de la police est obligatoire")
-                .isInstanceOf(ArgumentException.class);
-    }//update_matiere_should_throw_exception_when_color_font_is_null_and_name_is_null()
-
-    @Test
-    public void update_matiere_should_throw_exception_when_color_font_and_color_police_are_the_same() throws DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
-        matiereFromBd.setId(1);
-        matiereFromBd.setCreationDate(new Date(1592149308));
-        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
-        this.matiereToUpdate.setCouleurPolice("#ddd");
-        this.matiereToUpdate.setCouleurFond("#ddd");
-        Assertions.assertThatThrownBy(() -> matiereService.updateMatiere(this.matiereToUpdate))
-                .hasMessage("La couleur du fond et de la police ne peuvent pas être la même")
-                .isInstanceOf(ArgumentException.class);
-    }//update_matiere_should_throw_exception_when_color_font_and_color_police_are_the_same()
-
-    @Test
-    public void update_matiere_should_throw_exception_when_background_color_type_is_not_hexadecimal() throws DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
-        matiereFromBd.setId(1);
-        matiereFromBd.setCreationDate(new Date(1592149308));
-        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
-        this.matiereToUpdate.setCouleurFond("123");
-        Assertions.assertThatThrownBy(() -> matiereService.updateMatiere(this.matiereToUpdate))
-                .hasMessage("La couleur de fond doit être au format hexadécimal")
-                .isInstanceOf(ArgumentException.class);
-    }//update_matiere_should_throw_exception_when_background_color_type_is_not_hexadecimal()
-
-    @Test
-    public void update_matiere_should_throw_exception_when_police_color_type_is_not_hexadecimal() throws DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
-        matiereFromBd.setId(1);
-        matiereFromBd.setCreationDate(new Date(1592149308));
-        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
-        this.matiereToUpdate.setCouleurPolice("123");
-        Assertions.assertThatThrownBy(() -> matiereService.updateMatiere(this.matiereToUpdate))
-                .hasMessage("La couleur de la police doit être au format hexadécimal")
-                .isInstanceOf(ArgumentException.class);
-    }//update_matiere_should_throw_exception_when_police_color_type_is_not_hexadecimal()
-
-    @Test
-    public void update_matiere_should_throw_exception_when_police_color_type_is_RGB_255_87_51() throws DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
-        matiereFromBd.setId(1);
-        matiereFromBd.setCreationDate(new Date(1592149308));
-        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
-        this.matiereToUpdate.setCouleurPolice("255,87,51");
-        Assertions.assertThatThrownBy(() -> matiereService.updateMatiere(this.matiereToUpdate))
-                .hasMessage("La couleur de la police doit être au format hexadécimal")
-                .isInstanceOf(ArgumentException.class);
-    }//update_matiere_should_throw_exception_when_police_color_type_is_RGB_255_87_51()
-
-    @Test
-    public void update_matiere_should_throw_exception_when_police_color_type_is_HSL_10_80_p_60_p() throws DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
-        matiereFromBd.setId(1);
-        matiereFromBd.setCreationDate(new Date(1592149308));
-        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
-        this.matiereToUpdate.setCouleurPolice("10,80%,60%");
-        Assertions.assertThatThrownBy(() -> matiereService.updateMatiere(this.matiereToUpdate))
-                .hasMessage("La couleur de la police doit être au format hexadécimal")
-                .isInstanceOf(ArgumentException.class);
-    }//update_matiere_should_throw_exception_when_police_color_type_is_HSL_10_80_p_60_p()
-
-    @Test
-    public void update_matiere_should_throw_exception_when_police_color_type_is_CMYK_0_66_100_0() throws DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
-        matiereFromBd.setId(1);
-        matiereFromBd.setCreationDate(new Date(1592149308));
-        Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
-        this.matiereToUpdate.setCouleurPolice("0,66,100,0");
-        Assertions.assertThatThrownBy(() -> matiereService.updateMatiere(this.matiereToUpdate))
-                .hasMessage("La couleur de la police doit être au format hexadécimal")
-                .isInstanceOf(ArgumentException.class);
-    }//update_matiere_should_throw_exception_when_police_color_type_is_CMYK_0_66_100_0()
-
-    @Test
     public void update_matiere_should_success_when_description_length_is_between_10_and_255() throws ArgumentException, DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        Matiere matiereFromBd = new Matiere("matiere","1H30","la classe à modifier");
         matiereFromBd.setId(1);
         matiereFromBd.setCreationDate(new Date(1592149308));
         Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
@@ -468,8 +235,6 @@ public class MatiereServiceUT {
         optMatiereUpdated.ifPresent(matiereUpdated -> {
             Assertions.assertThat(matiereUpdated).isNotNull();
             Assertions.assertThat(matiereUpdated.getNom()).isEqualTo("matiere");
-            Assertions.assertThat(matiereUpdated.getCouleurFond()).isEqualTo("#fff");
-            Assertions.assertThat(matiereUpdated.getCouleurPolice()).isEqualTo("#ddd");
             Assertions.assertThat(matiereUpdated.getVolumeHoraire()).isEqualTo("1H30");
             Assertions.assertThat(matiereUpdated.getDescription()).isEqualTo("la classe à modifier");
             Assertions.assertThat(matiereUpdated.getId()).isEqualTo(1);
@@ -478,7 +243,7 @@ public class MatiereServiceUT {
 
     @Test
     public void update_matiere_should_throw_exception_when_description_length_is_below_10() throws DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        Matiere matiereFromBd = new Matiere("matiere","1H30","la classe à modifier");
         matiereFromBd.setId(1);
         matiereFromBd.setCreationDate(new Date(1592149308));
         Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
@@ -494,7 +259,7 @@ public class MatiereServiceUT {
         for (int i = 0; i < 300 ; ++i){
             sb.append("a");
         }
-        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        Matiere matiereFromBd = new Matiere("matiere","1H30","la classe à modifier");
         matiereFromBd.setId(1);
         matiereFromBd.setCreationDate(new Date(1592149308));
         Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
@@ -506,7 +271,7 @@ public class MatiereServiceUT {
 
     @Test
     public void update_matiere_should_success_when_name_matiere_is_between_3_and_40() throws ArgumentException, DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        Matiere matiereFromBd = new Matiere("matiere","1H30","la classe à modifier");
         matiereFromBd.setId(1);
         matiereFromBd.setCreationDate(new Date(1592149308));
         Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
@@ -516,8 +281,6 @@ public class MatiereServiceUT {
         optMatiereModified.ifPresent(matiereUpdated -> {
             Assertions.assertThat(matiereUpdated).isNotNull();
             Assertions.assertThat(matiereUpdated.getNom()).isEqualTo("matiere");
-            Assertions.assertThat(matiereUpdated.getCouleurFond()).isEqualTo("#fff");
-            Assertions.assertThat(matiereUpdated.getCouleurPolice()).isEqualTo("#ddd");
             Assertions.assertThat(matiereUpdated.getVolumeHoraire()).isEqualTo("1H30");
             Assertions.assertThat(matiereUpdated.getDescription()).isEqualTo("la classe à modifier");
             Assertions.assertThat(matiereUpdated.getId()).isEqualTo(1);
@@ -526,7 +289,7 @@ public class MatiereServiceUT {
 
     @Test
     public void update_matiere_should_throw_exception_when_name_matiere_is_below_3() throws DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        Matiere matiereFromBd = new Matiere("matiere","1H30","la classe à modifier");
         matiereFromBd.setId(1);
         matiereFromBd.setCreationDate(new Date(1592149308));
         Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
@@ -538,7 +301,7 @@ public class MatiereServiceUT {
 
     @Test
     public void update_matiere_should_throw_exception_when_name_matiere_is_above_40() throws DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        Matiere matiereFromBd = new Matiere("matiere","1H30","la classe à modifier");
         matiereFromBd.setId(1);
         matiereFromBd.setCreationDate(new Date(1592149308));
         Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
@@ -580,7 +343,7 @@ public class MatiereServiceUT {
 
     @Test
     public void get_matiere_should_success_when_matiere_id_is_1() throws DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","#fff","#ddd","1H30","la classe à modifier");
+        Matiere matiereFromBd = new Matiere("matiere","1H30","la classe à modifier");
         matiereFromBd.setId(1);
         matiereFromBd.setCreationDate(new Date());
         matiereFromBd.setModificationDate(new Date());
@@ -590,8 +353,6 @@ public class MatiereServiceUT {
         optResult.ifPresent((result) -> {
             Assertions.assertThat(result.getId()).isEqualTo(1);
             Assertions.assertThat(result.getNom()).isEqualTo(matiereFromBd.getNom());
-            Assertions.assertThat(result.getCouleurFond()).isEqualTo(matiereFromBd.getCouleurFond());
-            Assertions.assertThat(result.getCouleurPolice()).isEqualTo(matiereFromBd.getCouleurPolice());
             Assertions.assertThat(result.getVolumeHoraire()).isEqualTo(matiereFromBd.getVolumeHoraire());
             Assertions.assertThat(result.getCreationDate()).isEqualTo(matiereFromBd.getCreationDate());
             Assertions.assertThat(result.getModificationDate()).isEqualTo(matiereFromBd.getModificationDate());
@@ -606,127 +367,85 @@ public class MatiereServiceUT {
     }//get_matiere_should_return_empty_when_matiere_id_is_20()
 
     @Test
-    public void get_matieres_should_return_mathematiques_matiere_when_when_name_to_search_is_mathematiques_and_color_font_to_search_is_fff() throws DataBaseException{
-        Mockito.when(matiereRepository.findAll("Mathématiques", "#fff"))
+    public void get_matieres_should_return_mathematiques_matiere_when_when_name_to_search_is_mathematiques() throws DataBaseException{
+        Mockito.when(matiereRepository.findAll("Mathématiques"))
                 .thenReturn(Collections.singletonList(this.matiereMathematiques));
-        List<Matiere> matieresFromBd = matiereService.getMatieres("Mathématiques","#fff");
+        List<Matiere> matieresFromBd = matiereService.getMatieres("Mathématiques");
         Assertions.assertThat(matieresFromBd).isNotEmpty();
         Assertions.assertThat(matieresFromBd).hasSize(1);
         Assertions.assertThat(matieresFromBd.get(0).getId()).isEqualTo(3);
         Assertions.assertThat(matieresFromBd.get(0).getNom()).isEqualTo("Mathématiques");
-        Assertions.assertThat(matieresFromBd.get(0).getCouleurPolice()).isEqualTo("#fff");
-        Assertions.assertThat(matieresFromBd.get(0).getCouleurFond()).isEqualTo("#gff");
         Assertions.assertThat(matieresFromBd.get(0).getVolumeHoraire()).isEqualTo("1H30");
         Assertions.assertThat(matieresFromBd.get(0).getDescription()).isEqualTo("C'est la matière mathématiques");
         Assertions.assertThat(matieresFromBd.get(0).getCreationDate()).isNotNull();
         Assertions.assertThat(matieresFromBd.get(0).getModificationDate()).isNotNull();
-    }//get_matieres_should_return_mathematiques_matiere_when_when_name_to_search_is_mathematiques_and_color_font_to_search_is_fff()
+    }//get_matieres_should_return_mathematiques_matiere_when_when_name_to_search_is_mathematiques()
 
     @Test
-    public void get_list_matiere_should_return_all_matieres_sorted_by_asc_name_when_name_and_color_font_are_empty() throws DataBaseException{
-        List<Matiere> matieresFromBd = matiereService.getMatieres("","");
+    public void get_list_matiere_should_return_all_matieres_sorted_by_asc_name_when_name_is_empty() throws DataBaseException{
+        List<Matiere> matieresFromBd = matiereService.getMatieres("");
         Assertions.assertThat(matieresFromBd).isNotEmpty();
         Assertions.assertThat(matieresFromBd).hasSize(3);
         Assertions.assertThat(matieresFromBd.get(0).getId()).isEqualTo(2);
         Assertions.assertThat(matieresFromBd.get(0).getNom()).isEqualTo("Français");
-        Assertions.assertThat(matieresFromBd.get(0).getCouleurPolice()).isEqualTo("#fff");
-        Assertions.assertThat(matieresFromBd.get(0).getCouleurFond()).isEqualTo("#ddd");
         Assertions.assertThat(matieresFromBd.get(0).getVolumeHoraire()).isEqualTo("1H30");
         Assertions.assertThat(matieresFromBd.get(0).getDescription()).isEqualTo("C'est la matière français");
         Assertions.assertThat(matieresFromBd.get(0).getCreationDate()).isNotNull();
         Assertions.assertThat(matieresFromBd.get(0).getModificationDate()).isNotNull();
         Assertions.assertThat(matieresFromBd.get(1).getId()).isEqualTo(1);
         Assertions.assertThat(matieresFromBd.get(1).getNom()).isEqualTo("Géographie");
-        Assertions.assertThat(matieresFromBd.get(1).getCouleurPolice()).isEqualTo("#ggg");
-        Assertions.assertThat(matieresFromBd.get(1).getCouleurFond()).isEqualTo("#eee");
         Assertions.assertThat(matieresFromBd.get(1).getVolumeHoraire()).isEqualTo("1H30");
         Assertions.assertThat(matieresFromBd.get(1).getDescription()).isEqualTo("C'est la matière géographie");
         Assertions.assertThat(matieresFromBd.get(1).getCreationDate()).isNotNull();
         Assertions.assertThat(matieresFromBd.get(1).getModificationDate()).isNotNull();
         Assertions.assertThat(matieresFromBd.get(2).getId()).isEqualTo(3);
         Assertions.assertThat(matieresFromBd.get(2).getNom()).isEqualTo("Mathématiques");
-        Assertions.assertThat(matieresFromBd.get(2).getCouleurPolice()).isEqualTo("#fff");
-        Assertions.assertThat(matieresFromBd.get(2).getCouleurFond()).isEqualTo("#gff");
         Assertions.assertThat(matieresFromBd.get(2).getVolumeHoraire()).isEqualTo("1H30");
         Assertions.assertThat(matieresFromBd.get(2).getDescription()).isEqualTo("C'est la matière mathématiques");
         Assertions.assertThat(matieresFromBd.get(2).getCreationDate()).isNotNull();
         Assertions.assertThat(matieresFromBd.get(2).getModificationDate()).isNotNull();
-    }//get_list_matiere_should_return_all_matieres_sorted_by_asc_name_when_name_and_color_font_are_empty()
+    }//get_list_matiere_should_return_all_matieres_sorted_by_asc_name_when_name_is_empty()
 
     @Test
-    public void get_list_matiere_should_return_all_matieres_sorted_by_asc_name_when_name_and_color_font_are_null() throws DataBaseException{
-        List<Matiere> matieresFromBd = matiereService.getMatieres(null,null);
+    public void get_list_matiere_should_return_all_matieres_sorted_by_asc_name_when_name_is_null() throws DataBaseException{
+        List<Matiere> matieresFromBd = matiereService.getMatieres(null);
         Assertions.assertThat(matieresFromBd).isNotEmpty();
         Assertions.assertThat(matieresFromBd).hasSize(3);
         Assertions.assertThat(matieresFromBd.get(0).getId()).isEqualTo(2);
         Assertions.assertThat(matieresFromBd.get(0).getNom()).isEqualTo("Français");
-        Assertions.assertThat(matieresFromBd.get(0).getCouleurPolice()).isEqualTo("#fff");
-        Assertions.assertThat(matieresFromBd.get(0).getCouleurFond()).isEqualTo("#ddd");
         Assertions.assertThat(matieresFromBd.get(0).getVolumeHoraire()).isEqualTo("1H30");
         Assertions.assertThat(matieresFromBd.get(0).getDescription()).isEqualTo("C'est la matière français");
         Assertions.assertThat(matieresFromBd.get(0).getCreationDate()).isNotNull();
         Assertions.assertThat(matieresFromBd.get(0).getModificationDate()).isNotNull();
         Assertions.assertThat(matieresFromBd.get(1).getId()).isEqualTo(1);
         Assertions.assertThat(matieresFromBd.get(1).getNom()).isEqualTo("Géographie");
-        Assertions.assertThat(matieresFromBd.get(1).getCouleurPolice()).isEqualTo("#ggg");
-        Assertions.assertThat(matieresFromBd.get(1).getCouleurFond()).isEqualTo("#eee");
         Assertions.assertThat(matieresFromBd.get(1).getVolumeHoraire()).isEqualTo("1H30");
         Assertions.assertThat(matieresFromBd.get(1).getDescription()).isEqualTo("C'est la matière géographie");
         Assertions.assertThat(matieresFromBd.get(1).getCreationDate()).isNotNull();
         Assertions.assertThat(matieresFromBd.get(1).getModificationDate()).isNotNull();
         Assertions.assertThat(matieresFromBd.get(2).getId()).isEqualTo(3);
         Assertions.assertThat(matieresFromBd.get(2).getNom()).isEqualTo("Mathématiques");
-        Assertions.assertThat(matieresFromBd.get(2).getCouleurPolice()).isEqualTo("#fff");
-        Assertions.assertThat(matieresFromBd.get(2).getCouleurFond()).isEqualTo("#gff");
         Assertions.assertThat(matieresFromBd.get(2).getVolumeHoraire()).isEqualTo("1H30");
         Assertions.assertThat(matieresFromBd.get(2).getDescription()).isEqualTo("C'est la matière mathématiques");
         Assertions.assertThat(matieresFromBd.get(2).getCreationDate()).isNotNull();
         Assertions.assertThat(matieresFromBd.get(2).getModificationDate()).isNotNull();
-    }//get_list_matiere_should_return_all_matieres_sorted_by_asc_name_when_name_and_color_font_are_null()
+    }//get_list_matiere_should_return_all_matieres_sorted_by_asc_name_when_name_is_null()
 
     @Test
-    public void get_matieres_should_return_empty_list_when_name_and_color_font_to_search_do_not_exist() throws DataBaseException{
-        List<Matiere> matieresFromBd = matiereService.getMatieres("Tartampion","#aff");
+    public void get_matieres_should_return_empty_list_when_name_does_not_exist() throws DataBaseException{
+        List<Matiere> matieresFromBd = matiereService.getMatieres("Tartampion");
         Assertions.assertThat(matieresFromBd).isEmpty();
-    }//get_matieres_should_return_empty_list_when_name_and_color_font_to_search_do_not_exist()
+    }//get_matieres_should_return_empty_list_when_name_does_not_exist()
 
     @Test
-    public void get_matieres_should_return_empty_list_when_name_is_mathematiques_and_color_font_is_aff() throws DataBaseException{
-        List<Matiere> matieresFromBd = matiereService.getMatieres("Mathématiques","#aff");
+    public void get_matieres_should_return_empty_list_when_name_is_mathematiques() throws DataBaseException{
+        List<Matiere> matieresFromBd = matiereService.getMatieres("Mathématiques");
         Assertions.assertThat(matieresFromBd).isEmpty();
-    }//get_matieres_should_return_empty_list_when_name_is_mathematiques_and_color_font_is_aff()
+    }//get_matieres_should_return_empty_list_when_name_is_mathematiques()
 
     @Test
-    public void get_matieres_should_return_empty_list_when_name_is_sport_and_color_font_is_fff() throws DataBaseException{
-        List<Matiere> matieresFromBd = matiereService.getMatieres("Sport","#fff");
+    public void get_matieres_should_return_empty_list_when_name_is_sport() throws DataBaseException{
+        List<Matiere> matieresFromBd = matiereService.getMatieres("Sport");
         Assertions.assertThat(matieresFromBd).isEmpty();
-    }//get_matieres_should_return_empty_list_when_name_is_sport_and_color_font_is_fff()
-
-    @Test
-    public void get_matieres_should_return_francais_and_mathematiques_when_name_is_null_and_color_font_is_fff() throws DataBaseException{
-        List<Matiere> results = new ArrayList<>();
-        results.add(this.matiereFrancais);
-        results.add(this.matiereMathematiques);
-        Mockito.when(matiereRepository.findAll(null, "#fff"))
-                .thenReturn(results);
-        List<Matiere> matieresFromBd = matiereService.getMatieres(null,"#fff");
-        Assertions.assertThat(matieresFromBd).isNotEmpty();
-        Assertions.assertThat(matieresFromBd).hasSize(2);
-        Assertions.assertThat(matieresFromBd.get(0).getId()).isEqualTo(2);
-        Assertions.assertThat(matieresFromBd.get(0).getNom()).isEqualTo("Français");
-        Assertions.assertThat(matieresFromBd.get(0).getCouleurPolice()).isEqualTo("#fff");
-        Assertions.assertThat(matieresFromBd.get(0).getCouleurFond()).isEqualTo("#ddd");
-        Assertions.assertThat(matieresFromBd.get(0).getVolumeHoraire()).isEqualTo("1H30");
-        Assertions.assertThat(matieresFromBd.get(0).getDescription()).isEqualTo("C'est la matière français");
-        Assertions.assertThat(matieresFromBd.get(0).getCreationDate()).isNotNull();
-        Assertions.assertThat(matieresFromBd.get(0).getModificationDate()).isNotNull();
-        Assertions.assertThat(matieresFromBd.get(1).getId()).isEqualTo(3);
-        Assertions.assertThat(matieresFromBd.get(1).getNom()).isEqualTo("Mathématiques");
-        Assertions.assertThat(matieresFromBd.get(1).getCouleurPolice()).isEqualTo("#fff");
-        Assertions.assertThat(matieresFromBd.get(1).getCouleurFond()).isEqualTo("#gff");
-        Assertions.assertThat(matieresFromBd.get(1).getVolumeHoraire()).isEqualTo("1H30");
-        Assertions.assertThat(matieresFromBd.get(1).getDescription()).isEqualTo("C'est la matière mathématiques");
-        Assertions.assertThat(matieresFromBd.get(1).getCreationDate()).isNotNull();
-        Assertions.assertThat(matieresFromBd.get(1).getModificationDate()).isNotNull();
-    }//get_matieres_should_return_francais_and_mathematiques_when_name_is_null_and_color_font_is_fff()
+    }//get_matieres_should_return_empty_list_when_name_is_sport()
 }//MatiereServiceUT

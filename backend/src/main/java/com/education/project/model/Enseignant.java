@@ -17,6 +17,9 @@ package com.education.project.model;
 
 import java.util.Date;
 
+/**
+ * Cette classe représente un enseignant
+ */
 public class Enseignant {
 
     /**

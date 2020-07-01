@@ -33,16 +33,6 @@ public class Matiere {
     private String nom;
 
     /**
-     * C'est la couleur de fond de la matière.
-     */
-    private String couleurFond;
-
-    /**
-     * C'est la couleur de la police de la matière.
-     */
-    private String couleurPolice;
-
-    /**
      * C'est le volume horaire de la matière.
      */
     private String volumeHoraire;
@@ -69,15 +59,11 @@ public class Matiere {
     /**
      * Instancie une matière.
      * @param nom C'est le nom de la matière.
-     * @param couleurFond C'est la couleur de fond de la matière.
-     * @param couleurPolice C'est la couleur de la police de la matière.
      * @param volumeHoraire C'est le volume horaire de la matière.
      * @param description C'est la description liée à la matière.
      */
-    public Matiere(String nom, String couleurFond, String couleurPolice, String volumeHoraire, String description) {
+    public Matiere(String nom, String volumeHoraire, String description) {
         this.nom = nom;
-        this.couleurFond = couleurFond;
-        this.couleurPolice = couleurPolice;
         this.volumeHoraire = volumeHoraire;
         this.description = description;
     }//Matiere()
@@ -88,22 +74,6 @@ public class Matiere {
 
     public void setNom(String nom) {
         this.nom = nom;
-    }
-
-    public String getCouleurFond() {
-        return couleurFond;
-    }
-
-    public void setCouleurFond(String couleurFond) {
-        this.couleurFond = couleurFond;
-    }
-
-    public String getCouleurPolice() {
-        return couleurPolice;
-    }
-
-    public void setCouleurPolice(String couleurPolice) {
-        this.couleurPolice = couleurPolice;
     }
 
     public String getVolumeHoraire() {

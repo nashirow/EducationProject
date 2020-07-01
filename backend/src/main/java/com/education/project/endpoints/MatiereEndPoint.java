@@ -119,13 +119,12 @@ public class MatiereEndPoint {
     /**
      * Ce endpoint permet de récupérer toutes les matières à l'aide de filtres.
      * @param name Nom de la matière à rechercher (optionnel)
-     * @param colorPolice Nom de la couleur de police (optionnel)
      * @return Réponse HTTP.
      */
     @GetMapping("/matieres")
-    public ResponseEntity<?> getMatieres(@RequestParam(value = "name", required = false) String name, @RequestParam(value = "colorPolice", required = false) String colorPolice){
+    public ResponseEntity<?> getMatieres(@RequestParam(value = "name", required = false) String name){
         try {
-            return new ResponseEntity<>(new ResponseEndPoint(this.matiereService.getMatieres(name, colorPolice),null), HttpStatus.OK);
+            return new ResponseEntity<>(new ResponseEndPoint(this.matiereService.getMatieres(name),null), HttpStatus.OK);
         } catch (DataBaseException e) {
             return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
         }

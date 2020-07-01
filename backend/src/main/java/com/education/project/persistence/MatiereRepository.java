@@ -53,16 +53,14 @@ public class MatiereRepository {
      * @return Matiere qui a été insérée dans la base de données.
      */
     public Optional<Matiere> insert(Matiere matiere) throws DataBaseException {
-        String request = "INSERT INTO matiere (nom,couleurFond,couleurPolice,volumeHoraire,description,creationDate,modificationDate) VALUES (?,?,?,?,?,?,?)";
+        String request = "INSERT INTO matiere (nom,volumeHoraire,description,creationDate,modificationDate) VALUES (?,?,?,?,?)";
         try {
             PreparedStatement preparedStatement = this.connexion.prepareStatement(request,Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1,matiere.getNom());
-            preparedStatement.setString(2,matiere.getCouleurFond());
-            preparedStatement.setString(3,matiere.getCouleurPolice());
-            preparedStatement.setString(4,matiere.getVolumeHoraire());
-            preparedStatement.setString(5,matiere.getDescription());
-            preparedStatement.setTimestamp(6,new java.sql.Timestamp(matiere.getCreationDate().getTime()));
-            preparedStatement.setTimestamp(7,new java.sql.Timestamp(matiere.getModificationDate().getTime()));
+            preparedStatement.setString(2,matiere.getVolumeHoraire());
+            preparedStatement.setString(3,matiere.getDescription());
+            preparedStatement.setTimestamp(4,new java.sql.Timestamp(matiere.getCreationDate().getTime()));
+            preparedStatement.setTimestamp(5,new java.sql.Timestamp(matiere.getModificationDate().getTime()));
             int nbRowsAdded = preparedStatement.executeUpdate();
             if(nbRowsAdded > 0){
                 ResultSet resultSet = preparedStatement.getGeneratedKeys();
@@ -87,16 +85,14 @@ public class MatiereRepository {
      * @throws DataBaseException
      */
     public Optional<Matiere> update(Matiere matiere) throws DataBaseException {
-        String request = "UPDATE matiere SET nom = ?, couleurFond = ?, couleurPolice = ?, volumeHoraire = ?, description = ?, modificationDate = ? WHERE id = ? ";
+        String request = "UPDATE matiere SET nom = ?, volumeHoraire = ?, description = ?, modificationDate = ? WHERE id = ? ";
         try{
             PreparedStatement preparedStatement = this.connexion.prepareStatement(request);
             preparedStatement.setString(1, matiere.getNom());
-            preparedStatement.setString(2, matiere.getCouleurFond());
-            preparedStatement.setString(3, matiere.getCouleurPolice());
-            preparedStatement.setString(4, matiere.getVolumeHoraire());
-            preparedStatement.setString(5, matiere.getDescription());
-            preparedStatement.setTimestamp(6, new java.sql.Timestamp(matiere.getModificationDate().getTime()));
-            preparedStatement.setInt(7, matiere.getId());
+            preparedStatement.setString(2, matiere.getVolumeHoraire());
+            preparedStatement.setString(3, matiere.getDescription());
+            preparedStatement.setTimestamp(4, new java.sql.Timestamp(matiere.getModificationDate().getTime()));
+            preparedStatement.setInt(5, matiere.getId());
             int nbRowsUpdated = preparedStatement.executeUpdate();
             if(nbRowsUpdated > 0){
                 return Optional.of(matiere);
@@ -148,13 +144,11 @@ public class MatiereRepository {
                 if(rs.next()){
                     int idFromBd = rs.getInt("id");
                     String nomFromBd = rs.getString("nom");
-                    String couleurFondFromBd = rs.getString("couleurFond");
-                    String couleurPoliceFromBd = rs.getString("couleurPolice");
                     String volumeHoraireFromBd = rs.getString("volumeHoraire");
                     String descriptionFromBd = rs.getString("description");
                     Timestamp creationDateFromBd = rs.getTimestamp("creationDate");
                     Timestamp modificationDateFromBd = rs.getTimestamp("modificationDate");
-                    Matiere resultat = new Matiere(nomFromBd, couleurFondFromBd, couleurPoliceFromBd, volumeHoraireFromBd, descriptionFromBd);
+                    Matiere resultat = new Matiere(nomFromBd, volumeHoraireFromBd, descriptionFromBd);
                     resultat.setId(idFromBd);
                     resultat.setCreationDate(new java.util.Date(creationDateFromBd.getTime()));
                     resultat.setModificationDate(new java.util.Date(modificationDateFromBd.getTime()));
@@ -190,51 +184,34 @@ public class MatiereRepository {
     /**
      * Récupère toutes les matières en fonction de filtres
      * @param nom Nom de la matière recherchée (optionnel)
-     * @param couleurPolice Couleur hexadécimale de la police (optionnel)
      * @return liste de matières
      */
-    public List<Matiere> findAll(String nom, String couleurPolice) throws DataBaseException {
+    public List<Matiere> findAll(String nom) throws DataBaseException {
         List<Matiere> results = new ArrayList<>();
         StringBuilder sb = new StringBuilder("SELECT * FROM matiere ");
-        int idxNom = 0, idxColor = 0;
-        if(nom != null && !nom.isEmpty() && couleurPolice != null && !couleurPolice.isEmpty()){
-            sb.append("WHERE nom LIKE ? AND couleurpolice LIKE ? ");
-            idxNom = 1;
-            idxColor = 2;
-        }
-        else if(nom != null && !nom.isEmpty()){
+        if(nom != null && !nom.isEmpty()){
             sb.append("WHERE nom LIKE ?");
-            idxNom = 1;
-        }
-        else if(couleurPolice != null && !couleurPolice.isEmpty()){
-            sb.append("WHERE couleurpolice LIKE ?");
-            idxColor = 1;
         }
         sb.append(" ORDER BY nom ASC");
         String requestSql = sb.toString();
         try {
             PreparedStatement ps = this.connexion.prepareStatement(requestSql);
-            if(nom != null && !nom.isEmpty() && idxNom != 0){
-                ps.setString(idxNom, "%" + nom + "%");
-            }
-            if(couleurPolice != null && !couleurPolice.isEmpty() && idxColor != 0){
-                ps.setString(idxColor, "%" + couleurPolice + "%");
+            if(nom != null && !nom.isEmpty()){
+                ps.setString(1, "%" + nom + "%");
             }
             if(!ps.execute()){
-                LOGGER.error("Erreur technique : impossible de récupérer les matières, ps.execute == false");
+                LOGGER.error("Erreur technique : impossible de récupérer les matières");
                 throw new DataBaseException("Erreur technique : impossible de récupérer les matières");
             }
             ResultSet resultSet = ps.getResultSet();
             while(resultSet.next()){
                 int idFromBd = resultSet.getInt("id");
                 String nomFromBd = resultSet.getString("nom");
-                String couleurFondFromBd = resultSet.getString("couleurFond");
-                String couleurPoliceFromBd = resultSet.getString("couleurPolice");
                 String volumeHoraireFromBd = resultSet.getString("volumeHoraire");
                 String descriptionFromBd = resultSet.getString("description");
                 Timestamp creationDateFromBd = resultSet.getTimestamp("creationDate");
                 Timestamp modificationDateFromBd = resultSet.getTimestamp("modificationDate");
-                Matiere resultat = new Matiere(nomFromBd, couleurFondFromBd, couleurPoliceFromBd, volumeHoraireFromBd, descriptionFromBd);
+                Matiere resultat = new Matiere(nomFromBd, volumeHoraireFromBd, descriptionFromBd);
                 resultat.setId(idFromBd);
                 resultat.setCreationDate(new Date(creationDateFromBd.getTime()));
                 resultat.setModificationDate(new Date(modificationDateFromBd.getTime()));

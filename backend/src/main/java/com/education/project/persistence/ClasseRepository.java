@@ -225,8 +225,10 @@ public class ClasseRepository {
     public List<Classe> getClasses(Integer page, Integer nbElementsPerPage, String name) throws DataBaseException {
         List<Classe> results = new ArrayList<>();
         StringBuilder sb = new StringBuilder("SELECT * FROM classe ");
+        int indiceNom = 0;
         if(name != null && !name.isEmpty()){
             sb.append(" WHERE nom LIKE ? ");
+            indiceNom = 1;
         }
         if(page != null && nbElementsPerPage != null){
             sb.append(" LIMIT ? OFFSET ? ");
@@ -235,11 +237,11 @@ public class ClasseRepository {
         try {
             PreparedStatement ps = this.connection.prepareStatement(requestSql);
             if(name != null && !name.isEmpty()){
-                ps.setString(1, "%" + name + "%");
+                ps.setString(indiceNom, "%" + name + "%");
             }
             if(page != null && nbElementsPerPage != null){
-                ps.setInt(2, nbElementsPerPage);
-                ps.setInt(3, (page-1) * nbElementsPerPage);
+                ps.setInt(indiceNom+1, nbElementsPerPage);
+                ps.setInt(indiceNom+2, (page-1) * nbElementsPerPage);
             }
             ResultSet resultSet = ps.executeQuery();
             while(resultSet.next()){
