@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +36,9 @@ public class SlotService {
      */
     public Optional<Slot> insertSlot(Slot slotToInsert) throws ArgumentException, DataBaseException {
         checkBusiness(slotToInsert, false);
+        Date now = new Date();
+        slotToInsert.setCreationDate(now);
+        slotToInsert.setModificationDate(now);
         return slotRepository.insert(slotToInsert);
     }//insertSlot()
 

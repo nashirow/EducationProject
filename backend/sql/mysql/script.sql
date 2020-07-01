@@ -49,14 +49,14 @@ CREATE TABLE `options` (
 INSERT INTO `options` (`id`, `splitplanning`, `starthourplanning`, `endhourplanning`) VALUES (1, 60, '08:00:00', '17:00:00');
 
 CREATE TABLE `timeslot` (
-    `id` INT NOT NULL,
+    `id` INT NOT NULL AUTO_INCREMENT,
     `startHour` TIME NOT NULL COMMENT 'Heure de début' COLLATE 'utf8mb4_0900_ai_ci',
     `endHour` TIME NOT NULL COMMENT 'Heure de fin' COLLATE 'utf8mb4_0900_ai_ci',
     PRIMARY KEY (`id`)
 )COLLATE='utf8mb4_0900_ai_ci';
 
 CREATE TABLE `slot` (
-    `id` INT NOT NULL,
+    `id` INT NOT NULL AUTO_INCREMENT,
     `comment` VARCHAR(50) COMMENT 'Le commentaire peut désigner différents groupes (ou tâches) dans un slot',
     `creationDate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `modificationDate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

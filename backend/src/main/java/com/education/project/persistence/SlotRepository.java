@@ -72,12 +72,12 @@ public class SlotRepository {
             ps.setString(5,slotToInsert.getCouleurPolice());
             ps.setInt(6,slotToInsert.getTimeSlot().getId());
             ps.setInt(7,slotToInsert.getMatiere().getId());
-            if(slotToInsert.getEnseignant().getId() != null){
+            if(slotToInsert.getEnseignant() != null && slotToInsert.getEnseignant().getId() != null){
                 ps.setInt(8,slotToInsert.getEnseignant().getId());
             }else{
                 ps.setObject(8,null);
             }
-            if(slotToInsert.getSalle().getId() != null){
+            if(slotToInsert.getSalle() != null && slotToInsert.getSalle().getId() != null){
                 ps.setInt(9,slotToInsert.getSalle().getId());
             }else{
                 ps.setObject(9,null);
@@ -85,6 +85,7 @@ public class SlotRepository {
             int rowsAdded = ps.executeUpdate();
             if(rowsAdded > 0 ){
                 ResultSet generatedKeys = ps.getGeneratedKeys();
+                generatedKeys.next();
                 slotToInsert.setId(generatedKeys.getInt(1));
                 return Optional.of(slotToInsert);
             }
