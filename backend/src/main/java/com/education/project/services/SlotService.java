@@ -42,6 +42,22 @@ public class SlotService {
         return slotRepository.insert(slotToInsert);
     }//insertSlot()
 
+    /**
+     * Cette fonction permet de supprimer un slot d'identifiant passé en paramètre
+     * @param id L'identifiant du slot à supprimer
+     * @return boolean
+     */
+    public boolean deleteSlot(int id) throws DataBaseException {
+        return slotRepository.deleteSlot(id);
+    }//deleteSlot()
+
+    /**
+     * Cette fonction permet de vérifier les règles métiers liées aux slots
+     * @param slotToInsert Le slot à vérifier
+     * @param isUpdate boolean true si le slot à vérifier est à update
+     * @throws ArgumentException
+     * @throws DataBaseException
+     */
     private void checkBusiness(Slot slotToInsert, boolean isUpdate) throws ArgumentException, DataBaseException {
         List<String> errors = new ArrayList<>();
         if (slotToInsert == null) {

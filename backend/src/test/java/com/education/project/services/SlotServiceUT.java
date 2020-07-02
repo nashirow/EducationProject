@@ -24,6 +24,7 @@ public class SlotServiceUT {
     private SlotService slotService;
     private Slot slotToInsert;
     private Slot slotFromBd;
+    private Slot slotToDelete;
 
     @Mock
     private SlotRepository slotRepository;
@@ -40,6 +41,10 @@ public class SlotServiceUT {
         this.slotFromBd.setId(1);
         this.slotFromBd.setCreationDate(now);
         this.slotFromBd.setModificationDate(now);
+        this.slotToDelete = this.slotToInsert;
+        this.slotToDelete.setId(1);
+        this.slotToDelete.setCreationDate(new Date(1593705884));
+        this.slotToDelete.setModificationDate(now);
     }//setUp()
 
     @Test
@@ -193,4 +198,18 @@ public class SlotServiceUT {
                 .isInstanceOf(ArgumentException.class);
     }//create_slot_should_throw_exception_when_slot_fond_color_already_exists
 
+    @Test
+    public void delete_slot_should_sucess_when_id_is_1() throws DataBaseException {
+        Mockito.when(slotRepository.deleteSlot(this.slotToDelete.getId())).thenReturn(true);
+        boolean result = slotService.deleteSlot(this.slotToDelete.getId());
+        Assertions.assertThat(result).isTrue();
+    }//delete_slot_should_sucess_when_id_is_1()
+
+    @Test
+    public void delete_slot_should_success_when_id_is_30() throws DataBaseException {
+        this.slotToDelete.setId(30);
+        Mockito.when(slotRepository.deleteSlot(this.slotToDelete.getId())).thenReturn(false);
+        boolean result = slotService.deleteSlot(this.slotToDelete.getId());
+        Assertions.assertThat(result).isFalse();
+    }//delete_slot_should_success_when_id_is_30()
 }//SlotServiceUT()

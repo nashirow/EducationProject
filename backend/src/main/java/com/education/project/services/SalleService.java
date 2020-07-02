@@ -74,6 +74,7 @@ public class SalleService {
     /**
      * Cette fonction permet de vérifier les règles métiers liées aux salles
      * @param salle La salle à vérifier
+     * @Param isUpdate boolean true si la salle est à mettre à jour
      * @throws ArgumentException
      * @throws DataBaseException
      */
