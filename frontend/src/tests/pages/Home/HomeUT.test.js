@@ -1,4 +1,20 @@
+/*
+ * Copyright 2020 Hicham AZIMANI, Yassine AZIMANI
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
 import { mount } from 'enzyme';
 import { Home } from '../../../pages/Home/Home';
 
@@ -7,7 +23,7 @@ import '../../configure';
 let wrapper;
 
 beforeEach(() => {
-    wrapper = mount(<Home />);
+    wrapper = mount(<BrowserRouter><Home /></BrowserRouter>);
 });
 
 describe('Testing Home page', () => {
@@ -22,6 +38,10 @@ describe('Testing Home page', () => {
 
     test('CTA Classe must have icon fa-superscript', () => {
         expect(wrapper.find('#cta-classe i.fa-superscript').exists()).toBeTruthy();
+    });
+
+    test('CTA Classe should have link /classes', () => {
+        expect(wrapper.find('a[href="/classes"]').exists()).toBeTruthy();
     });
 
     test('CTA Hours must be present', () => {
@@ -107,4 +127,5 @@ describe('Testing Home page', () => {
     test('CTA Slots must have icon fa-list-alt', () => {
         expect(wrapper.find('#cta-slots i.fa-list-alt').exists()).toBeTruthy();
     });
+
 });

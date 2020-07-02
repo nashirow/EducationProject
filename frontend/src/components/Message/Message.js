@@ -14,27 +14,16 @@
  * limitations under the License.
  */
 import React from 'react';
-import { mount } from 'enzyme';
-import { Header } from '../../../components/Header/Header';
 
-import '../../configure';
+import './style.scss';
 
-let wrapper;
-
-beforeEach(() => {
-    wrapper = mount(<Header />);
-});
-
-describe(('Testing Header'), () => {
-    test('Header must be present', () => {
-        expect(wrapper.find("#header").exists()).toBeTruthy();
-    });
-
-    test('Software name must be equals to Education Project', () => {
-        expect(wrapper.find("#header h1").text()).toBe("Education Project");
-    });
-
-    test('Version label must be equals to Version 0.1', () => {
-        expect(wrapper.find("#header h2").text()).toBe("Version 0.1");
-    });
-});
+/**
+ * Composant Message permettant d'afficher des messages d'erreurs,
+ * de confirmation ou d'information.
+ * @param {Object} props Propriétés du composant
+ */
+export const Message = (props) => {
+    return (<div className={`message ${props.typeMessage}`}>
+        {props.messages && <ul>{props.messages.map(msg => <li key={msg}>{msg}</li>)}</ul>}
+    </div>)
+};

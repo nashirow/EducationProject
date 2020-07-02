@@ -1,0 +1,38 @@
+@import '../../common.scss';
+
+#table-classes{
+
+    width: 70%;
+    margin: 30px auto;
+      
+    tr:nth-child(even){ 
+        background-color: #f2f2f2; 
+    }
+      
+    tr:hover { 
+        background-color: #d1a4b3be; 
+    }
+      
+    th {
+        background-color: $colorClasses;
+    }
+}
+
+#create-classe{
+    color: #fff;
+    background-color: $colorClasses;
+
+    &:hover, &:active{
+        background-color: #d3013d; 
+    }
+}
+
+.pagination{
+    ul{
+        li.active{
+            background-color: $colorClasses;
+            color: $colorWhite; 
+            border-radius: 4px;
+        }
+    }
+}

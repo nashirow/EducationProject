@@ -15,26 +15,25 @@
  */
 import React from 'react';
 import { mount } from 'enzyme';
-import { Header } from '../../../components/Header/Header';
+import { Classes } from '../../../pages/Classes/Classes';
 
 import '../../configure';
+import { BrowserRouter } from 'react-router-dom';
 
 let wrapper;
 
 beforeEach(() => {
-    wrapper = mount(<Header />);
+    wrapper = mount(<BrowserRouter><Classes /></BrowserRouter>);
 });
 
-describe(('Testing Header'), () => {
-    test('Header must be present', () => {
-        expect(wrapper.find("#header").exists()).toBeTruthy();
+describe('Testing main page Classes', () => {
+
+    test('Classes page should have identifiant classes', () => {
+        expect(wrapper.find('#classes').exists()).toBeTruthy();
     });
 
-    test('Software name must be equals to Education Project', () => {
-        expect(wrapper.find("#header h1").text()).toBe("Education Project");
+    test('Classes page should have table with id table-classes', () => {
+        expect(wrapper.find('#classes #table-classes').exists()).toBeTruthy();
     });
 
-    test('Version label must be equals to Version 0.1', () => {
-        expect(wrapper.find("#header h2").text()).toBe("Version 0.1");
-    });
 });
