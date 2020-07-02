@@ -13,4 +13,20 @@
         padding-bottom: 12px;
         color: white;
     }
+
+    td.actions{
+        i{
+            cursor: pointer;
+            margin: 0 4px;
+            &.fa-trash{
+                color: #ff0052;
+            }
+            &.fa-pencil{
+                color: #0f68b5;
+            }
+            &.fa-list-ul{
+                color: #49c13a;
+            }
+        }
+    }
 }

@@ -17,3 +17,22 @@
         background-color: $colorClasses;
     }
 }
+
+#create-classe{
+    color: #fff;
+    background-color: $colorClasses;
+
+    &:hover, &:active{
+        background-color: #d3013d; 
+    }
+}
+
+.pagination{
+    ul{
+        li.active{
+            background-color: $colorClasses;
+            color: $colorWhite; 
+            border-radius: 4px;
+        }
+    }
+}

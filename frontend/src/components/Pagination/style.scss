@@ -1,0 +1,17 @@
+.pagination{
+    margin: 0 auto;
+    width: 420px;
+    max-width: 100%;
+    display: block;
+    ul{
+        list-style: none;
+        li{
+            display: inline-block;
+            padding: 8px 12px;
+            margin: 0 5px;
+            span{
+                cursor: pointer;
+            }
+        }
+    }
+}

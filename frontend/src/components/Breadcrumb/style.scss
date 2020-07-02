@@ -1,0 +1,23 @@
+.breadcrumb{
+    list-style: none;
+    display: flex;
+
+    li{
+        color: #848282;
+        a{
+            color: #848282;
+            text-decoration: none;
+        }
+        &.current{
+            font-style: italic;
+            a{
+                cursor: default;
+            }
+        }
+        &:not(.current)::after{
+            content: '/';
+            padding: 0 15px;
+        }
+    }
+    
+}

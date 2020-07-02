@@ -74,7 +74,7 @@ CREATE TABLE slot (
     idTimeslot INT NOT NULL,
     idMatiere INT NOT NULL,
     idEnseignant INT NOT NULL,
-    idSalle INT NOT NULL
+    idSalle INT NOT NULL,
     FOREIGN KEY(idTimeslot) REFERENCES timeslot(id),
     FOREIGN KEY(idMatiere) REFERENCES matiere(id),
     FOREIGN KEY(idEnseignant) REFERENCES enseignant(id),
