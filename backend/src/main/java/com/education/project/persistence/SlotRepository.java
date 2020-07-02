@@ -111,4 +111,22 @@ public class SlotRepository {
             throw new DataBaseException("Erreur technique : impossible de retrouver le slot de couleur de fond " + slotToInsert.getCouleurFond() + " en base de données");
         }
     }//isExistByColorFond()
+
+    /**
+     * Cette fonction permet de supprimer un slot de la base de données avec l'identifiant passé en paramètre
+     * @param id L'identifiant du slot à supprimer
+     * @return boolean
+     */
+    public boolean deleteSlot(int id) throws DataBaseException {
+        String requestSql = "DELETE FROM slot WHERE id = ?";
+        try {
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
+            ps.setInt(1,id);
+            int rowsDeleted = ps.executeUpdate();
+            return rowsDeleted > 0;
+        } catch (SQLException e) {
+            LOGGER.error("Erreur technique : impossible de supprimer le slot {} de la base de données", id,e);
+            throw new DataBaseException("Erreur technique : impossible de supprimer le slot de la base de données");
+        }
+    }//deleteSlot()
 }//SlotRepository()
