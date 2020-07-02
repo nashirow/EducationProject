@@ -43,6 +43,15 @@ public class SlotService {
     }//insertSlot()
 
     /**
+     * Cette fonction permet de récupérer un slot avec l'identifiant passé en paramètre
+     * @param id Identifiant du slot à récupéré
+     * @return le slot récupéré
+     */
+    public Optional<Slot> findById(int id) throws DataBaseException {
+        return slotRepository.findById(id);
+    }//findById()
+
+    /**
      * Cette fonction permet de mettre à jour un slot
      * @param slotToUpdate Le slot à mettre à jour
      * @return retourne le slot mis à jour

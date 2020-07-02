@@ -24,6 +24,7 @@ public class SlotServiceUT {
     private SlotService slotService;
     private Slot slotToInsert;
     private Slot slotFromBd;
+    private Slot slotToGet;
     private Slot slotToUpdate;
     private Slot slotToDelete;
 
@@ -49,6 +50,10 @@ public class SlotServiceUT {
         this.slotToUpdate.getMatiere().setNom("Français");
         this.slotToDelete = this.slotToInsert;
         this.slotToDelete.setId(1);
+        this.slotToGet = this.slotToInsert;
+        this.slotToGet.setId(1);
+        this.slotToGet.setCreationDate(new Date(1593705884));
+        this.slotToGet.setModificationDate(now);
     }//setUp()
 
     @Test
@@ -202,6 +207,39 @@ public class SlotServiceUT {
                 .isInstanceOf(ArgumentException.class);
     }//create_slot_should_throw_exception_when_slot_fond_color_already_exists
 
+    @Test
+    public void get_slot_should_return_slot_when_id_is_1() throws DataBaseException {
+        this.slotToGet.setId(1);
+        Mockito.when(slotRepository.findById(this.slotToGet.getId())).thenReturn(Optional.of(this.slotFromBd));
+        Optional<Slot> optSlot = slotService.findById(1);
+        Assertions.assertThat(optSlot).isPresent();
+        optSlot.ifPresent(slot -> {
+            Assertions.assertThat(this.slotToGet).isNotNull();
+            Assertions.assertThat(this.slotToGet.getId()).isNotNull();
+            Assertions.assertThat(this.slotToGet.getId()).isEqualTo(this.slotFromBd.getId());
+            Assertions.assertThat(this.slotToGet.getMatiere()).isNotNull();
+            Assertions.assertThat(this.slotToGet.getMatiere().getId()).isNotNull();
+            Assertions.assertThat(this.slotToGet.getMatiere().getId()).isEqualTo(this.slotFromBd.getMatiere().getId());
+            Assertions.assertThat(this.slotToGet.getMatiere().getNom()).isEqualTo(this.slotFromBd.getMatiere().getNom());
+            Assertions.assertThat(this.slotToGet.getTimeSlot()).isNotNull();
+            Assertions.assertThat(this.slotToGet.getTimeSlot().getId()).isNotNull();
+            Assertions.assertThat(this.slotToGet.getTimeSlot().getId()).isEqualTo(this.slotFromBd.getTimeSlot().getId());
+            Assertions.assertThat(this.slotToGet.getTimeSlot().getStart()).isEqualTo(this.slotFromBd.getTimeSlot().getStart());
+            Assertions.assertThat(this.slotToGet.getTimeSlot().getEnd()).isEqualTo(this.slotFromBd.getTimeSlot().getEnd());
+            Assertions.assertThat(this.slotToGet.getCreationDate()).isNotNull();
+            Assertions.assertThat(this.slotToGet.getModificationDate()).isNotNull();
+            Assertions.assertThat(this.slotToGet.getCouleurFond()).isEqualTo(this.slotFromBd.getCouleurFond());
+            Assertions.assertThat(this.slotToGet.getCouleurPolice()).isEqualTo(this.slotFromBd.getCouleurPolice());
+        });
+    }//get_slot_should_return_slot_when_id_is_1()
+
+    @Test
+    public void get_slot_should_return_empty_slot_when_id_is_30() throws DataBaseException {
+        this.slotToGet.setId(30);
+        Mockito.when(slotRepository.findById(this.slotToGet.getId())).thenReturn(Optional.empty());
+        Optional<Slot> optSlot = slotService.findById(this.slotToGet.getId());
+        Assertions.assertThat(optSlot).isEmpty();
+    }//get_slot_should_return_empty_slot_when_id_is_30()
     @Test
     public void update_slot_should_success_when_params_are_timeslot_between_8_and_10_and_matiere_is_français_with_blue_background_color_and_black_font_color() throws ArgumentException, DataBaseException {
         this.slotFromBd.getMatiere().setNom("Français");

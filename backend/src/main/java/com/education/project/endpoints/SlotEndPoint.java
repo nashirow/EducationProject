@@ -44,6 +44,21 @@ public class SlotEndPoint {
     }//insertSlot()
 
     /**
+     * Ce endpoint permet de récupérer un slot en base de données grâce à l'identifiant passé en paramètre
+     * @param id L'identifiant du slot à récupérer
+     * @return Réponse HTTP
+     */
+    @GetMapping("/slot/{id}")
+    public ResponseEntity<?> getSlot(@PathVariable Integer id){
+        try {
+            Optional<Slot> optSlot = slotService.findById(id);
+            return new ResponseEntity<>(new ResponseEndPoint(optSlot.orElseGet( () -> new Slot()),null),HttpStatus.OK);
+        } catch (DataBaseException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }//getSlot()
+
+    /**
      * Ce endpoint permet de mettre à jour un slot en base de données
      * @param slotToInsert Le slot à mettre à jour
      * @return Réponse HTTP

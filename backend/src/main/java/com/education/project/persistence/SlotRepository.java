@@ -1,7 +1,7 @@
 package com.education.project.persistence;
 
 import com.education.project.exceptions.DataBaseException;
-import com.education.project.model.Slot;
+import com.education.project.model.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -99,6 +99,58 @@ public class SlotRepository {
     }//insert()
 
     /**
+     * Cette fonction permet de récupéré un slot en base de données grace à son identifiant passé en paramètre
+     * @param id Identifiant du slot à récupéré
+     * @return Le slot récupéré
+     */
+    public Optional<Slot> findById(int id) throws DataBaseException {
+        String requestSql = "SELECT s.id AS slotId,s.comment AS slotComment,s.creationDate AS slotCreationDate,s.modificationDate AS slotModificationDate," +
+                "s.couleurFond AS slotCouleurFond,s.couleurPolice AS slotCouleurPolice," +
+                " e.id AS enseignantId,e.nom AS enseignantNom, e.prenom AS enseignantPrenom, e.creationDate AS enseignantCreationDate,e.modificationDate AS enseignantModificationDate," +
+                " m.id AS matiereId,m.nom AS matiereNom,m.volumeHoraire AS matiereVolumeHoraire,m.description AS matiereDescription,m.creationDate AS matiereCreationDate,m.modificationDate AS matiereModificationDate," +
+                " t.id AS timeslotId,t.startHour AS timeslotStartHour,t.endHour AS timeslotEndHour," +
+                " sa.id AS salleId, sa.nom AS salleNom, sa.creationDate AS salleCreationDate, sa.modificationDate AS salleModificationDate " +
+                "FROM slot s " +
+                "LEFT JOIN enseignant e ON s.idEnseignant = e.id " +
+                "INNER JOIN matiere m ON s.idMatiere = m.id " +
+                "INNER JOIN timeslot t ON s.idTimeslot = t.id " +
+                "LEFT JOIN salle sa ON s.idSalle = sa.id " +
+                "WHERE s.id = ?;";
+        try {
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
+            ps.setInt(1,id);
+            ResultSet resultSet = ps.executeQuery();
+            if(resultSet.next()){
+                Slot slot = new Slot();
+                Enseignant enseignant = new Enseignant(resultSet.getInt("enseignantId"),resultSet.getString("enseignantNom"),
+                        resultSet.getString("enseignantPrenom"),resultSet.getTimestamp("enseignantCreationDate"),resultSet.getTimestamp("enseignantModificationDate"));
+                Matiere matiere = new Matiere(resultSet.getInt("matiereId"),resultSet.getString("matiereNom"),
+                        resultSet.getString("matiereVolumeHoraire"),resultSet.getString("matiereDescription"),
+                        resultSet.getTimestamp("matiereCreationDate"),resultSet.getTimestamp("matiereModificationDate"));
+                TimeSlot timeSlot = new TimeSlot(resultSet.getInt("timeslotId"),resultSet.getTime("timeslotStartHour").toLocalTime(),
+                        resultSet.getTime("timeslotEndHour").toLocalTime());
+                Salle salle = new Salle(resultSet.getInt("salleId"),resultSet.getString("salleNom"),resultSet.getTimestamp("salleCreationDate"),
+                        resultSet.getTimestamp("salleModificationDate"));
+                slot.setEnseignant(enseignant);
+                slot.setMatiere(matiere);
+                slot.setTimeSlot(timeSlot);
+                slot.setSalle(salle);
+                slot.setId(resultSet.getInt("slotId"));
+                slot.setComment(resultSet.getString("slotComment"));
+                slot.setCreationDate(resultSet.getTimestamp("slotCreationDate"));
+                slot.setModificationDate(resultSet.getTimestamp("slotModificationDate"));
+                slot.setCouleurFond(resultSet.getString("slotCouleurFond"));
+                slot.setCouleurPolice(resultSet.getString("slotCouleurPolice"));
+                return Optional.of(slot);
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Erreur technique : impossible de récupérer le slot d'identifiant : " + id + " dans la base de données",e);
+            throw new DataBaseException("Erreur technique : impossible de récupérer le slot dans la base de données");
+        }
+        return Optional.empty();
+    }//findById()
+
+    /**
      * Cette fonction permet de mettre à jour un slot en base de données
      * @param slotToUpdate Le slot à mettre à jour en base de données
      * @return le slot mis à jour
@@ -139,6 +191,12 @@ public class SlotRepository {
         }
     }//update
 
+    /**
+     * Cette fonction permet de vérifier qu'un slot avec un certain fond de couleur existe déjà en base de données
+     * @param slotToInsert Le slot à vérifier
+     * @return boolean
+     * @throws DataBaseException
+     */
     public boolean isExistByColorFond(Slot slotToInsert) throws DataBaseException {
         String requestSql = "SELECT COUNT(id) FROM slot WHERE couleurFond = ?";
         try {
