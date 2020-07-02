@@ -44,6 +44,26 @@ public class SlotEndPoint {
     }//insertSlot()
 
     /**
+     * Ce endpoint permet de mettre à jour un slot en base de données
+     * @param slotToInsert Le slot à mettre à jour
+     * @return Réponse HTTP
+     */
+    @PutMapping("/slot")
+    public ResponseEntity<?> updateSlot(@RequestBody Slot slotToInsert){
+        try {
+            Optional<Slot> optSlot = slotService.updateSlot(slotToInsert);
+            if(optSlot.isPresent()){
+                return new ResponseEntity<>(new ResponseEndPoint(optSlot.get(),null),HttpStatus.OK);
+            }
+        } catch (ArgumentException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null,e.getErreurs()),HttpStatus.BAD_REQUEST);
+        } catch (DataBaseException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(new ResponseEndPoint(null,null),HttpStatus.INTERNAL_SERVER_ERROR);
+    }//updateSlot()
+
+    /**
      * Ce endpoint permet de supprimer un slot de la base de données
      * @param id L'identifiant du slot
      * @return Réponse HTTP

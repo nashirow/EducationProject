@@ -43,6 +43,17 @@ public class SlotService {
     }//insertSlot()
 
     /**
+     * Cette fonction permet de mettre à jour un slot
+     * @param slotToUpdate Le slot à mettre à jour
+     * @return retourne le slot mis à jour
+     */
+    public Optional<Slot> updateSlot(Slot slotToUpdate) throws ArgumentException, DataBaseException {
+        checkBusiness(slotToUpdate,true);
+        slotToUpdate.setModificationDate(new Date());
+        return slotRepository.update(slotToUpdate);
+    }//updateSlot()
+
+    /**
      * Cette fonction permet de supprimer un slot d'identifiant passé en paramètre
      * @param id L'identifiant du slot à supprimer
      * @return boolean
