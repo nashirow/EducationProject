@@ -43,8 +43,6 @@ public class SlotServiceUT {
         this.slotFromBd.setModificationDate(now);
         this.slotToDelete = this.slotToInsert;
         this.slotToDelete.setId(1);
-        this.slotToDelete.setCreationDate(new Date(1593705884));
-        this.slotToDelete.setModificationDate(now);
     }//setUp()
 
     @Test
