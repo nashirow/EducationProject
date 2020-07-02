@@ -24,6 +24,7 @@ public class SlotServiceUT {
     private SlotService slotService;
     private Slot slotToInsert;
     private Slot slotFromBd;
+    private Slot slotToUpdate;
     private Slot slotToDelete;
 
     @Mock
@@ -41,6 +42,11 @@ public class SlotServiceUT {
         this.slotFromBd.setId(1);
         this.slotFromBd.setCreationDate(now);
         this.slotFromBd.setModificationDate(now);
+        this.slotToUpdate = this.slotToInsert;
+        this.slotToUpdate.setId(1);
+        this.slotToUpdate.setCreationDate(new Date(1593705884));
+        this.slotToUpdate.setModificationDate(now);
+        this.slotToUpdate.getMatiere().setNom("Français");
         this.slotToDelete = this.slotToInsert;
         this.slotToDelete.setId(1);
     }//setUp()
@@ -81,12 +87,12 @@ public class SlotServiceUT {
     }//create_slot_should_throw_exception_when_matiere_is_null()
 
     @Test
-    public void create_slot_should_throw_exception_when_matiere_id_does_not_exist(){
+    public void create_slot_should_throw_exception_when_matiere_id_is_null(){
         this.slotToInsert.getMatiere().setId(null);
         Assertions.assertThatThrownBy(() -> slotService.insertSlot(slotToInsert))
                 .hasMessage("L'identifiant de la matière est obligatoire")
                 .isInstanceOf(ArgumentException.class);
-    }//create_slot_should_throw_exception_when_matiere_id_does_not_exist()
+    }//create_slot_should_throw_exception_when_matiere_id_is_null()
 
     @Test
     public void create_slot_should_throw_exception_when_timeslot_is_null(){
@@ -196,6 +202,151 @@ public class SlotServiceUT {
                 .isInstanceOf(ArgumentException.class);
     }//create_slot_should_throw_exception_when_slot_fond_color_already_exists
 
+    @Test
+    public void update_slot_should_success_when_params_are_timeslot_between_8_and_10_and_matiere_is_français_with_blue_background_color_and_black_font_color() throws ArgumentException, DataBaseException {
+        this.slotFromBd.getMatiere().setNom("Français");
+        Mockito.when(slotRepository.update(slotToUpdate)).thenReturn(Optional.of(slotFromBd));
+        Optional<Slot> optSlot = slotService.updateSlot(this.slotToUpdate);
+        Assertions.assertThat(optSlot).isPresent();
+        optSlot.ifPresent(slot -> {
+            Assertions.assertThat(this.slotToUpdate.getId()).isNotNull();
+            Assertions.assertThat(this.slotToUpdate.getId()).isEqualTo(this.slotFromBd.getId());
+            Assertions.assertThat(this.slotToUpdate.getMatiere()).isNotNull();
+            Assertions.assertThat(this.slotToUpdate.getMatiere().getId()).isNotNull();
+            Assertions.assertThat(this.slotToUpdate.getTimeSlot()).isNotNull();
+            Assertions.assertThat(this.slotToUpdate.getTimeSlot().getId()).isNotNull();
+            Assertions.assertThat(this.slotToUpdate.getTimeSlot().getId()).isEqualTo(this.slotFromBd.getTimeSlot().getId());
+            Assertions.assertThat(this.slotToUpdate.getCouleurPolice()).isEqualTo(this.slotFromBd.getCouleurPolice());
+            Assertions.assertThat(this.slotToUpdate.getCouleurFond()).isEqualTo(this.slotFromBd.getCouleurFond());
+            Assertions.assertThat(this.slotToUpdate.getCreationDate()).isEqualTo(this.slotFromBd.getCreationDate());
+            Assertions.assertThat(this.slotToUpdate.getModificationDate()).isEqualTo(this.slotFromBd.getModificationDate());
+            Assertions.assertThat(this.slotToUpdate.getCreationDate()).isNotEqualTo(this.slotFromBd.getModificationDate());
+        });
+    }//update_slot_should_success_when_params_are_timeslot_between_8_and_10_and_matiere_is_français_with_blue_background_color_and_black_font_color()
+
+    @Test
+    public void update_slot_should_throw_exception_when_slot_is_null(){
+        this.slotToUpdate = null;
+        Assertions.assertThatThrownBy(() -> slotService.updateSlot(this.slotToUpdate))
+                .hasMessage("Le slot est obligatoire")
+                .isInstanceOf(ArgumentException.class);
+    }//update_slot_should_throw_exception_when_slot_is_null()
+
+    @Test
+    public void update_slot_should_throw_exception_when_slot_id_is_null(){
+        this.slotToUpdate.setId(null);
+        Assertions.assertThatThrownBy(() -> slotService.updateSlot(this.slotToUpdate))
+                .hasMessage("Le slot doit obligatoirement avoir un identifiant")
+                .isInstanceOf(ArgumentException.class);
+    }//update_slot_should_throw_exception_when_slot_id_is_null()
+
+    @Test
+    public void update_slot_should_throw_exception_when_filters_matiere_id_and_timeslot_id_are_null(){
+        this.slotToUpdate.getMatiere().setId(null);
+        this.slotToUpdate.getTimeSlot().setId(null);
+        Assertions.assertThatThrownBy(() -> slotService.updateSlot(this.slotToUpdate))
+                .hasMessage("L'identifiant de la matière est obligatoire,L'identifiant du créneau horaire est obligatoire")
+                .isInstanceOf(ArgumentException.class);
+    }//update_slot_should_throw_exception_when_filters_matiere_and_timeslot_are_null()
+
+    @Test
+    public void update_slot_should_throw_exception_when_matiere_and_timeslot_are_null(){
+        this.slotToUpdate.setMatiere(null);
+        this.slotToUpdate.setTimeSlot(null);
+        Assertions.assertThatThrownBy(() -> slotService.updateSlot(this.slotToUpdate))
+                .hasMessage("La matière est obligatoire,Le créneau horaire est obligatoire")
+                .isInstanceOf(ArgumentException.class);
+    }//update_slot_should_throw_exception_when_matiere_and_timeslot_are_null()
+
+    @Test
+    public void update_slot_should_throw_exception_when_background_color_is_null(){
+        this.slotToUpdate.setCouleurFond(null);
+        Assertions.assertThatThrownBy(() -> slotService.updateSlot(this.slotToUpdate))
+                .hasMessage("La couleur de fond est obligatoire")
+                .isInstanceOf(ArgumentException.class);
+    }//update_slot_should_throw_exception_when_background_color_is_null()
+
+    @Test
+    public void update_slot_should_throw_exception_when_background_color_is_empty(){
+        this.slotToUpdate.setCouleurFond("");
+        Assertions.assertThatThrownBy(() -> slotService.updateSlot(this.slotToUpdate))
+                .hasMessage("La couleur de fond est obligatoire")
+                .isInstanceOf(ArgumentException.class);
+    }//update_slot_should_throw_exception_when_background_color_is_empty()
+
+    @Test
+    public void update_slot_should_throw_exception_when_font_color_is_null(){
+        this.slotToUpdate.setCouleurPolice(null);
+        Assertions.assertThatThrownBy(() -> slotService.updateSlot(this.slotToUpdate))
+                .hasMessage("La couleur de la police est obligatoire")
+                .isInstanceOf(ArgumentException.class);
+    }//update_slot_should_throw_exception_when_font_color_is_null()
+
+    @Test
+    public void update_slot_should_throw_exception_when_font_color_is_empty(){
+        this.slotToUpdate.setCouleurPolice("");
+        Assertions.assertThatThrownBy(() -> slotService.updateSlot(this.slotToUpdate))
+                .hasMessage("La couleur de la police est obligatoire")
+                .isInstanceOf(ArgumentException.class);
+    }//update_slot_should_throw_exception_when_font_color_is_empty()
+
+    @Test
+    public void update_slot_should_throw_exception_when_background_color_and_font_color_are_the_same(){
+        this.slotToUpdate.setCouleurPolice("#fff");
+        this.slotToUpdate.setCouleurFond("#fff");
+        Assertions.assertThatThrownBy(() -> slotService.updateSlot(this.slotToUpdate))
+                .hasMessage("La couleur de fond et de la police ne peuvent pas être la même")
+                .isInstanceOf(ArgumentException.class);
+    }//update_slot_should_throw_exception_when_background_color_and_font_color_are_the_same()
+
+    @Test
+    public void update_slot_should_throw_exception_when_background_color_is_not_hex(){
+        this.slotToUpdate.setCouleurFond("255, 87, 51");
+        Assertions.assertThatThrownBy(() -> slotService.updateSlot(this.slotToUpdate))
+                .hasMessage("La couleur de fond doit être au format hexadécimal")
+                .isInstanceOf(ArgumentException.class);
+    }//update_slot_should_throw_exception_when_background_color_is_not_hex()
+
+    @Test
+    public void update_slot_should_throw_exception_when_font_color_is_not_hex(){
+        this.slotToUpdate.setCouleurPolice("100,00,50");
+        Assertions.assertThatThrownBy(() -> slotService.updateSlot(this.slotToUpdate))
+                .hasMessage("La couleur de la police doit être au format hexadécimal")
+                .isInstanceOf(ArgumentException.class);
+    }//update_slot_should_throw_exception_when_font_color_is_not_hex()
+
+    @Test
+    public void update_slot_should_throw_exception_when_police_color_type_is_RGB_255_87_51(){
+        this.slotToInsert.setCouleurPolice("255,87,51");
+        Assertions.assertThatThrownBy(() -> slotService.updateSlot(this.slotToInsert))
+                .hasMessage("La couleur de la police doit être au format hexadécimal")
+                .isInstanceOf(ArgumentException.class);
+    }//create_slot_should_throw_exception_when_police_color_type_is_RGB_255_87_51()
+
+    @Test
+    public void update_slot_should_throw_exception_when_police_color_type_is_HSL_10_80_p_60_p(){
+        this.slotToInsert.setCouleurPolice("11,80%,60%");
+        Assertions.assertThatThrownBy(() -> slotService.updateSlot(this.slotToInsert))
+                .hasMessage("La couleur de la police doit être au format hexadécimal")
+                .isInstanceOf(ArgumentException.class);
+    }//update_slot_should_throw_exception_when_police_color_type_is_HSL_10_80_p_60_p()
+
+    @Test
+    public void update_slot_should_throw_exception_when_police_color_type_is_CMYK_0_66_100_0(){
+        this.slotToInsert.setCouleurPolice("0,66,100,0");
+        Assertions.assertThatThrownBy(() -> slotService.updateSlot(this.slotToInsert))
+                .hasMessage("La couleur de la police doit être au format hexadécimal")
+                .isInstanceOf(ArgumentException.class);
+    }//update_slot_should_throw_exception_when_police_color_type_is_CMYK_0_66_100_0()
+
+    @Test
+    public void update_slot_should_throw_exception_when_slot_fond_color_already_exists() throws DataBaseException {
+        this.slotToInsert.setCouleurFond("#fff");
+        Mockito.when(slotRepository.isExistByColorFond(this.slotToInsert)).thenReturn(true);
+        Assertions.assertThatThrownBy(() -> slotService.updateSlot(slotToInsert))
+                .hasMessage("Il existe déjà un slot avec ce fond de couleur")
+                .isInstanceOf(ArgumentException.class);
+    }//update_slot_should_throw_exception_when_slot_fond_color_already_exists
     @Test
     public void delete_slot_should_sucess_when_id_is_1() throws DataBaseException {
         Mockito.when(slotRepository.deleteSlot(this.slotToDelete.getId())).thenReturn(true);

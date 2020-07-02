@@ -98,6 +98,47 @@ public class SlotRepository {
         }
     }//insert()
 
+    /**
+     * Cette fonction permet de mettre à jour un slot en base de données
+     * @param slotToUpdate Le slot à mettre à jour en base de données
+     * @return le slot mis à jour
+     */
+    public Optional<Slot> update(Slot slotToUpdate) throws DataBaseException {
+        String requestSql = "UPDATE slot SET comment = ?, modificationDate = ?, couleurFond = ?, couleurPolice = ?," +
+                " idTimeslot = ?, idMatiere = ?, idEnseignant = ?, idSalle = ? WHERE id = ?";
+        try {
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
+            ps.setString(1,slotToUpdate.getComment());
+            ps.setTimestamp(2,new Timestamp(slotToUpdate.getModificationDate().getTime()));
+            ps.setString(3,slotToUpdate.getCouleurFond());
+            ps.setString(4,slotToUpdate.getCouleurPolice());
+            ps.setInt(5,slotToUpdate.getTimeSlot().getId());
+            ps.setInt(6,slotToUpdate.getMatiere().getId());
+            if(slotToUpdate.getEnseignant() != null && slotToUpdate.getEnseignant().getId() != null){
+                ps.setInt(7,slotToUpdate.getEnseignant().getId());
+            }
+            else {
+                ps.setObject(7,null);
+            }
+            if(slotToUpdate.getSalle() != null && slotToUpdate.getSalle().getId() != null){
+                ps.setInt(8,slotToUpdate.getSalle().getId());
+            }
+            else{
+                ps.setObject(8,null);
+            }
+            ps.setInt(9,slotToUpdate.getId());
+            int rowsUpdated = ps.executeUpdate();
+            if(rowsUpdated > 0){
+                return Optional.of(slotToUpdate);
+            }else{
+                throw new DataBaseException("Erreur technique : impossible de mettre à jour le slot dans la base de données");
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Erreur technique : impossible de mettre le slot {} à jour dans la base de données", slotToUpdate.toString(),e);
+            throw new DataBaseException("Erreur technique : impossible de mettre à jour le slot dans la base de donnée");
+        }
+    }//update
+
     public boolean isExistByColorFond(Slot slotToInsert) throws DataBaseException {
         String requestSql = "SELECT COUNT(id) FROM slot WHERE couleurFond = ?";
         try {
