@@ -114,13 +114,13 @@ public class SlotRepository {
             ps.setString(4,slotToUpdate.getCouleurPolice());
             ps.setInt(5,slotToUpdate.getTimeSlot().getId());
             ps.setInt(6,slotToUpdate.getMatiere().getId());
-            if(slotToUpdate.getEnseignant().getId() != null){
+            if(slotToUpdate.getEnseignant() != null && slotToUpdate.getEnseignant().getId() != null){
                 ps.setInt(7,slotToUpdate.getEnseignant().getId());
             }
             else {
                 ps.setObject(7,null);
             }
-            if(slotToUpdate.getSalle().getId() != null){
+            if(slotToUpdate.getSalle() != null && slotToUpdate.getSalle().getId() != null){
                 ps.setInt(8,slotToUpdate.getSalle().getId());
             }
             else{
