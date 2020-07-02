@@ -68,6 +68,15 @@ public class Matiere {
         this.description = description;
     }//Matiere()
 
+    public Matiere(Integer id, String nom, String volumeHoraire, String description, Date creationDate, Date modificationDate) {
+        this.id = id;
+        this.nom = nom;
+        this.volumeHoraire = volumeHoraire;
+        this.description = description;
+        this.creationDate = creationDate;
+        this.modificationDate = modificationDate;
+    }//Matiere()
+
     public String getNom() {
         return nom;
     }
