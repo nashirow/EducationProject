@@ -1,0 +1,40 @@
+@import '../../common.scss';
+
+#plannings{
+    #table-plannings{
+
+        width: 70%;
+        margin: 30px auto;
+        
+        tr:nth-child(even){ 
+            background-color: #f2f2f2; 
+        }
+        
+        tr:hover { 
+            background-color: #cd88f0; 
+        }
+        
+        th {
+            background-color: $colorPlannings;
+        }
+    }
+
+    #create-planning{
+        color: #fff;
+        background-color: $colorPlannings;
+
+        &:hover, &:active{
+            background-color: #480769; 
+        }
+    }
+
+    .pagination{
+        ul{
+            li.active{
+                background-color: $colorPlannings;
+                color: $colorWhite; 
+                border-radius: 4px;
+            }
+        }
+    }
+}

@@ -40,7 +40,7 @@ export const Home = () => {
         <Link className='home-cta' to='/classes'>
             <HomeCTA label='Options' class='cta' id='cta-options' icon='fa fa-cog' />
         </Link>
-        <Link className='home-cta' to='/classes'>
+        <Link className='home-cta' to='/plannings'>
             <HomeCTA label='Emplois du temps' class='cta' id='cta-planning' icon='fa fa-calendar' />
         </Link>
         <Link className='home-cta' to='/classes'>
