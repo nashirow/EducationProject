@@ -139,5 +139,20 @@ public class EnseignantEndPoint {
             return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }//countEnseignants()
+
+    /**
+     * Ce endpoint permet de supprimer un enseignant avec l'identifiant passé en paramètre
+     *
+     * @param id Identifiant de l'enseignant à supprimer
+     * @return Réponse HTTP
+     */
+    @DeleteMapping("/enseignant/{id}")
+    public ResponseEntity<?> deleteEnseignant(@PathVariable("id") Integer id) {
+        try {
+            return new ResponseEntity<>(new ResponseEndPoint(enseignantService.deleteEnseignant(id), null), HttpStatus.OK);
+        } catch (DataBaseException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }//deleteEnseignant()
 }//EnseignantEndPoint
 
