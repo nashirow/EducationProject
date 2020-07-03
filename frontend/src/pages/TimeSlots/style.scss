@@ -1,7 +1,7 @@
 @import '../../common.scss';
 
-#classes{
-    #table-classes{
+#timeslots{
+    #table-timeslots{
 
         width: 70%;
         margin: 30px auto;
@@ -11,27 +11,27 @@
         }
         
         tr:hover { 
-            background-color: #d1a4b3be; 
+            background-color: #a4c7eebe; 
         }
         
         th {
-            background-color: $colorClasses;
+            background-color: $colorTimeSlots;
         }
     }
 
-    #create-classe{
+    #create-timeslots{
         color: #fff;
-        background-color: $colorClasses;
+        background-color: $colorTimeSlots;
 
         &:hover, &:active{
-            background-color: #d3013d; 
+            background-color: #3875d1; 
         }
     }
 
     .pagination{
         ul{
             li.active{
-                background-color: $colorClasses;
+                background-color: $colorTimeSlots;
                 color: $colorWhite; 
                 border-radius: 4px;
             }

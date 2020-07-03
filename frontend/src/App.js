@@ -18,6 +18,7 @@ import { Header } from './components/Header/Header';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Home } from './pages/Home/Home';
 import { Classes } from './pages/Classes/Classes';
+import { TimeSlots } from './pages/TimeSlots/TimeSlots';
 
 /**
  * Entrée de l'application + Gestion des routes
@@ -28,8 +29,11 @@ function App() {
       <Header />
       <Router>
         <Switch>
-        <Route path="/classes">
+          <Route path="/classes">
             <Classes />
+          </Route>
+          <Route path="/timeslots">
+            <TimeSlots />
           </Route>
           <Route path="/">
             <Home />

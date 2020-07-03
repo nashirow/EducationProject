@@ -21,20 +21,20 @@ import { Message } from '../../components/Message/Message';
 import { Breadcrumb } from '../../components/Breadcrumb/Breadcrumb';
 import { Button } from '../../components/Button/Button';
 import { Pagination } from '../../components/Pagination/Pagination';
-
-import './style.scss';
 import { handleResponse } from '../../utils/Utils';
 
-/**
- * Page classes
- */
-export const Classes = () => {
+import './style.scss';
 
-    const [classes, setClasses] = useState([]);
+/**
+ * Page Créneaux Horaires
+ */
+export const TimeSlots = () => {
+
+    const [timeSlots, setTimeSlots] = useState([]);
     const [errors, setErrors] = useState([]);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
-    const header = ['Identifiant', 'Nom', 'Actions'];
+    const header = ['Identifiant', 'Heure de début', 'Heure de fin', 'Actions'];
 
     /**
      * Successeur de ComponentDidMount
@@ -43,17 +43,17 @@ export const Classes = () => {
         const abortController = new AbortController();
         const fetchData = async () => {
             try{
-                let response = await fetch(`${process.env.REACT_APP_API_URL_CLASSES}?page=${page}&nbElementsPerPage=${process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE}`, 
+                let response = await fetch(`${process.env.REACT_APP_API_URL_TIMESLOTS}?page=${page}&nbElementsPerPage=${process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE}`, 
                     { method: 'GET', signal: abortController.signal });
                 let json = await response.json();
-                response = await handleResponse(setErrors, response, json);;
+                response = await handleResponse(setErrors, response, json);
                 
-                setClasses(json.value.map(val => [val.id, val.nom, null]) || []);
+                setTimeSlots(json.value.map(val => [val.id, val.start, val.end, null]) || []);
 
-                response = await fetch(`${process.env.REACT_APP_API_URL_COUNT_CLASSES}`, 
+                response = await fetch(`${process.env.REACT_APP_API_URL_COUNT_TIMESLOTS}`, 
                     { method: 'GET', signal: abortController.signal });
                 json = await response.json();
-                response = await handleResponse(setErrors, response, json);;
+                response = await handleResponse(setErrors, response, json);
                 
                 setTotalPages(Math.ceil(json.value/parseInt(process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE)));
             }catch(err){
@@ -70,21 +70,21 @@ export const Classes = () => {
     }, [page, totalPages]);
 
     /**
-     * Récupération de toutes les classes
+     * Récupération de tous les créneaux horaires
      * @param {Integer} numPage n° de la page
      * @param {Object} optionsFetch options API Fetch
      */
-    const fetchAllClasses = async (numPage, optionsFetch) => {
+    const fetchAllTimeSlots = async (numPage, optionsFetch) => {
         try{
-            let response = await fetch(`${process.env.REACT_APP_API_URL_CLASSES}?page=${numPage}&nbElementsPerPage=${process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE}`, optionsFetch);
+            let response = await fetch(`${process.env.REACT_APP_API_URL_TIMESLOTS}?page=${numPage}&nbElementsPerPage=${process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE}`, optionsFetch);
             let json = await response.json();
-            response = await handleResponse(setErrors, response, json);;
+            response = await handleResponse(setErrors, response, json);
             
-            setClasses(json.value.map(val => [val.id, val.nom, null]) || []);
+            setTimeSlots(json.value.map(val => [val.id, val.start, val.end, null]) || []);
 
-            response = await fetch(`${process.env.REACT_APP_API_URL_COUNT_CLASSES}`, optionsFetch);
+            response = await fetch(`${process.env.REACT_APP_API_URL_COUNT_TIMESLOTS}`, optionsFetch);
             json = await response.json();
-            response = await handleResponse(setErrors, response, json);;
+            response = await handleResponse(setErrors, response, json);
             
             setTotalPages(Math.ceil(json.value/parseInt(process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE)));
         }catch(err){
@@ -94,16 +94,16 @@ export const Classes = () => {
     };
 
     /**
-     * Callback suppression d'une classe
-     * @param {Integer} id Identifiant de la classe à supprimer
+     * Callback suppression d'un créneau horaire
+     * @param {Integer} id Identifiant du créneau horaire à supprimer
      */
-    const deleteClasse = async (id) => {
-        if(window.confirm('Confirmez-vous la suppression de la classe n°' + id + ' ?')){
+    const deleteTimeSlot = async (id) => {
+        if(window.confirm('Confirmez-vous la suppression du créneau horaire n°' + id + ' ?')){
             try{
-                const response = await fetch(`${process.env.REACT_APP_API_URL_DELETE_CLASSE}/${id}`, { method: 'DELETE' });
+                const response = await fetch(`${process.env.REACT_APP_API_URL_DELETE_TIMESLOT}/${id}`, { method: 'DELETE' });
                 let json = await response.json()
                 await handleResponse(setErrors, response, json);
-                await fetchAllClasses(page, { method: 'GET' });  
+                await fetchAllTimeSlots(page, { method: 'GET' });  
             }catch(err){
                 console.error(err);
                 setErrors([process.env.REACT_APP_GENERAL_ERROR]);
@@ -117,17 +117,17 @@ export const Classes = () => {
      */
     const changePage = (numPage) => {
         setPage(numPage);
-        fetchAllClasses(numPage, { method: 'GET' }); 
+        fetchAllTimeSlots(numPage, { method: 'GET' }); 
     };
     
-    return(<main id="classes">
-        <Breadcrumb elements={[{label: 'Classes', link: '' }]} />
+    return(<main id="timeslots">
+        <Breadcrumb elements={[{label: 'Créneaux horaires', link: '' }]} />
         {!_.isEmpty(errors) && <Message typeMessage='errors' messages={errors} />}
         <div className='page-actions'>
-            <Button id='create-classe' to='/' label='Créer une classe' />
+            <Button id='create-timeslots' to='/' label='Créer un créneau horaire' />
         </div>
-        <Table id='table-classes' header={header} data={classes} 
-            details='/' edit='/' delete={(id) => deleteClasse(id)}
+        <Table id='table-timeslots' header={header} data={timeSlots} 
+            details='/' edit='/' delete={(id) => deleteTimeSlot(id)}
         />
         <Pagination currentPage={page} pagesCount={totalPages} action={changePage}/>
     </main>);
