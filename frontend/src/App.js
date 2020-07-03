@@ -19,6 +19,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Home } from './pages/Home/Home';
 import { Classes } from './pages/Classes/Classes';
 import { TimeSlots } from './pages/TimeSlots/TimeSlots';
+import { Plannings } from './pages/Plannings/Plannings';
 
 /**
  * Entrée de l'application + Gestion des routes
@@ -34,6 +35,9 @@ function App() {
           </Route>
           <Route path="/timeslots">
             <TimeSlots />
+          </Route>
+          <Route path="/plannings">
+            <Plannings />
           </Route>
           <Route path="/">
             <Home />
