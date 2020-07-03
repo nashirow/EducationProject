@@ -48,7 +48,7 @@ export const Slots = () => {
                 let json = await response.json();
                 response = await handleResponse(setErrors, response, json);;
                 
-                setSlots(json.value.map(val => [val.id, val.nom, null]) || []);
+                setSlots(json.value.map(val => [val.id, val.matiere.nom, val.timeSlot.start, val.timeSlot.end, null]) || []);
 
                 response = await fetch(`${process.env.REACT_APP_API_URL_COUNT_SLOTS}`, 
                     { method: 'GET', signal: abortController.signal });
@@ -80,7 +80,7 @@ export const Slots = () => {
             let json = await response.json();
             response = await handleResponse(setErrors, response, json);;
             
-            setSlots(json.value.map(val => [val.id, val.nom, null]) || []);
+            setSlots(json.value.map(val => [val.id, val.matiere.nom, val.timeSlot.start, val.timeSlot.end, null]) || []);
 
             response = await fetch(`${process.env.REACT_APP_API_URL_COUNT_SLOTS}`, optionsFetch);
             json = await response.json();
