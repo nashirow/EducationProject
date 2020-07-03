@@ -1,0 +1,40 @@
+@import '../../common.scss';
+
+#teachers{
+    #table-teachers{
+
+        width: 70%;
+        margin: 30px auto;
+        
+        tr:nth-child(even){ 
+            background-color: #f2f2f2; 
+        }
+        
+        tr:hover { 
+            background-color: #a098a0; 
+        }
+        
+        th {
+            background-color: $colorTeachers;
+        }
+    }
+
+    #create-teachers{
+        color: #fff;
+        background-color: $colorTeachers;
+
+        &:hover, &:active{
+            background-color: #484548; 
+        }
+    }
+
+    .pagination{
+        ul{
+            li.active{
+                background-color: $colorTeachers;
+                color: $colorWhite; 
+                border-radius: 4px;
+            }
+        }
+    }
+}
