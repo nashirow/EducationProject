@@ -92,7 +92,7 @@ public class SalleEndPoint {
         }
     }//getSalles()
 
-    @GetMapping("/salles/count")
+    @GetMapping("/count/salles")
     public ResponseEntity<?> countSalles(@RequestParam (value = "nom", required = false) String nom){
         try {
             long resultCount = salleService.countSalles(nom);
