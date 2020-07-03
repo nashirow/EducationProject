@@ -7,3 +7,15 @@ $colorDisciplines: #4b920b;
 $colorTeachers: #585458;
 $colorWhite:#fff;
 $colorBlack:#000;
+
+.wrapper-form{
+    text-align: center;
+    .forms{
+        display: inline-block;
+        text-align: center;
+        input{
+            display: block;
+        }
+    }
+    
+}
