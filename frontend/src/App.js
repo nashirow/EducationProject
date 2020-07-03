@@ -21,6 +21,7 @@ import { Classes } from './pages/Classes/Classes';
 import { TimeSlots } from './pages/TimeSlots/TimeSlots';
 import { Plannings } from './pages/Plannings/Plannings';
 import { Slots } from './pages/Slots/Slots';
+import { Rooms } from './pages/Rooms/Rooms';
 
 /**
  * Entrée de l'application + Gestion des routes
@@ -42,6 +43,9 @@ function App() {
           </Route>
           <Route path="/slots">
             <Slots />
+          </Route>
+          <Route path="/rooms">
+            <Rooms />
           </Route>
           <Route path="/">
             <Home />

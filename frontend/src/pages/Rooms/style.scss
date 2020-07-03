@@ -1,0 +1,40 @@
+@import '../../common.scss';
+
+#rooms{
+    #table-rooms{
+
+        width: 70%;
+        margin: 30px auto;
+        
+        tr:nth-child(even){ 
+            background-color: #f2f2f2; 
+        }
+        
+        tr:hover { 
+            background-color: #f0e584be; 
+        }
+        
+        th {
+            background-color: $colorRoom;
+        }
+    }
+
+    #create-room{
+        color: #fff;
+        background-color: $colorRoom;
+
+        &:hover, &:active{
+            background-color: #d19438; 
+        }
+    }
+
+    .pagination{
+        ul{
+            li.active{
+                background-color: $colorRoom;
+                color: $colorWhite; 
+                border-radius: 4px;
+            }
+        }
+    }
+}
