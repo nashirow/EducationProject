@@ -1,0 +1,40 @@
+@import '../../common.scss';
+
+#disciplines{
+    #table-disciplines{
+
+        width: 70%;
+        margin: 30px auto;
+        
+        tr:nth-child(even){ 
+            background-color: #f2f2f2; 
+        }
+        
+        tr:hover { 
+            background-color: #68c711; 
+        }
+        
+        th {
+            background-color: $colorDisciplines;
+        }
+    }
+
+    #create-discipline{
+        color: #fff;
+        background-color: $colorDisciplines;
+
+        &:hover, &:active{
+            background-color: #305d08; 
+        }
+    }
+
+    .pagination{
+        ul{
+            li.active{
+                background-color: $colorDisciplines;
+                color: $colorWhite; 
+                border-radius: 4px;
+            }
+        }
+    }
+}
