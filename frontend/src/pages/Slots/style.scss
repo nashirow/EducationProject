@@ -1,0 +1,40 @@
+@import '../../common.scss';
+
+#slots{
+    #table-slots{
+
+        width: 70%;
+        margin: 30px auto;
+        
+        tr:nth-child(even){ 
+            background-color: #f2f2f2; 
+        }
+        
+        tr:hover { 
+            background-color: #5c9dfd; 
+        }
+        
+        th {
+            background-color: $colorSlots;
+        }
+    }
+
+    #create-slot{
+        color: #fff;
+        background-color: $colorSlots;
+
+        &:hover, &:active{
+            background-color: #0e469b; 
+        }
+    }
+
+    .pagination{
+        ul{
+            li.active{
+                background-color: $colorSlots;
+                color: $colorWhite; 
+                border-radius: 4px;
+            }
+        }
+    }
+}

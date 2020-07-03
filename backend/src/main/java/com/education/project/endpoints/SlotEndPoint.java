@@ -86,7 +86,6 @@ public class SlotEndPoint {
      */
     @DeleteMapping("/slot/{id}")
     public ResponseEntity<?> deleteSlot(@PathVariable Integer id){
-
         try {
             boolean result = slotService.deleteSlot(id);
             return new ResponseEntity<>(new ResponseEndPoint(result,null),HttpStatus.OK);

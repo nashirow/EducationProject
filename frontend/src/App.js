@@ -20,6 +20,7 @@ import { Home } from './pages/Home/Home';
 import { Classes } from './pages/Classes/Classes';
 import { TimeSlots } from './pages/TimeSlots/TimeSlots';
 import { Plannings } from './pages/Plannings/Plannings';
+import { Slots } from './pages/Slots/Slots';
 
 /**
  * Entrée de l'application + Gestion des routes
@@ -38,6 +39,9 @@ function App() {
           </Route>
           <Route path="/plannings">
             <Plannings />
+          </Route>
+          <Route path="/slots">
+            <Slots />
           </Route>
           <Route path="/">
             <Home />
