@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -93,4 +94,28 @@ public class SlotEndPoint {
             return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }//deleteSlot()
+
+    /**
+     * Ce endpoint permet de compter le nombre de slots en base de données à l'aide de paramètres (facultatifs)
+     * @param params Les paramètres (facultatifs : nom/prenom enseignant, nom d'une matière/salle, début/fin d'un horaire, couleur de fond/police d'un slot)
+     * La liste des clefs utilisés pour les paramètres
+     * enseignantNom : c'est le nom de l'enseignant
+     * enseignantPrenom : c'est le prenom de l'enseignant
+     * matiereNom : c'est le nom de la matière
+     * startHour : c'est l'heure de début du créneau horaire
+     * endHour : c'est l'heure de fin du créneau horaire
+     * couleurFond : c'est la couleur de fond du slot
+     * couleurPolice : c'est la couleur de police du slot
+     * salleNom : c'est le nom de la salle
+     * @return Réponse HTTP
+     */
+    @GetMapping("/count/slots")
+    public ResponseEntity<?> countSlots(@RequestParam Map<String,String> params){
+        try {
+            long result = slotService.countSlots(params);
+            return new ResponseEntity<>(new ResponseEndPoint(result,null),HttpStatus.OK);
+        } catch (DataBaseException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }//countSlots()
 }//SlotEndPoint
