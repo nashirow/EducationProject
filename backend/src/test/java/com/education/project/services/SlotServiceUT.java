@@ -16,6 +16,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalTime;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -399,4 +401,58 @@ public class SlotServiceUT {
         boolean result = slotService.deleteSlot(this.slotToDelete.getId());
         Assertions.assertThat(result).isFalse();
     }//delete_slot_should_success_when_id_is_30()
+
+    @Test
+    public void count_slots_should_return_4L_when_no_filters_given() throws DataBaseException {
+        Map<String,String> mapSlot = new HashMap<>();
+        Mockito.when(slotRepository.countSlot(mapSlot)).thenReturn(4L);
+        long result = slotService.countSlots(mapSlot);
+        Assertions.assertThat(result).isEqualTo(4L);
+    }//count_slots_should_return_4L_when_no_filters_given()
+
+    @Test
+    public void count_slots_should_return_1L_when_enseignant_last_name_is_Levfbre() throws DataBaseException {
+        Map<String,String> mapSlot = new HashMap<>();
+        mapSlot.put("nom","Levfbre");
+        Mockito.when(slotRepository.countSlot(mapSlot)).thenReturn(1L);
+        long result = slotService.countSlots(mapSlot);
+        Assertions.assertThat(result).isEqualTo(1L);
+    }//count_slots_should_return_1L_when_enseignant_name_is_paul()
+
+    @Test
+    public void count_slots_should_return_1L_when_enseignant_last_name_is_Levfbre_and_first_name_is_Paul() throws DataBaseException {
+        Map<String,String> mapSlot = new HashMap<>();
+        mapSlot.put("nom","Levfbre");
+        mapSlot.put("prenom","Paul");
+        Mockito.when(slotRepository.countSlot(mapSlot)).thenReturn(1L);
+        long result = slotService.countSlots(mapSlot);
+        Assertions.assertThat(result).isEqualTo(1L);
+    }//count_slots_should_return_1L_when_enseignant_last_name_is_Levfbre_and_first_name_is_Paul()
+
+    @Test
+    public void count_slots_should_return_2L_when_enseignant_is_Levfbre_Paul_and_salle_name_is_b240() throws DataBaseException {
+        Map<String,String> mapSlot = new HashMap<>();
+        mapSlot.put("nom","Levfbre");
+        mapSlot.put("prenom","Paul");
+        mapSlot.put("nomSalle","b240");
+        Mockito.when(slotRepository.countSlot(mapSlot)).thenReturn(2L);
+        long result = slotService.countSlots(mapSlot);
+        Assertions.assertThat(result).isEqualTo(2L);
+    }//count_slots_should_return_2L_when_enseignant_is_Levfbre_Paul_and_salle_name_is_b240()
+
+    @Test
+    public void count_slots_should_return_1L_when_timeslot_starts_at_8_and_ends_at_10_and_enseignant_is_Laporte_Marc_and_matiere_is_Mathématiques_and_salle_is_B240_and_colorFond_is_fff_and_colorPolice_is_000() throws DataBaseException {
+        Map<String,String> mapSlot = new HashMap<>();
+        mapSlot.put("nom","Laporte");
+        mapSlot.put("prenom","Marc");
+        mapSlot.put("startHour","08:00");
+        mapSlot.put("endHour","10:00");
+        mapSlot.put("nomMatiere","Mathématiques");
+        mapSlot.put("nomSalle","B240");
+        mapSlot.put("couleurFond","#fff");
+        mapSlot.put("couleurPolice","#000");
+        Mockito.when(slotRepository.countSlot(mapSlot)).thenReturn(1L);
+        long result = slotService.countSlots(mapSlot);
+        Assertions.assertThat(result).isEqualTo(1L);
+    }//count_slots_should_return_1L_when_timeslot_starts_at_8_and_ends_at_10_and_enseignant_is_Laporte_Marc_and_matiere_is_Mathématiques_and_salle_is_b240_and_colorFond_is_fff_and_colorPolice_is_000()
 }//SlotServiceUT()

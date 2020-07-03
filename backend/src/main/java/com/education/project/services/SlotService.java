@@ -8,10 +8,7 @@ import com.education.project.utils.ColorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Cette classe gère les fonctionnalitées liées aux slots
@@ -122,5 +119,9 @@ public class SlotService {
             throw new ArgumentException(errors);
         }
     }//checkBusiness()
+
+    public long countSlots(Map<String,String> mapSlot) throws DataBaseException {
+        return slotRepository.countSlot(mapSlot);
+    }//countSlots()
 }//SlotService
 
