@@ -28,7 +28,7 @@ export const Home = () => {
         <Link className='home-cta' to='/classes'>
             <HomeCTA label='Classes' class='cta' id='cta-classe' icon='fa fa-superscript' />
         </Link>
-        <Link className='home-cta' to='/classes'>
+        <Link className='home-cta' to='/timeslots'>
             <HomeCTA label='Créneaux horaires' class='cta' id='cta-hours' icon='fa fa-clock-o' />
         </Link>
         <Link className='home-cta' to='/classes'>

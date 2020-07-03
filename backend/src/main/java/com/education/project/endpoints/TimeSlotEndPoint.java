@@ -88,7 +88,7 @@ public class TimeSlotEndPoint {
      * Compte le nombre total de créneaux horaires dont dispose l'application.
      * @return Réponse HTTP
      */
-    @GetMapping("/timeslot/count")
+    @GetMapping("/count/timeslots")
     public ResponseEntity<?> countTimeSlots(){
         try {
             return new ResponseEntity<>(new ResponseEndPoint(this.timeSlotService.count(), null), HttpStatus.OK);
