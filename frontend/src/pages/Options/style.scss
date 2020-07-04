@@ -1,0 +1,11 @@
+@import '../../common.scss';
+
+#options{
+    #actions{
+        text-align: center;
+        #save-options{
+            background-color: $colorSaveButton;
+            color: #fff;
+        }
+    }
+}

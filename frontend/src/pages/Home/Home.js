@@ -37,7 +37,7 @@ export const Home = () => {
         <Link className='home-cta' to='/disciplines'>
             <HomeCTA label='Matières' class='cta' id='cta-disciplines' icon='fa fa-book' />
         </Link>
-        <Link className='home-cta' to='/classes'>
+        <Link className='home-cta' to='/options'>
             <HomeCTA label='Options' class='cta' id='cta-options' icon='fa fa-cog' />
         </Link>
         <Link className='home-cta' to='/plannings'>

@@ -46,7 +46,7 @@ export const Classes = () => {
                 let response = await fetch(`${process.env.REACT_APP_API_URL_CLASSES}?page=${page}&nbElementsPerPage=${process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE}`, 
                     { method: 'GET', signal: abortController.signal });
                 let json = await response.json();
-                response = await handleResponse(setErrors, response, json);;
+                response = await handleResponse(setErrors, response, json);
                 
                 setClasses(json.value.map(val => [val.id, val.nom, null]) || []);
 
