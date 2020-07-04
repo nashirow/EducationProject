@@ -24,6 +24,7 @@ import { Slots } from './pages/Slots/Slots';
 import { Rooms } from './pages/Rooms/Rooms';
 import { Disciplines } from './pages/Matieres/Matieres';
 import { Teachers } from './pages/Teachers/Teachers';
+import { DetailsClasse } from './pages/Details/DetailsClasse/DetailsClasse';
 import { Options } from './pages/Options/Options';
 
 /**
@@ -35,6 +36,9 @@ function App() {
       <Header />
       <Router>
         <Switch>
+          <Route path="/classes/details/:id">
+            <DetailsClasse />
+          </Route>
           <Route path="/classes">
             <Classes />
           </Route>
