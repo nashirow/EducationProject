@@ -7,15 +7,26 @@ $colorDisciplines: #4b920b;
 $colorTeachers: #585458;
 $colorWhite:#fff;
 $colorBlack:#000;
+$colorSaveButton: rgb(6, 89, 167);
 
 .wrapper-form{
-    text-align: center;
     .forms{
-        display: inline-block;
-        text-align: center;
-        input{
-            display: block;
+        border-radius: 5px;
+        background-color: #f2f2f2;
+        padding: 20px;
+        width: 70%;
+        margin: 0 auto;
+        div{
+            margin: 20px 0;
+            input, select{
+                display: inline-block;
+                width: 100%;
+                padding: 8px;
+                margin-top: 5px;
+                box-sizing: border-box;
+            }
         }
+        
     }
     
 }

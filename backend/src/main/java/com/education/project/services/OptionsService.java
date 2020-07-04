@@ -54,6 +54,14 @@ public class OptionsService {
         return optionsRepository.getOptions();
     }// getOptions()
 
+    /**
+     * Récupère les valeurs valides pour découper un emploi du temps.
+     * @return valeurs valides
+     */
+    public List<Integer> getValuesAcceptedForSplitValue(){
+        return valuesSplitPlanningAccepted;
+    }// getValuesAcceptedForSplitValue()
+
     private boolean checkBusiness(Options fullOptions) throws ArgumentException, DataBaseException {
         List<String> errors = new ArrayList<>();
         if(fullOptions == null){

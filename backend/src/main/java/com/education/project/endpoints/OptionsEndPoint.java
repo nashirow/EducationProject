@@ -52,7 +52,7 @@ public class OptionsEndPoint {
         } catch (DataBaseException e) {
             return new ResponseEntity<>(new ResponseEndPoint(null, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (ArgumentException e) {
-            return new ResponseEntity<>(new ResponseEndPoint(null, e.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ResponseEndPoint(null, e.getErreurs()), HttpStatus.BAD_REQUEST);
         }
     }// getOptions()
 
@@ -68,5 +68,15 @@ public class OptionsEndPoint {
             return new ResponseEntity<>(new ResponseEndPoint(null, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }// getOptions()
+
+    /**
+     * Cet endpoint retourne les valeurs de découpage de l'emploi du temps
+     * qui peuvent être utilisées.
+     * @return Réponse HTTP
+     */
+    @GetMapping("/options/choicesSplitTime")
+    public ResponseEntity<?> getChoicesForSplitTime(){
+        return new ResponseEntity<>(new ResponseEndPoint(this.optionsService.getValuesAcceptedForSplitValue(), null), HttpStatus.OK);
+    }// getChoicesForSplitTime()
 
 }// OptionsEndPoint

@@ -45,6 +45,7 @@ export const Button = (props) => {
         <div id={props.id} className='button' onClick={props.action}>
             {props && props.to && !props.action && renderButtonWithLinks(props)}
             {props && !props.to && !props.action && renderButton(props)}
+            {props && !props.to && props.action && renderButton(props)}
         </div>
         );
 };
