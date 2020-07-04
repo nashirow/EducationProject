@@ -123,5 +123,14 @@ public class SlotService {
     public long countSlots(Map<String,String> mapSlot) throws DataBaseException {
         return slotRepository.countSlot(mapSlot);
     }//countSlots()
+
+    /**
+     * Cette fonction permet de récupérer tous les slots en base de données en fonction des informations passées en paramètres
+     * @param params paramètres liés au slot
+     * @return les slots récupérés
+     */
+    public List<Slot> getSlots(Map<String, String> params) throws DataBaseException {
+        return slotRepository.getSlots(params);
+    }//getSlots
 }//SlotService
 
