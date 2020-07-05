@@ -1,0 +1,19 @@
+.details{
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin: 30px 0;
+    ul{
+        list-style: none;
+        li{
+            margin: 15px 0;
+            label{
+                display: inline-block;
+                margin-right: 15px;
+                width: 300px;
+                min-height: 1px;
+                text-align: right;
+                font-weight: bold;
+            }
+        }
+    }
+}

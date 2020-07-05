@@ -11,3 +11,25 @@ export const handleResponse = async (callback, response, json, callbackConfirmat
     }
     return response;
 };
+
+/**
+ * Vérifie que la clé passée en paramètre est une clé de type date.
+ * @param {String} key
+ * @return boolean
+ */
+export const isKeyDate = (key) => key === 'creationDate' || key === 'modificationDate';
+
+/**
+ * Transforme la clé d'un objet résultat en un label plus compréhensible.
+ * @param {String} key
+ */
+export const renderKey = (key) => {
+    const mapping = {
+        id: 'Identifiant',
+        nom: 'Nom',
+        prenom: 'Prénom',
+        creationDate: 'Date de création',
+        modificationDate: 'Dernière date de modification',
+    };
+    return mapping[key];
+};

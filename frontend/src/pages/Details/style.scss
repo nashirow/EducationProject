@@ -1,0 +1,16 @@
+@import '../../common.scss';
+
+.wrapper-details{
+    margin: 0 auto;
+    width: 70%;
+    
+    .details{
+        border-radius: 8px;
+    }
+}
+
+#details-classe{
+    .details{
+        border: 1px solid $colorClasses;
+    }
+}

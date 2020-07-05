@@ -49,7 +49,7 @@ export const Table = (props) => {
                             return (<td className='actions' key='actions'>
                                     {props && props.edit && <Link to={props.edit}><i className='fa fa-pencil' title='Modifier' /></Link> } 
                                     {props && props.delete && <i className='fa fa-trash' title='Supprimer' onClick={(e) => props.delete(values[0])} /> }
-                                    {props && props.details && <Link to={props.details}><i className='fa fa-list-ul' title='Consulter les détails' /></Link> }
+                                    {props && props.details && <Link to={`${props.details}/${values[0]}`}><i className='fa fa-list-ul' title='Consulter les détails' /></Link> }
                                 </td>)
                         }
                     })}
