@@ -15,6 +15,12 @@
     }
 }
 
+#details-teacher{
+    .details{
+        border: 1px solid $colorTeachers;
+    }
+}
+
 #details-discipline{
     .details{
         border: 1px solid $colorDisciplines;
