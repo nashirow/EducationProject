@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -55,5 +56,22 @@ public class PlanningEndPoint {
             return new ResponseEntity<>(new ResponseEndPoint(null, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }// insertPlanning()
+
+    /**
+     * Cet endpoint permet la mise à jour d'un planning dans l'application.
+     * @param planning Planning à créer
+     * @return Réponse HTTP
+     */
+    @PutMapping("/planning")
+    public ResponseEntity<?> updatePlanning(@RequestBody Planning planning){
+        try {
+            Optional<Planning> result = this.planningService.updatePlanning(planning);
+            return new ResponseEntity<>(new ResponseEndPoint(result, null), HttpStatus.OK);
+        } catch (ArgumentException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null, e.getErreurs()), HttpStatus.BAD_REQUEST);
+        } catch (DataBaseException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }// updatePlanning()
 
 }// PlanningEndPoint
