@@ -16,41 +16,66 @@
 package com.education.project.model;
 
 import java.util.Date;
+import java.util.List;
 
 /**
- * Cette classe rerpésente une classe
+ * Cette classe représente un planning
  */
-public class Classe {
+public class Planning {
 
     /**
-     * Identifiant de la classe
+     * Identifiant du planning
      */
     private Integer id;
 
     /**
-     * Nom de la classe
+     * Nom du planning
      */
     private String nom;
 
     /**
-     * Date de création de la classe
+     * Classe pour qui le planning est créé
+     */
+    private Classe classe;
+
+    /**
+     * Slots composant le planning
+     */
+    private List<Slot> slots;
+
+    /**
+     * C'est la date de création de la matière.
      */
     private Date creationDate;
 
     /**
-     * Date de dernière modification de la classe
+     * C'est la date de modification de la matière.
      */
     private Date modificationDate;
 
-    public Classe() {
-    }// Classe()
+    public Planning() {
+    }// Planning()
 
-    public Classe(Integer id, String nom, Date creationDate, Date modificationDate) {
+    public Planning(String nom, Classe classe, List<Slot> slots) {
+        this.nom = nom;
+        this.classe = classe;
+        this.slots = slots;
+    }// Planning()
+
+    public Planning(Integer id, String nom, Classe classe, List<Slot> slots) {
         this.id = id;
         this.nom = nom;
-        this.creationDate = creationDate;
-        this.modificationDate = modificationDate;
-    }// Classe()
+        this.classe = classe;
+        this.slots = slots;
+    }// Planning()
+
+    public Integer getId() {
+        return id;
+    }// getId()
+
+    public void setId(Integer id) {
+        this.id = id;
+    }// setId()
 
     public String getNom() {
         return nom;
@@ -60,13 +85,21 @@ public class Classe {
         this.nom = nom;
     }// setNom()
 
-    public Integer getId() {
-        return id;
-    }// getId()
+    public Classe getClasse() {
+        return classe;
+    }// getClasse()
 
-    public void setId(Integer id) {
-        this.id = id;
-    }// setId()
+    public void setClasse(Classe classe) {
+        this.classe = classe;
+    }// setClasse()
+
+    public List<Slot> getSlots() {
+        return slots;
+    }// getSlots()
+
+    public void setSlots(List<Slot> slots) {
+        this.slots = slots;
+    }// setSlots()
 
     public Date getCreationDate() {
         return creationDate;
@@ -84,13 +117,4 @@ public class Classe {
         this.modificationDate = modificationDate;
     }// setModificationDate()
 
-    @Override
-    public String toString() {
-        return "Classe{" +
-                "id=" + id +
-                ", nom='" + nom + '\'' +
-                ", creationDate=" + creationDate +
-                ", modificationDate=" + modificationDate +
-                '}';
-    }// toString()
-}// Classe
+}// Planning

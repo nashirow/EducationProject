@@ -72,3 +72,20 @@ CREATE TABLE `slot` (
     FOREIGN KEY (`idSalle`) REFERENCES `salle`(`id`),
     PRIMARY KEY (`id`)
 )COLLATE='utf8mb4_0900_ai_ci';
+
+CREATE TABLE `planning` (
+    `id` SERIAL PRIMARY KEY NOT NULL,
+    `nom` VARCHAR(50) NOT NULL,
+    `creationDate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `modificationDate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `idClasse` INT NOT NULL,
+    FOREIGN KEY(`idClasse`) REFERENCES `classe`(`id`)
+);
+
+CREATE TABLE `planning_has_slots`(
+    `idPlanning` INT NOT NULL,
+    `idSlot` INT NOT NULL,
+    PRIMARY KEY(`idPlanning`, `idSlot`),
+    FOREIGN KEY(`idPlanning`) REFERENCES `planning`(`id`),
+    FOREIGN KEY(`idSlot`) REFERENCES `slot`(`id`)
+);

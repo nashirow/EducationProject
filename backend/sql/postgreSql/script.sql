@@ -73,8 +73,8 @@ CREATE TABLE slot (
     couleurPolice VARCHAR(15) NOT NULL DEFAULT '',
     idTimeslot INT NOT NULL,
     idMatiere INT NOT NULL,
-    idEnseignant INT NOT NULL,
-    idSalle INT NOT NULL,
+    idEnseignant INT,
+    idSalle INT,
     FOREIGN KEY(idTimeslot) REFERENCES timeslot(id),
     FOREIGN KEY(idMatiere) REFERENCES matiere(id),
     FOREIGN KEY(idEnseignant) REFERENCES enseignant(id),
@@ -84,3 +84,21 @@ CREATE TABLE slot (
 COMMENT ON COLUMN slot.comment is 'Commentaire du slot : groupes multiples, autres tâches etc.';
 COMMENT ON COLUMN slot.couleurFond is 'C''est la couleur de fond de la matière.';
 COMMENT ON COLUMN slot.couleurPolice is 'C''est la couleur de la police de la matière.';
+
+CREATE TABLE planning (
+    id SERIAL PRIMARY KEY NOT NULL,
+    nom VARCHAR(50) NOT NULL,
+    creationDate TIMESTAMP NOT NULL DEFAULT NOW(),
+    modificationDate TIMESTAMP NOT NULL DEFAULT NOW(),
+    idClasse INT NOT NULL,
+    FOREIGN KEY(idClasse) REFERENCES classe(id)
+);
+
+CREATE TABLE planning_has_slots(
+    idPlanning INT NOT NULL,
+    idSlot INT NOT NULL,
+    PRIMARY KEY(idPlanning, idSlot),
+    FOREIGN KEY(idPlanning) REFERENCES planning(id),
+    FOREIGN KEY(idSlot) REFERENCES slot(id)
+);
+
