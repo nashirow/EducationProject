@@ -1,3 +1,18 @@
+/*
+ * Copyright 2020 Hicham AZIMANI, Yassine AZIMANI
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.education.project.services;
 
 import com.education.project.exceptions.ArgumentException;
@@ -17,7 +32,14 @@ import java.util.*;
 public class SlotService {
 
     private SlotRepository slotRepository;
+
     private ColorUtils colorUtils;
+
+    /**
+     * Nombre de slots maximum pour le même créneau horaire et le
+     * même jour. (Utile pour la division d'une classe en groupes)
+     */
+    private final static int MAX_SLOTS_IN_SAME_TIMESLOT_AND_SAME_DAY = 2;
 
     @Autowired
     public SlotService(SlotRepository slotRepository) {
@@ -89,6 +111,9 @@ public class SlotService {
                 if (slotToInsert.getMatiere() != null && slotToInsert.getMatiere().getId() == null) {
                     errors.add("L'identifiant de la matière est obligatoire");
                 }
+                if(slotToInsert.getJour() == null || slotToInsert.getJour().getId() == null){
+                    errors.add("Le jour est obligatoire");
+                }
                 if (slotToInsert.getTimeSlot() == null) {
                     errors.add("Le créneau horaire est obligatoire");
                 }
@@ -112,6 +137,9 @@ public class SlotService {
                 }
                 if (slotRepository.isExistByColorFond(slotToInsert)) {
                     errors.add("Il existe déjà un slot avec ce fond de couleur");
+                }
+                if(slotToInsert.getJour() != null && slotToInsert.getJour().getId() != null && slotToInsert.getTimeSlot() != null && slotRepository.countByJour(slotToInsert.getJour().getId(), slotToInsert.getTimeSlot()) > MAX_SLOTS_IN_SAME_TIMESLOT_AND_SAME_DAY){
+                    errors.add("Le nombre de slots pour le même jour et le même créneau horaire est limité à " + MAX_SLOTS_IN_SAME_TIMESLOT_AND_SAME_DAY + " slots");
                 }
             }
         }

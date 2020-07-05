@@ -86,4 +86,19 @@ public class PlanningEndPoint {
         }
     }//deletePlanning()
 
+    /**
+     * Cet endpoint permet de récupérer toutes les informations d'un planning
+     * en fonction de son identifiant.
+     * @param id Identifiant du planning
+     * @return planning
+     */
+    @GetMapping("/planning/{id}")
+    public ResponseEntity<?> getPlanningById(@PathVariable("id") int id){
+        try {
+            return new ResponseEntity<>(new ResponseEndPoint(this.planningService.getPlanningById(id), null), HttpStatus.OK);
+        } catch (DataBaseException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }// getPlanningById()
+
 }// PlanningEndPoint

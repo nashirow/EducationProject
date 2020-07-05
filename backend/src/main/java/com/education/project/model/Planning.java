@@ -53,13 +53,27 @@ public class Planning {
      */
     private Date modificationDate;
 
+    /**
+     * Indique si le planning doit utiliser le mercredi.
+     * Par défaut, la valeur est à true.
+     */
+    private boolean wednesdayUsed;
+
+    /**
+     * Indique si le planning doit utiliser le samedi.
+     * Par défaut, la valeur est à false.
+     */
+    private boolean saturdayUsed;
+
     public Planning() {
+        this.wednesdayUsed = true;
     }// Planning()
 
     public Planning(String nom, Classe classe, List<Slot> slots) {
         this.nom = nom;
         this.classe = classe;
         this.slots = slots;
+        this.wednesdayUsed = true;
     }// Planning()
 
     public Planning(Integer id, String nom, Classe classe, List<Slot> slots) {
@@ -67,6 +81,7 @@ public class Planning {
         this.nom = nom;
         this.classe = classe;
         this.slots = slots;
+        this.wednesdayUsed = true;
     }// Planning()
 
     public Integer getId() {
@@ -116,5 +131,21 @@ public class Planning {
     public void setModificationDate(Date modificationDate) {
         this.modificationDate = modificationDate;
     }// setModificationDate()
+
+    public boolean isWednesdayUsed() {
+        return wednesdayUsed;
+    }// isWednesdayUsed()
+
+    public void setWednesdayUsed(boolean wednesdayUsed) {
+        this.wednesdayUsed = wednesdayUsed;
+    }// setWednesdayUsed()
+
+    public boolean isSaturdayUsed() {
+        return saturdayUsed;
+    }// isSaturdayUsed()
+
+    public void setSaturdayUsed(boolean saturdayUsed) {
+        this.saturdayUsed = saturdayUsed;
+    }// setSaturdayUsed()
 
 }// Planning

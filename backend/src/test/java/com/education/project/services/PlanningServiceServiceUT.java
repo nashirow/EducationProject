@@ -17,9 +17,7 @@ package com.education.project.services;
 
 import com.education.project.exceptions.ArgumentException;
 import com.education.project.exceptions.DataBaseException;
-import com.education.project.model.Classe;
-import com.education.project.model.Planning;
-import com.education.project.model.Slot;
+import com.education.project.model.*;
 import com.education.project.persistence.PlanningRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
@@ -29,10 +27,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalTime;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -76,6 +72,8 @@ public class PlanningServiceServiceUT {
             Assertions.assertThat(planning.getSlots()).isNotNull();
             Assertions.assertThat(planning.getSlots()).isNotEmpty();
             Assertions.assertThat(planning.getSlots()).hasSize(this.planningToInsert.getSlots().size());
+            Assertions.assertThat(planning.isSaturdayUsed()).isFalse();
+            Assertions.assertThat(planning.isWednesdayUsed()).isTrue();
             for(int i = 0; i < planning.getSlots().size(); ++i){
                 Slot currentSlot = planning.getSlots().get(i);
                 Slot slotFromPlanningToInsert = this.planningToInsert.getSlots().get(i);
@@ -154,6 +152,8 @@ public class PlanningServiceServiceUT {
             Assertions.assertThat(planning.getSlots()).isNotEmpty();
             Assertions.assertThat(planning.getSlots()).hasSize(this.planningToUpdate.getSlots().size());
             Assertions.assertThat(planning.getCreationDate()).isNotEqualTo(planning.getModificationDate());
+            Assertions.assertThat(planning.isSaturdayUsed()).isFalse();
+            Assertions.assertThat(planning.isWednesdayUsed()).isTrue();
             for(int i = 0; i < planning.getSlots().size(); ++i){
                 Slot currentSlot = planning.getSlots().get(i);
                 Slot slotFromPlanningToUpdate = this.planningToUpdate.getSlots().get(i);
@@ -241,6 +241,53 @@ public class PlanningServiceServiceUT {
         Assertions.assertThat(result).isFalse();
     }//delete_planning_should_success_when_id_is_400
 
+    @Test
+    public void get_planning_should_success_when_id_is_1() throws DataBaseException {
+        Mockito.when(this.planningRepository.findById(1)).thenReturn(getFullPlanning());
+        Optional<Planning> optPlanning = this.planningService.getPlanningById(1);
+        Assertions.assertThat(optPlanning).isPresent();
+        optPlanning.ifPresent(planning -> {
+            Assertions.assertThat(planning.getId()).isEqualTo(1);
+            Assertions.assertThat(planning.getNom()).isEqualTo("P1");
+            Assertions.assertThat(planning.getClasse()).isNotNull();
+            Assertions.assertThat(planning.getClasse().getNom()).isEqualTo("CM1");
+            Assertions.assertThat(planning.getSlots()).isNotNull();
+            Assertions.assertThat(planning.getSlots()).isNotEmpty();
+            Assertions.assertThat(planning.getSlots()).hasSize(1);
+            Assertions.assertThat(planning.getCreationDate()).isNotEqualTo(planning.getModificationDate());
+            Assertions.assertThat(planning.isSaturdayUsed()).isFalse();
+            Assertions.assertThat(planning.isWednesdayUsed()).isTrue();
+            for(int i = 0; i < planning.getSlots().size(); ++i){
+                Slot currentSlot = planning.getSlots().get(i);
+                Slot slotFromPlanningToUpdate = this.planningToUpdate.getSlots().get(i);
+                Assertions.assertThat(currentSlot.getId()).isEqualTo(1);
+                Assertions.assertThat(currentSlot.getCouleurFond()).isEqualTo("#ddd");
+                Assertions.assertThat(currentSlot.getCouleurPolice()).isEqualTo("#ccc");
+                Assertions.assertThat(currentSlot.getModificationDate()).isNotNull();
+                Assertions.assertThat(currentSlot.getCreationDate()).isNotNull();
+                Assertions.assertThat(currentSlot.getCreationDate()).isNotEqualTo(currentSlot.getModificationDate());
+                Assertions.assertThat(currentSlot.getEnseignant()).isNull();
+                Assertions.assertThat(currentSlot.getMatiere()).isNotNull();
+                Assertions.assertThat(currentSlot.getMatiere().getId()).isEqualTo(1);
+                Assertions.assertThat(currentSlot.getMatiere().getNom()).isEqualTo("Français");
+                Assertions.assertThat(currentSlot.getSalle()).isNull();
+                Assertions.assertThat(currentSlot.getTimeSlot()).isNotNull();
+                Assertions.assertThat(currentSlot.getTimeSlot().getStart().getHour()).isEqualTo(8);
+                Assertions.assertThat(currentSlot.getTimeSlot().getStart().getMinute()).isEqualTo(0);
+                Assertions.assertThat(currentSlot.getTimeSlot().getEnd().getHour()).isEqualTo(9);
+                Assertions.assertThat(currentSlot.getTimeSlot().getEnd().getMinute()).isEqualTo(0);
+                Assertions.assertThat(currentSlot.getComment()).isNull();
+            }
+        });
+    }// get_planning_should_success_when_id_is_1()
+
+    @Test
+    public void get_planning_should_be_empty_when_id_is_2() throws DataBaseException {
+        Mockito.when(this.planningRepository.findById(2)).thenReturn(Optional.empty());
+        Optional<Planning> optPlanning = this.planningService.getPlanningById(2);
+        Assertions.assertThat(optPlanning).isNotPresent();
+    }// get_planning_should_be_empty_when_id_is_2()
+
     private Planning planningToInsert(){
         Classe classe = new Classe(1, null, null, null);
         List<Slot> slots = Stream.of(new Slot(1), new Slot(2), new Slot(3))
@@ -269,4 +316,18 @@ public class PlanningServiceServiceUT {
         planning.setModificationDate(new Date());
         return planning;
     }//planningToDelete()
+    private Optional<Planning> getFullPlanning(){
+        Planning planning = new Planning();
+        planning.setId(1);
+        planning.setClasse(new Classe(1, "CM1", new Date(1591366583), new Date()));
+        planning.setCreationDate(new Date(1591366583));
+        planning.setModificationDate(new Date());
+        planning.setNom("P1");
+
+        Slot s1 = new Slot(1, null, new Date(1591366583), new Date(), "#ddd", "#ccc", new TimeSlot(1, LocalTime.of(8, 0), LocalTime.of(9, 0)), null, new Matiere(1, "Français", null, null, new Date(1591366583), new Date()), null);
+        s1.setJour(new Jour(1, "Lundi"));
+        planning.setSlots(Collections.singletonList(s1));
+        return Optional.of(planning);
+    }// getFullPlanning()
+
 }// PlanningServiceServiceUT

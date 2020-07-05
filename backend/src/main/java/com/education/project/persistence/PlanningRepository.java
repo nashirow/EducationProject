@@ -16,14 +16,16 @@
 package com.education.project.persistence;
 
 import com.education.project.exceptions.DataBaseException;
-import com.education.project.model.Planning;
-import com.education.project.model.Slot;
+import com.education.project.model.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -132,4 +134,78 @@ public class PlanningRepository {
             throw new DataBaseException("Erreur technique : impossible de supprimer le planning de la base de données");
         }
     }//deletePlanning()
+
+    /**
+     * Récupère un planning en fonction de son identifiant
+     * @param id Identifiant du planning à récupérer
+     * @return Planning
+     */
+    public Optional<Planning> findById(int id) throws DataBaseException {
+        StringBuilder sb = new StringBuilder("SELECT p.id AS pid, p.nom AS pnom, p.creationDate AS pcreationDate, p.modificationDate AS pmodificationDate, p.wednesdayUsed AS pwednesdayUsed, p.saturdayUsed AS psaturdayUsed,");
+        sb.append("p.idClasse AS pidClasse, c.nom AS cnom, c.creationDate AS ccreationDate, c.modificationDate AS cmodificationDate,");
+        sb.append("s.id AS slotId, s.comment AS slotComment, s.creationDate AS slotCreationDate, s.modificationDate AS slotModificationDate, ");
+        sb.append("s.couleurFond AS slotCouleurFond, s.couleurPolice AS slotCouleurPolice, ");
+        sb.append("j.id AS jourId, j.nom AS jourNom, e.id AS enseignantId, e.nom AS enseignantNom, e.prenom AS enseignantPrenom, e.creationDate AS enseignantCreationDate, e.modificationDate AS enseignantModificationDate, ");
+        sb.append("m.id AS matiereId, m.nom AS matiereNom,m.volumeHoraire AS matiereVolumeHoraire, m.description AS matiereDescription, m.creationDate AS matiereCreationDate, m.modificationDate AS matiereModificationDate, ");
+        sb.append("t.id AS timeslotId, t.startHour AS timeslotStartHour, t.endHour AS timeslotEndHour, ");
+        sb.append(" sa.id AS salleId, sa.nom AS salleNom, sa.creationDate AS salleCreationDate, sa.modificationDate AS salleModificationDate ");
+        sb.append("FROM planning p ");
+        sb.append("INNER JOIN classe c ON c.id = p.idClasse ");
+        sb.append("INNER JOIN planning_has_slots phs ON phs.idPlanning = p.id ");
+        sb.append("INNER JOIN slot s ON phs.idSlot = s.id ");
+        sb.append("LEFT JOIN enseignant e ON s.idEnseignant = e.id ");
+        sb.append("INNER JOIN matiere m ON s.idMatiere = m.id ");
+        sb.append("INNER JOIN timeslot t ON s.idTimeslot = t.id ");
+        sb.append("LEFT JOIN salle sa ON s.idSalle = sa.id ");
+        sb.append("INNER JOIN jour j ON s.idJour = j.id ");
+        sb.append("WHERE p.id = ?");
+
+        String requestSql = sb.toString();
+        try {
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
+            ps.setInt(1, id);
+            ResultSet resultSet = ps.executeQuery();
+            Planning planning = new Planning();
+            planning.setSlots(new ArrayList<>());
+            while(resultSet.next()) {
+                if(planning.getId() == null){
+                    planning.setId(resultSet.getInt("pid"));
+                    planning.setNom(resultSet.getString("pnom"));
+                    planning.setModificationDate(resultSet.getTimestamp("pmodificationDate"));
+                    planning.setCreationDate(resultSet.getTimestamp("pcreationDate"));
+                    Classe classe = new Classe(
+                            resultSet.getInt("pidClasse"),
+                            resultSet.getString("cnom"),
+                            resultSet.getTimestamp("ccreationDate"),
+                            resultSet.getTimestamp("cmodificationDate")
+                    );
+                    planning.setClasse(classe);
+                    planning.setSaturdayUsed(resultSet.getBoolean("psaturdayUsed"));
+                    planning.setWednesdayUsed(resultSet.getBoolean("pwednesdayUsed"));
+                }
+                Enseignant enseignant = new Enseignant(resultSet.getInt("enseignantId"), resultSet.getString("enseignantNom"), resultSet.getString("enseignantPrenom"), resultSet.getTimestamp("enseignantCreationDate"), resultSet.getTimestamp("enseignantModificationDate"));
+                Matiere matiere = new Matiere(resultSet.getInt("matiereId"), resultSet.getString("matiereNom"), resultSet.getString("matiereVolumeHoraire"), resultSet.getString("matiereDescription"), resultSet.getTimestamp("matiereCreationDate"), resultSet.getTimestamp("matiereModificationDate"));
+                Salle salle = new Salle(resultSet.getInt("salleId"), resultSet.getString("salleNom"), resultSet.getTimestamp("salleCreationDate"), resultSet.getTimestamp("salleModificationDate"));
+                TimeSlot timeSlot = new TimeSlot(resultSet.getInt("timeslotId"), LocalTime.parse(resultSet.getString("timeslotStartHour")), LocalTime.parse(resultSet.getString("timeslotEndHour")));
+                Jour jour = new Jour(resultSet.getInt("jourId"), resultSet.getString("jourNom"));
+                Slot slot = new Slot();
+                slot.setId(resultSet.getInt("slotId"));
+                slot.setCouleurFond(resultSet.getString("slotCouleurFond"));
+                slot.setCouleurPolice(resultSet.getString("slotCouleurPolice"));
+                slot.setComment(resultSet.getString("slotComment"));
+                slot.setCreationDate(resultSet.getTimestamp("slotCreationDate"));
+                slot.setModificationDate(resultSet.getTimestamp("slotModificationDate"));
+                slot.setEnseignant(enseignant);
+                slot.setMatiere(matiere);
+                slot.setSalle(salle);
+                slot.setTimeSlot(timeSlot);
+                slot.setJour(jour);
+                planning.getSlots().add(slot);
+            }
+            return Optional.of(planning);
+        }catch(SQLException e){
+            LOGGER.error(e.getMessage(), e);
+            throw new DataBaseException("Impossible de récupérer le planning n°" + id);
+        }
+    }// findById()
 }// PlanningRepository

@@ -55,6 +55,19 @@ CREATE TABLE `timeslot` (
     PRIMARY KEY (`id`)
 )COLLATE='utf8mb4_0900_ai_ci';
 
+CREATE TABLE `jour`(
+    `id` INT PRIMARY KEY NOT NULL,
+    `nom` VARCHAR(20) NOT NULL
+);
+
+INSERT INTO `jour` (`id`, `nom`) VALUES (1, 'Lundi');
+INSERT INTO `jour` (`id`, `nom`) VALUES (2, 'Mardi');
+INSERT INTO `jour` (`id`, `nom`) VALUES (3, 'Mercredi');
+INSERT INTO `jour` (`id`, `nom`) VALUES (4, 'Jeudi');
+INSERT INTO `jour` (`id`, `nom`) VALUES (5, 'Vendredi');
+INSERT INTO `jour` (`id`, `nom`) VALUES (6, 'Samedi');
+INSERT INTO `jour` (`id`, `nom`) VALUES (7, 'Dimanche');
+
 CREATE TABLE `slot` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `comment` VARCHAR(50) COMMENT 'Le commentaire peut désigner différents groupes (ou tâches) dans un slot',
@@ -66,20 +79,27 @@ CREATE TABLE `slot` (
     `idMatiere` INT NOT NULL,
     `idEnseignant` INT,
     `idSalle` INT,
+    `idJour` INT NOT NULL,
     FOREIGN KEY (`idTimeslot`) REFERENCES `timeslot`(`id`),
     FOREIGN KEY (`idMatiere`) REFERENCES `matiere`(`id`),
     FOREIGN KEY (`idEnseignant`) REFERENCES `enseignant`(`id`),
     FOREIGN KEY (`idSalle`) REFERENCES `salle`(`id`),
+    FOREIGN KEY (`idJour`) REFERENCES `jour`(`id`),
     PRIMARY KEY (`id`)
 )COLLATE='utf8mb4_0900_ai_ci';
 
 CREATE TABLE `planning` (
-    `id` SERIAL PRIMARY KEY NOT NULL,
+    `id` INT NOT NULL AUTO_INCREMENT,
     `nom` VARCHAR(50) NOT NULL,
     `creationDate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `modificationDate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `wednesdayUsed` TINYINT(1) NOT NULL DEFAULT 1,
+    `saturdayUsed` TINYINT(1) NOT NULL DEFAULT 0,
     `idClasse` INT NOT NULL,
-    FOREIGN KEY(`idClasse`) REFERENCES `classe`(`id`)
+    `idJour` INT NOT NULL,
+    FOREIGN KEY(`idClasse`) REFERENCES `classe`(`id`),
+    FOREIGN KEY(`idJour`) REFERENCES `jour`(`id`),
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `planning_has_slots`(

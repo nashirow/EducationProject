@@ -81,6 +81,11 @@ public class Slot {
     private List<Planning> plannings;
 
     /**
+     * Jour pour lequel le slot est programmé.
+     */
+    private Jour jour;
+
+    /**
      * Constructeur
      */
     public Slot() {
@@ -201,6 +206,14 @@ public class Slot {
         this.plannings = plannings;
     }// setPlannings()
 
+    public Jour getJour() {
+        return jour;
+    }// getJour()
+
+    public void setJour(Jour jour) {
+        this.jour = jour;
+    }// setJour()
+
     @Override
     public String toString() {
         return "Slot{" +
@@ -215,6 +228,7 @@ public class Slot {
                 ", matiere=" + matiere +
                 ", salle=" + salle +
                 ", plannings=" + plannings +
+                ", jour=" + jour +
                 '}';
     }// toString()
 
