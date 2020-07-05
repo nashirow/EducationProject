@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Hicham AZIMANI
+ * Copyright 2020 Hicham AZIMANI, Yassine AZIMANI
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package com.education.project.model;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Cette classe représente un slot
@@ -73,10 +74,21 @@ public class Slot {
     private Salle salle;
 
     /**
+     * Plannings possédant ce slot. Cette variable est utile
+     * pour savoir pourquoi il n'est pas possible de supprimer
+     * un slot.
+     */
+    private List<Planning> plannings;
+
+    /**
      * Constructeur
      */
     public Slot() {
     }//Slot()
+
+    public Slot(Integer id) {
+        this.id = id;
+    }// Slot()
 
     public Slot(Integer id, String comment, Date creationDate, Date modificationDate, String couleurFond, String couleurPolice, TimeSlot timeSlot, Enseignant enseignant, Matiere matiere, Salle salle) {
         this.id = id;
@@ -181,6 +193,14 @@ public class Slot {
         this.salle = salle;
     }//setSalle()
 
+    public List<Planning> getPlannings() {
+        return plannings;
+    }// getPlannings()
+
+    public void setPlannings(List<Planning> plannings) {
+        this.plannings = plannings;
+    }// setPlannings()
+
     @Override
     public String toString() {
         return "Slot{" +
@@ -194,6 +214,8 @@ public class Slot {
                 ", enseignant=" + enseignant +
                 ", matiere=" + matiere +
                 ", salle=" + salle +
+                ", plannings=" + plannings +
                 '}';
-    }//toString()
+    }// toString()
+
 }//Slot

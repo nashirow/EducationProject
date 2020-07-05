@@ -1,0 +1,144 @@
+/*
+ * Copyright 2020 Hicham AZIMANI, Yassine AZIMANI
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.education.project.services;
+
+import com.education.project.exceptions.ArgumentException;
+import com.education.project.exceptions.DataBaseException;
+import com.education.project.model.Classe;
+import com.education.project.model.Planning;
+import com.education.project.model.Slot;
+import com.education.project.persistence.PlanningRepository;
+import org.assertj.core.api.Assertions;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+@RunWith(MockitoJUnitRunner.class)
+public class PlanningServiceServiceUT {
+
+    private PlanningService planningService;
+
+    @Mock
+    private PlanningRepository planningRepository;
+
+    private Planning planningToInsert;
+
+    private Planning planningInserted;
+
+    @Before
+    public void setUp() throws DataBaseException {
+        this.planningService = new PlanningService(planningRepository);
+        this.planningToInsert = planningToInsert();
+        this.planningInserted = planningToInsert();
+        this.planningInserted.setId(1);
+        Mockito.when(this.planningRepository.insert(this.planningToInsert)).thenReturn(Optional.of(this.planningInserted));
+    }// setUp()
+
+    @Test
+    public void insert_planning_should_success_with_classe_id_and_name_and_slots_id_given() throws ArgumentException, DataBaseException {
+        Optional<Planning> optPlanning = this.planningService.insertPlanning(this.planningToInsert);
+        Assertions.assertThat(optPlanning).isPresent();
+        optPlanning.ifPresent(planning -> {
+            Assertions.assertThat(planning.getId()).isEqualTo(1);
+            Assertions.assertThat(planning.getNom()).isEqualTo(this.planningToInsert.getNom());
+            Assertions.assertThat(planning.getClasse()).isNotNull();
+            Assertions.assertThat(planning.getClasse().getNom()).isEqualTo(this.planningToInsert.getClasse().getNom());
+            Assertions.assertThat(planning.getSlots()).isNotNull();
+            Assertions.assertThat(planning.getSlots()).isNotEmpty();
+            Assertions.assertThat(planning.getSlots()).hasSize(this.planningToInsert.getSlots().size());
+            for(int i = 0; i < planning.getSlots().size(); ++i){
+                Slot currentSlot = planning.getSlots().get(i);
+                Slot slotFromPlanningToInsert = this.planningToInsert.getSlots().get(i);
+                Assertions.assertThat(currentSlot.getId()).isEqualTo(slotFromPlanningToInsert.getId());
+                Assertions.assertThat(currentSlot.getCouleurFond()).isEqualTo(slotFromPlanningToInsert.getCouleurFond());
+                Assertions.assertThat(currentSlot.getCouleurPolice()).isEqualTo(slotFromPlanningToInsert.getCouleurPolice());
+                Assertions.assertThat(currentSlot.getModificationDate()).isEqualTo(slotFromPlanningToInsert.getModificationDate());
+                Assertions.assertThat(currentSlot.getCreationDate()).isEqualTo(slotFromPlanningToInsert.getCreationDate());
+                Assertions.assertThat(currentSlot.getEnseignant()).isEqualTo(slotFromPlanningToInsert.getEnseignant());
+                Assertions.assertThat(currentSlot.getMatiere()).isEqualTo(slotFromPlanningToInsert.getMatiere());
+                Assertions.assertThat(currentSlot.getSalle()).isEqualTo(slotFromPlanningToInsert.getSalle());
+                Assertions.assertThat(currentSlot.getTimeSlot()).isEqualTo(slotFromPlanningToInsert.getTimeSlot());
+                Assertions.assertThat(currentSlot.getComment()).isEqualTo(slotFromPlanningToInsert.getComment());
+            }
+        });
+    }// insert_planning_should_success_with_classe_id_and_name_and_slots_id_given()
+
+    @Test
+    public void insert_planning_should_throw_argument_exception_when_planning_is_null() throws DataBaseException {
+        Assertions.assertThatCode(() -> this.planningService.insertPlanning(null))
+                .isInstanceOf(ArgumentException.class)
+                .hasMessage("Le planning est obligatoire");
+    }// insert_planning_should_throw_argument_exception_when_planning_is_null()
+
+    @Test
+    public void insert_planning_should_throw_argument_exception_when_classe_id_is_null() throws DataBaseException {
+        Classe classe = new Classe();
+        this.planningToInsert.setClasse(classe);
+        Assertions.assertThatCode(() -> this.planningService.insertPlanning(this.planningToInsert))
+                .isInstanceOf(ArgumentException.class)
+                .hasMessage("La classe est obligatoire");
+    }// insert_planning_should_throw_argument_exception_when_classe_id_is_null()
+
+    @Test
+    public void insert_planning_should_throw_argument_exception_when_nom_is_empty() throws DataBaseException {
+        this.planningToInsert.setNom("");
+        Assertions.assertThatCode(() -> this.planningService.insertPlanning(this.planningToInsert))
+                .isInstanceOf(ArgumentException.class)
+                .hasMessage("Le nom du planning est obligatoire");
+    }// insert_planning_should_throw_argument_exception_when_nom_is_empty()
+
+    @Test
+    public void insert_planning_should_throw_argument_exception_when_nom_is_null() throws DataBaseException {
+        this.planningToInsert.setNom(null);
+        Assertions.assertThatCode(() -> this.planningService.insertPlanning(this.planningToInsert))
+                .isInstanceOf(ArgumentException.class)
+                .hasMessage("Le nom du planning est obligatoire");
+    }// insert_planning_should_throw_argument_exception_when_nom_is_null()
+
+    @Test
+    public void insert_planning_should_throw_argument_exception_when_slots_is_null() throws DataBaseException {
+        this.planningToInsert.setSlots(null);
+        Assertions.assertThatCode(() -> this.planningService.insertPlanning(this.planningToInsert))
+                .isInstanceOf(ArgumentException.class)
+                .hasMessage("Un ou plusieurs slot(s) est/sont obligatoire(s)");
+    }// insert_planning_should_throw_argument_exception_when_slots_is_null()
+
+    @Test
+    public void insert_planning_should_throw_argument_exception_when_slots_is_empty() throws DataBaseException {
+        this.planningToInsert.setSlots(Collections.emptyList());
+        Assertions.assertThatCode(() -> this.planningService.insertPlanning(this.planningToInsert))
+                .isInstanceOf(ArgumentException.class)
+                .hasMessage("Un ou plusieurs slot(s) est/sont obligatoire(s)");
+    }// insert_planning_should_throw_argument_exception_when_slots_is_empty()
+
+    private Planning planningToInsert(){
+        Classe classe = new Classe(1, null, null, null);
+        List<Slot> slots = Stream.of(new Slot(1), new Slot(2), new Slot(3))
+                                .collect(Collectors.toList());
+        Planning planning = new Planning("Planning 6ème A", classe, slots);
+        return planning;
+    }// planningToInsert()
+
+}// PlanningServiceServiceUT
