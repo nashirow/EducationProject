@@ -28,6 +28,7 @@ import { DetailsTeacher } from './pages/Details/DetailsTeacher/DetailsTeacher';
 import { DetailsDiscipline } from './pages/Details/DetailsDisciplines/DetailsDiscipline';
 import { DetailsClasse } from './pages/Details/DetailsClasse/DetailsClasse';
 import { Options } from './pages/Options/Options';
+import { DetailsTimeSlot } from './pages/Details/DetailsTimeSlot/DetailsTimeSlot';
 
 /**
  * Entrée de l'application + Gestion des routes
@@ -38,11 +39,14 @@ function App() {
       <Header />
       <Router>
         <Switch>
-          <Route path="/classes/details/:id">
+          <Route path={`${process.env.REACT_APP_ENDPOINT_DETAILS_CLASSE}/:id`}>
             <DetailsClasse />
           </Route>
           <Route path="/classes">
             <Classes />
+          </Route>
+          <Route path={`${process.env.REACT_APP_ENDPOINT_DETAILS_TIMESLOT}/:id`}>
+            <DetailsTimeSlot />
           </Route>
           <Route path="/timeslots">
             <TimeSlots />
