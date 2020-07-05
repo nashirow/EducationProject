@@ -30,6 +30,8 @@ export const renderKey = (key) => {
         prenom: 'Prénom',
         creationDate: 'Date de création',
         modificationDate: 'Dernière date de modification',
+        volumeHoraire: 'Volume horaire',
+        description: 'Description',
     };
     return mapping[key];
 };

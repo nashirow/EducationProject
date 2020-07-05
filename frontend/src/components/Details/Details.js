@@ -32,7 +32,7 @@ export const Details = (props) => {
                 {
                     return (<li key={key}><label htmlFor={key}>{renderKey(key)} :</label>
                         <span id={key}>
-                            {isKeyDate(key) ? moment(value).format(process.env.REACT_APP_DATE_FORMAT) : value}
+                            {isKeyDate(key) ? moment(value).format(process.env.REACT_APP_DATE_FORMAT) : (value || '-')}
                         </span>
                     </li>);
                 })
