@@ -342,7 +342,7 @@ public class SlotRepository {
         sb.append("LEFT JOIN salle sa ON s.idSalle = sa.id ");
         sb.append("WHERE TRUE ");
         if (params != null && params.containsKey("couleurFond") && params.get("couleurFond") != null && !params.get("couleurFond").isEmpty()) {
-            sb.append("AND s.couleurFond = :couleurFond ");
+            sb.append(" AND s.couleurFond = :couleurFond ");
         }
         if (params != null && params.containsKey("couleurPolice") && params.get("couleurPolice") != null && !params.get("couleurFond").isEmpty()) {
             sb.append("AND s.couleurPolice = :couleurPolice ");
@@ -365,6 +365,7 @@ public class SlotRepository {
         if (params != null && params.containsKey("salleNom") && params.get("salleNom") != null && !params.get("salleNom").isEmpty()) {
             sb.append("AND sa.nom LIKE :salleNom ");
         }
+        sb.append("ORDER BY s.id ASC ");
         if ((params != null && params.containsKey("page") && params.get("page") != null && !params.get("page").isEmpty()) && (params != null && params.containsKey("nbElementsPerPage") && params.get("nbElementsPerPage") != null && !params.get("nbElementsPerPage").isEmpty())) {
             sb.append("LIMIT :nbElementsPerPage OFFSET :offset");
         }
@@ -387,7 +388,7 @@ public class SlotRepository {
                 ps.setString("matiereNom", "%" + params.get("matiereNom") + "%");
             }
             if (params != null && params.containsKey("startHour") && params.get("startHour") != null && !params.get("startHour").isEmpty()) {
-                ps.setString("startHour", "%" + params.get("startHour") + "%");
+                ps.setString("startHour",  params.get("startHour"));
             }
             if (params != null && params.containsKey("endHour") && params.get("endHour") != null && !params.get("endHour").isEmpty()) {
                 ps.setString("endHour", params.get("endHour"));
@@ -418,24 +419,6 @@ public class SlotRepository {
                 slot.setMatiere(matiere);
                 slot.setSalle(salle);
                 slot.setTimeSlot(timeSlot);
-                slot.getEnseignant().setId(enseignant.getId());
-                slot.getEnseignant().setNom(enseignant.getNom());
-                slot.getEnseignant().setPrenom(enseignant.getPrenom());
-                slot.getEnseignant().setCreationDate(enseignant.getCreationDate());
-                slot.getEnseignant().setModificationDate(enseignant.getModificationDate());
-                slot.getMatiere().setId(matiere.getId());
-                slot.getMatiere().setNom(matiere.getNom());
-                slot.getMatiere().setVolumeHoraire(matiere.getVolumeHoraire());
-                slot.getMatiere().setDescription(matiere.getDescription());
-                slot.getMatiere().setCreationDate(matiere.getCreationDate());
-                slot.getMatiere().setModificationDate(matiere.getModificationDate());
-                slot.getSalle().setId(salle.getId());
-                slot.getSalle().setNom(salle.getNom());
-                slot.getSalle().setCreationDate(salle.getCreationDate());
-                slot.getSalle().setModificationDate(salle.getModificationDate());
-                slot.getTimeSlot().setId(timeSlot.getId());
-                slot.getTimeSlot().setStart(timeSlot.getStart());
-                slot.getTimeSlot().setEnd(timeSlot.getEnd());
                 resultSlots.add(slot);
             }
         } catch (SQLException e) {
