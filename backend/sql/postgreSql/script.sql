@@ -55,6 +55,19 @@ COMMENT ON COLUMN options.endHourPlanning is 'Heure de fin du planning';
 
 INSERT INTO options(id, splitplanning, starthourplanning, endhourplanning) VALUES (1, 60, '08:00:00', '17:00:00');
 
+CREATE TABLE jour(
+    id INT PRIMARY KEY NOT NULL,
+    nom VARCHAR(20) NOT NULL
+);
+
+INSERT INTO jour (id, nom) VALUES (1, 'Lundi');
+INSERT INTO jour (id, nom) VALUES (2, 'Mardi');
+INSERT INTO jour (id, nom) VALUES (3, 'Mercredi');
+INSERT INTO jour (id, nom) VALUES (4, 'Jeudi');
+INSERT INTO jour (id, nom) VALUES (5, 'Vendredi');
+INSERT INTO jour (id, nom) VALUES (6, 'Samedi');
+INSERT INTO jour (id, nom) VALUES (7, 'Dimanche');
+
 CREATE TABLE timeslot (
     id SERIAL PRIMARY KEY NOT NULL,
     startHour TIME NOT NULL,
@@ -75,10 +88,12 @@ CREATE TABLE slot (
     idMatiere INT NOT NULL,
     idEnseignant INT,
     idSalle INT,
+    idJour INT NOT NULL,
     FOREIGN KEY(idTimeslot) REFERENCES timeslot(id),
     FOREIGN KEY(idMatiere) REFERENCES matiere(id),
     FOREIGN KEY(idEnseignant) REFERENCES enseignant(id),
-    FOREIGN KEY(idSalle) REFERENCES salle(id)
+    FOREIGN KEY(idSalle) REFERENCES salle(id),
+    FOREIGN KEY(idJour) REFERENCES jour(id)
 );
 
 COMMENT ON COLUMN slot.comment is 'Commentaire du slot : groupes multiples, autres tâches etc.';
@@ -90,6 +105,8 @@ CREATE TABLE planning (
     nom VARCHAR(50) NOT NULL,
     creationDate TIMESTAMP NOT NULL DEFAULT NOW(),
     modificationDate TIMESTAMP NOT NULL DEFAULT NOW(),
+    wednesdayUsed BOOLEAN NOT NULL DEFAULT true,
+    saturdayUsed BOOLEAN NOT NULL DEFAULT false,
     idClasse INT NOT NULL,
     FOREIGN KEY(idClasse) REFERENCES classe(id)
 );
@@ -101,4 +118,3 @@ CREATE TABLE planning_has_slots(
     FOREIGN KEY(idPlanning) REFERENCES planning(id),
     FOREIGN KEY(idSlot) REFERENCES slot(id)
 );
-

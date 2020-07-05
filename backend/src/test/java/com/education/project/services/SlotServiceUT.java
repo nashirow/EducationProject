@@ -1,3 +1,18 @@
+/*
+ * Copyright 2020 Hicham AZIMANI, Yassine AZIMANI
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.education.project.services;
 
 import com.education.project.exceptions.ArgumentException;
@@ -30,13 +45,14 @@ public class SlotServiceUT {
     private SlotRepository slotRepository;
 
     @Before
-    public void setUp(){
+    public void setUp() throws DataBaseException {
         Date now = new Date();
         this.slotService = new SlotService(slotRepository);
         TimeSlot timeSlot = new TimeSlot(1,LocalTime.of(8,0),LocalTime.of(10,0));
         Matiere matiere = new Matiere("Mathématiques",null,null);
         matiere.setId(1);
         this.slotToInsert = new Slot(null,null,null,"#FF0000","#000",timeSlot,matiere);
+        this.slotToInsert.setJour(new Jour(1, "Lundi"));
         this.slotFromBd = this.slotToInsert;
         this.slotFromBd.setId(1);
         this.slotFromBd.setCreationDate(now);
@@ -52,6 +68,11 @@ public class SlotServiceUT {
         this.slotToGet.setId(1);
         this.slotToGet.setCreationDate(new Date(1593705884));
         this.slotToGet.setModificationDate(now);
+
+        Mockito.when(slotRepository.countByJour(slotToInsert.getJour().getId(), slotToInsert.getTimeSlot()))
+                .thenReturn(1L);
+        Mockito.when(slotRepository.countByJour(slotToUpdate.getJour().getId(), slotToUpdate.getTimeSlot()))
+                .thenReturn(1L);
     }//setUp()
 
     @Test
@@ -63,6 +84,9 @@ public class SlotServiceUT {
             Assertions.assertThat(slot.getId()).isEqualTo(1);
             Assertions.assertThat(slot.getCreationDate()).isNotNull();
             Assertions.assertThat(slot.getModificationDate()).isNotNull();
+            Assertions.assertThat(slot.getJour()).isNotNull();
+            Assertions.assertThat(slot.getJour().getId()).isEqualTo(1L);
+            Assertions.assertThat(slot.getJour().getNom()).isEqualTo("Lundi");
             Assertions.assertThat(slot.getTimeSlot()).isNotNull();
             Assertions.assertThat(slot.getTimeSlot().getStart()).isEqualTo(this.slotFromBd.getTimeSlot().getStart());
             Assertions.assertThat(slot.getTimeSlot().getEnd()).isEqualTo(this.slotFromBd.getTimeSlot().getEnd());
@@ -80,6 +104,22 @@ public class SlotServiceUT {
                 .hasMessage("Le slot est obligatoire")
                 .isInstanceOf(ArgumentException.class);
     }//create_slot_should_throw_exception_when_slot_is_null()
+
+    @Test
+    public void create_slot_should_throw_exception_when_jour_is_null(){
+        this.slotToInsert.setJour(null);
+        Assertions.assertThatThrownBy(() -> slotService.insertSlot(slotToInsert))
+                .hasMessage("Le jour est obligatoire")
+                .isInstanceOf(ArgumentException.class);
+    }//create_slot_should_throw_exception_when_jour_is_null()
+
+    @Test
+    public void create_slot_should_throw_exception_when_jour_id_is_null(){
+        this.slotToInsert.getJour().setId(null);
+        Assertions.assertThatThrownBy(() -> slotService.insertSlot(slotToInsert))
+                .hasMessage("Le jour est obligatoire")
+                .isInstanceOf(ArgumentException.class);
+    }//create_slot_should_throw_exception_when_jour_id_is_null()
 
     @Test
     public void create_slot_should_throw_exception_when_matiere_is_null(){
@@ -113,6 +153,14 @@ public class SlotServiceUT {
                 .isInstanceOf(ArgumentException.class);
     }//create_slot_should_throw_exception_when_timeslot_id_is_null()
 
+    @Test
+    public void create_slot_should_throw_exception_when_count_slots_with_same_timeslot_and_same_day_is_gt_2() throws DataBaseException {
+        Mockito.when(slotRepository.countByJour(this.slotToInsert.getJour().getId(), this.slotToInsert.getTimeSlot()))
+                .thenReturn(3L);
+        Assertions.assertThatThrownBy(() -> slotService.insertSlot(slotToInsert))
+                .hasMessage("Le nombre de slots pour le même jour et le même créneau horaire est limité à 2 slots")
+                .isInstanceOf(ArgumentException.class);
+    }//create_slot_should_throw_exception_when_count_slots_with_same_timeslot_and_same_day_is_gt_2()
 
     @Test
     public void create_slot_should_throw_exception_when_color_background_is_null(){
@@ -219,6 +267,9 @@ public class SlotServiceUT {
             Assertions.assertThat(this.slotToGet.getMatiere().getId()).isNotNull();
             Assertions.assertThat(this.slotToGet.getMatiere().getId()).isEqualTo(this.slotFromBd.getMatiere().getId());
             Assertions.assertThat(this.slotToGet.getMatiere().getNom()).isEqualTo(this.slotFromBd.getMatiere().getNom());
+            Assertions.assertThat(this.slotToGet.getJour()).isNotNull();
+            Assertions.assertThat(this.slotToGet.getJour().getId()).isEqualTo(1L);
+            Assertions.assertThat(this.slotToGet.getJour().getNom()).isEqualTo("Lundi");
             Assertions.assertThat(this.slotToGet.getTimeSlot()).isNotNull();
             Assertions.assertThat(this.slotToGet.getTimeSlot().getId()).isNotNull();
             Assertions.assertThat(this.slotToGet.getTimeSlot().getId()).isEqualTo(this.slotFromBd.getTimeSlot().getId());
@@ -249,6 +300,9 @@ public class SlotServiceUT {
             Assertions.assertThat(this.slotToUpdate.getId()).isEqualTo(this.slotFromBd.getId());
             Assertions.assertThat(this.slotToUpdate.getMatiere()).isNotNull();
             Assertions.assertThat(this.slotToUpdate.getMatiere().getId()).isNotNull();
+            Assertions.assertThat(this.slotToUpdate.getJour()).isNotNull();
+            Assertions.assertThat(this.slotToUpdate.getJour().getId()).isEqualTo(1L);
+            Assertions.assertThat(this.slotToUpdate.getJour().getNom()).isEqualTo("Lundi");
             Assertions.assertThat(this.slotToUpdate.getTimeSlot()).isNotNull();
             Assertions.assertThat(this.slotToUpdate.getTimeSlot().getId()).isNotNull();
             Assertions.assertThat(this.slotToUpdate.getTimeSlot().getId()).isEqualTo(this.slotFromBd.getTimeSlot().getId());
@@ -522,6 +576,9 @@ public class SlotServiceUT {
         Assertions.assertThat(slots.get(0).getSalle().getCreationDate()).isNotEqualTo(slots.get(0).getSalle().getModificationDate());
         Assertions.assertThat(slots.get(0).getSalle().getCreationDate()).isEqualTo(slotsFromBd.get(0).getSalle().getCreationDate());
         Assertions.assertThat(slots.get(0).getSalle().getModificationDate()).isEqualTo(slotsFromBd.get(0).getSalle().getModificationDate());
+        Assertions.assertThat(slots.get(0).getJour()).isNotNull();
+        Assertions.assertThat(slots.get(0).getJour().getId()).isEqualTo(1L);
+        Assertions.assertThat(slots.get(0).getJour().getNom()).isEqualTo("Lundi");
 
         Assertions.assertThat(slots.get(1)).isNotNull();
         Assertions.assertThat(slots.get(1).getId()).isNotNull();
@@ -581,6 +638,9 @@ public class SlotServiceUT {
         Assertions.assertThat(slots.get(1).getSalle().getCreationDate()).isNotEqualTo(slots.get(1).getSalle().getModificationDate());
         Assertions.assertThat(slots.get(1).getSalle().getCreationDate()).isEqualTo(slotsFromBd.get(1).getSalle().getCreationDate());
         Assertions.assertThat(slots.get(1).getSalle().getModificationDate()).isEqualTo(slotsFromBd.get(1).getSalle().getModificationDate());
+        Assertions.assertThat(slots.get(1).getJour()).isNotNull();
+        Assertions.assertThat(slots.get(1).getJour().getId()).isEqualTo(2L);
+        Assertions.assertThat(slots.get(1).getJour().getNom()).isEqualTo("Mardi");
 
         Assertions.assertThat(slots.get(2)).isNotNull();
         Assertions.assertThat(slots.get(2).getId()).isNotNull();
@@ -640,6 +700,9 @@ public class SlotServiceUT {
         Assertions.assertThat(slots.get(2).getSalle().getCreationDate()).isNotEqualTo(slots.get(2).getSalle().getModificationDate());
         Assertions.assertThat(slots.get(2).getSalle().getCreationDate()).isEqualTo(slotsFromBd.get(2).getSalle().getCreationDate());
         Assertions.assertThat(slots.get(2).getSalle().getModificationDate()).isEqualTo(slotsFromBd.get(2).getSalle().getModificationDate());
+        Assertions.assertThat(slots.get(2).getJour()).isNotNull();
+        Assertions.assertThat(slots.get(2).getJour().getId()).isEqualTo(3L);
+        Assertions.assertThat(slots.get(2).getJour().getNom()).isEqualTo("Mercredi");
 
         Assertions.assertThat(slots.get(3)).isNotNull();
         Assertions.assertThat(slots.get(3).getId()).isNotNull();
@@ -699,6 +762,9 @@ public class SlotServiceUT {
         Assertions.assertThat(slots.get(3).getSalle().getCreationDate()).isNotEqualTo(slots.get(3).getSalle().getModificationDate());
         Assertions.assertThat(slots.get(3).getSalle().getCreationDate()).isEqualTo(slotsFromBd.get(3).getSalle().getCreationDate());
         Assertions.assertThat(slots.get(3).getSalle().getModificationDate()).isEqualTo(slotsFromBd.get(3).getSalle().getModificationDate());
+        Assertions.assertThat(slots.get(3).getJour()).isNotNull();
+        Assertions.assertThat(slots.get(3).getJour().getId()).isEqualTo(4L);
+        Assertions.assertThat(slots.get(3).getJour().getNom()).isEqualTo("Jeudi");
     }//get_slots_should_return_all_results_when_no_filters_given()
 
     @Test
@@ -772,6 +838,9 @@ public class SlotServiceUT {
         Assertions.assertThat(slots.get(0).getSalle().getCreationDate()).isNotEqualTo(slots.get(0).getSalle().getModificationDate());
         Assertions.assertThat(slots.get(0).getSalle().getCreationDate()).isEqualTo(slotsFromBd.get(0).getSalle().getCreationDate());
         Assertions.assertThat(slots.get(0).getSalle().getModificationDate()).isEqualTo(slotsFromBd.get(0).getSalle().getModificationDate());
+        Assertions.assertThat(slots.get(0).getJour()).isNotNull();
+        Assertions.assertThat(slots.get(0).getJour().getId()).isEqualTo(1L);
+        Assertions.assertThat(slots.get(0).getJour().getNom()).isEqualTo("Lundi");
 
         Assertions.assertThat(slots.get(1)).isNotNull();
         Assertions.assertThat(slots.get(1).getId()).isNotNull();
@@ -831,6 +900,9 @@ public class SlotServiceUT {
         Assertions.assertThat(slots.get(1).getSalle().getCreationDate()).isNotEqualTo(slots.get(1).getSalle().getModificationDate());
         Assertions.assertThat(slots.get(1).getSalle().getCreationDate()).isEqualTo(slotsFromBd.get(1).getSalle().getCreationDate());
         Assertions.assertThat(slots.get(1).getSalle().getModificationDate()).isEqualTo(slotsFromBd.get(1).getSalle().getModificationDate());
+        Assertions.assertThat(slots.get(1).getJour()).isNotNull();
+        Assertions.assertThat(slots.get(1).getJour().getId()).isEqualTo(2L);
+        Assertions.assertThat(slots.get(1).getJour().getNom()).isEqualTo("Mardi");
     }//get_slots_should_return_results_when_filters_are_not_given_and_page_is_1_and_nbElementsPerPage_2()
 
     @Test
@@ -917,6 +989,9 @@ public class SlotServiceUT {
         Assertions.assertThat(slots.get(0).getSalle().getCreationDate()).isNotEqualTo(slots.get(0).getSalle().getModificationDate());
         Assertions.assertThat(slots.get(0).getSalle().getCreationDate()).isEqualTo(slotsFromBd.get(0).getSalle().getCreationDate());
         Assertions.assertThat(slots.get(0).getSalle().getModificationDate()).isEqualTo(slotsFromBd.get(0).getSalle().getModificationDate());
+        Assertions.assertThat(slots.get(0).getJour()).isNotNull();
+        Assertions.assertThat(slots.get(0).getJour().getId()).isEqualTo(3L);
+        Assertions.assertThat(slots.get(0).getJour().getNom()).isEqualTo("Mercredi");
 
         Assertions.assertThat(slots.get(1)).isNotNull();
         Assertions.assertThat(slots.get(1).getId()).isNotNull();
@@ -976,6 +1051,9 @@ public class SlotServiceUT {
         Assertions.assertThat(slots.get(1).getSalle().getCreationDate()).isNotEqualTo(slots.get(1).getSalle().getModificationDate());
         Assertions.assertThat(slots.get(1).getSalle().getCreationDate()).isEqualTo(slotsFromBd.get(1).getSalle().getCreationDate());
         Assertions.assertThat(slots.get(1).getSalle().getModificationDate()).isEqualTo(slotsFromBd.get(1).getSalle().getModificationDate());
+        Assertions.assertThat(slots.get(1).getJour()).isNotNull();
+        Assertions.assertThat(slots.get(1).getJour().getId()).isEqualTo(4L);
+        Assertions.assertThat(slots.get(1).getJour().getNom()).isEqualTo("Jeudi");
     }//get_slots_should_return_results_when_filters_are_not_given_and_page_is_2_and_nbElementsPerPage_2()
 
     @Test
@@ -1048,6 +1126,10 @@ public class SlotServiceUT {
         Assertions.assertThat(slots.get(0).getSalle().getCreationDate()).isNotEqualTo(slots.get(0).getSalle().getModificationDate());
         Assertions.assertThat(slots.get(0).getSalle().getCreationDate()).isEqualTo(slotsFromBd.get(0).getSalle().getCreationDate());
         Assertions.assertThat(slots.get(0).getSalle().getModificationDate()).isEqualTo(slotsFromBd.get(0).getSalle().getModificationDate());
+
+        Assertions.assertThat(slots.get(0).getJour()).isNotNull();
+        Assertions.assertThat(slots.get(0).getJour().getId()).isEqualTo(1L);
+        Assertions.assertThat(slots.get(0).getJour().getNom()).isEqualTo("Lundi");
     }//get_slots_should_return_results_when_filters_name_is_Laporte()
 
     @Test
@@ -1398,14 +1480,24 @@ public class SlotServiceUT {
         Salle salle1 = new Salle(2,"A3",new Date(1593880801),now);
         Salle salle2 = new Salle(3,"A3",new Date(1593880801),now);
         Salle salle3 = new Salle(4,"C4",new Date(1593880801),now);
-        Slot slot = new Slot(1,"Prendre les groupes identiques",new Date(1593880801),now,"#fff","#000",timeSlot,enseignant,matiere,salle);
-        Slot slot1 = new Slot(2,"Penser à revoir les parents des élèves",new Date(1593880801),now,"#ddd","#111",timeSlot1,enseignant1,matiere1,salle1);
-        Slot slot2 = new Slot(3,"Penser à revoir les parents des élèves",new Date(1593880801),now,"#ddd","#111",timeSlot2,enseignant2,matiere2,salle2);
-        Slot slot3 = new Slot(4,"Penser à revoir les parents des élèves",new Date(1593880801),now,"#ddd","#111",timeSlot3,enseignant3,matiere3,salle3);
-        slots.add(slot);
+        Jour j1 = new Jour(1, "Lundi");
+        Jour j2 = new Jour(2, "Mardi");
+        Jour j3 = new Jour(3, "Mercredi");
+        Jour j4 = new Jour(4, "Jeudi");
+        Slot slot1 = new Slot(1,"Prendre les groupes identiques",new Date(1593880801),now,"#fff","#000",timeSlot,enseignant,matiere,salle);
+        Slot slot2 = new Slot(2,"Penser à revoir les parents des élèves",new Date(1593880801),now,"#ddd","#111",timeSlot1,enseignant1,matiere1,salle1);
+        Slot slot3 = new Slot(3,"Penser à revoir les parents des élèves",new Date(1593880801),now,"#ddd","#111",timeSlot2,enseignant2,matiere2,salle2);
+        Slot slot4 = new Slot(4,"Penser à revoir les parents des élèves",new Date(1593880801),now,"#ddd","#111",timeSlot3,enseignant3,matiere3,salle3);
+
+        slot1.setJour(j1);
+        slot2.setJour(j2);
+        slot3.setJour(j3);
+        slot4.setJour(j4);
+
         slots.add(slot1);
         slots.add(slot2);
         slots.add(slot3);
+        slots.add(slot4);
         return slots;
     }//initSlotsFromBd()
 }//SlotServiceUT()

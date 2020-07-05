@@ -102,6 +102,15 @@ public class PlanningService {
     }// checkBusiness()
 
     /**
+     * Récupère un planning en fonction de son identifiant
+     * @param id Identifiant du planning à récupérer
+     * @return Planning
+     */
+    public Optional<Planning> getPlanningById(int id) throws DataBaseException {
+        return planningRepository.findById(id);
+    }// getPlanningById()
+
+    /**
      * Cette fonction permet de supprimer un planning en base de données grâce à son identifiant passé en paramètre
      * @param id Identifiant du planning à supprimer
      * @return boolean

@@ -107,6 +107,7 @@ public class SlotEndPoint {
      * couleurFond : c'est la couleur de fond du slot
      * couleurPolice : c'est la couleur de police du slot
      * salleNom : c'est le nom de la salle
+     * jour : C'est le jour lié au slot
      * @return Réponse HTTP
      */
     @GetMapping("/count/slots")
@@ -131,6 +132,7 @@ public class SlotEndPoint {
      * couleurFond : c'est la couleur de fond du slot
      * couleurPolice : c'est la couleur de police du slot
      * salleNom : c'est le nom de la salle
+     * jour : C'est le jour lié au slot
      * @return Réponse HTTP
      */
     @GetMapping("/slots")
