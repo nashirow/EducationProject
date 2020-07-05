@@ -208,4 +208,66 @@ public class PlanningRepository {
             throw new DataBaseException("Impossible de récupérer le planning n°" + id);
         }
     }// findById()
+
+    /**
+     * Cette fonction permet de récupérer tous les plannings dans la base de données
+     * @return liste des plannings
+     */
+    public List<Planning> getPlannings() throws DataBaseException {
+        List<Planning> resultPlannings = new ArrayList<>();
+        String requestSql = "SELECT p.id AS pid, p.nom AS pnom, p.creationDate AS pcreationDate, p.modificationDate AS pmodificationDate, p.wednesdayUsed AS pwednesdayUsed, p.saturdayUsed AS psaturdayUsed," +
+                "p.idClasse AS pidClasse, c.nom AS cnom, c.creationDate AS ccreationDate, c.modificationDate AS cmodificationDate," +
+                "s.id AS slotId, s.comment AS slotComment, s.creationDate AS slotCreationDate, s.modificationDate AS slotModificationDate, " +
+                "s.couleurFond AS slotCouleurFond, s.couleurPolice AS slotCouleurPolice, " +
+                "j.id AS jourId, j.nom AS jourNom, e.id AS enseignantId, e.nom AS enseignantNom, e.prenom AS enseignantPrenom, e.creationDate AS enseignantCreationDate, e.modificationDate AS enseignantModificationDate, " +
+                "m.id AS matiereId, m.nom AS matiereNom,m.volumeHoraire AS matiereVolumeHoraire, m.description AS matiereDescription, m.creationDate AS matiereCreationDate, m.modificationDate AS matiereModificationDate, " +
+                "t.id AS timeslotId, t.startHour AS timeslotStartHour, t.endHour AS timeslotEndHour, " +
+                " sa.id AS salleId, sa.nom AS salleNom, sa.creationDate AS salleCreationDate, sa.modificationDate AS salleModificationDate " +
+                "FROM planning p " +
+                "INNER JOIN classe c ON c.id = p.idClasse " +
+                "INNER JOIN planning_has_slots phs ON phs.idPlanning = p.id " +
+                "INNER JOIN slot s ON phs.idSlot = s.id " +
+                "LEFT JOIN enseignant e ON s.idEnseignant = e.id " +
+                "INNER JOIN matiere m ON s.idMatiere = m.id " +
+                "INNER JOIN timeslot t ON s.idTimeslot = t.id " +
+                "LEFT JOIN salle sa ON s.idSalle = sa.id " +
+                "INNER JOIN jour j ON s.idJour = j.id ";
+        try {
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
+            ResultSet resultSet = ps.executeQuery();
+            while(resultSet.next()){
+                Planning planning = new Planning();
+                planning.setSlots(new ArrayList<>());
+                planning.setId(resultSet.getInt("pid"));
+                planning.setNom(resultSet.getString("pnom"));
+                planning.setModificationDate(resultSet.getTimestamp("pmodificationDate"));
+                planning.setCreationDate(resultSet.getTimestamp("pcreationDate"));
+                Classe classe = new Classe(resultSet.getInt("pidClasse"), resultSet.getString("cnom"),resultSet.getTimestamp("ccreationDate"),resultSet.getTimestamp("cmodificationDate"));
+                Enseignant enseignant = new Enseignant(resultSet.getInt("enseignantId"), resultSet.getString("enseignantNom"), resultSet.getString("enseignantPrenom"), resultSet.getTimestamp("enseignantCreationDate"), resultSet.getTimestamp("enseignantModificationDate"));
+                Matiere matiere = new Matiere(resultSet.getInt("matiereId"), resultSet.getString("matiereNom"), resultSet.getString("matiereVolumeHoraire"), resultSet.getString("matiereDescription"), resultSet.getTimestamp("matiereCreationDate"), resultSet.getTimestamp("matiereModificationDate"));
+                Salle salle = new Salle(resultSet.getInt("salleId"), resultSet.getString("salleNom"), resultSet.getTimestamp("salleCreationDate"), resultSet.getTimestamp("salleModificationDate"));
+                TimeSlot timeSlot = new TimeSlot(resultSet.getInt("timeslotId"), LocalTime.parse(resultSet.getString("timeslotStartHour")), LocalTime.parse(resultSet.getString("timeslotEndHour")));
+                Jour jour = new Jour(resultSet.getInt("jourId"), resultSet.getString("jourNom"));
+                Slot slot = new Slot();
+                slot.setId(resultSet.getInt("slotId"));
+                slot.setComment(resultSet.getString("slotComment"));
+                slot.setCreationDate(resultSet.getTimestamp("slotCreationDate"));
+                slot.setModificationDate(resultSet.getTimestamp("slotModificationDate"));
+                slot.setTimeSlot(timeSlot);
+                slot.setEnseignant(enseignant);
+                slot.setMatiere(matiere);
+                slot.setSalle(salle);
+                slot.setJour(jour);
+                planning.getSlots().add(slot);
+                planning.setClasse(classe);
+                planning.setSaturdayUsed(resultSet.getBoolean("psaturdayUsed"));
+                planning.setWednesdayUsed(resultSet.getBoolean("pwednesdayUsed"));
+                resultPlannings.add(planning);
+            }
+            return resultPlannings;
+        } catch (SQLException e) {
+            LOGGER.error("Erreur technique : impossible de récupérer les plannings dans la base de données",e);
+            throw new DataBaseException("Erreur technique impossible de récupérer les plannings dans la base de données");
+        }
+    }//getPlannings()
 }// PlanningRepository

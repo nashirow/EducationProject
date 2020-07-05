@@ -118,4 +118,12 @@ public class PlanningService {
     public boolean deletePlanning(Integer id) throws DataBaseException {
         return planningRepository.deletePlanning(id);
     }//deletePlanning()
+
+    /**
+     * Cette fonction permet de retourner tous les plannings dans la base de données
+     * @return Liste des plannings
+     */
+    public List<Planning> getPlannings() throws DataBaseException {
+        return planningRepository.getPlannings();
+    }//getPlannings()
 }// PlanningService
