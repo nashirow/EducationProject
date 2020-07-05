@@ -23,10 +23,7 @@ import com.education.project.services.PlanningService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -73,5 +70,20 @@ public class PlanningEndPoint {
             return new ResponseEntity<>(new ResponseEndPoint(null, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }// updatePlanning()
+
+    /**
+     * Ce endpoint permet de supprimer un planning en base de données grace à l'identifiant passée en paramètre
+     * @param id identifiant du planning à supprimer
+     * @return Réponse HTTP
+     */
+    @DeleteMapping("/planning/{id}")
+    public ResponseEntity<?> deletePlanning(@RequestParam Integer id){
+        try {
+            boolean result = planningService.deletePlanning(id);
+            return new ResponseEntity<>(new ResponseEndPoint(result,null),HttpStatus.OK);
+        } catch (DataBaseException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }//deletePlanning()
 
 }// PlanningEndPoint
