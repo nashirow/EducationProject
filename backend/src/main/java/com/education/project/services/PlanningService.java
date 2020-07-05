@@ -49,7 +49,7 @@ public class PlanningService {
      * @throws DataBaseException
      */
     public Optional<Planning> insertPlanning(Planning planningToInsert) throws ArgumentException, DataBaseException {
-        checkBusiness(planningToInsert);
+        checkBusiness(planningToInsert, false);
         Date now = new Date();
         planningToInsert.setCreationDate(now);
         planningToInsert.setModificationDate(now);
@@ -57,25 +57,42 @@ public class PlanningService {
     }// insertPlanning()
 
     /**
+     * Met à jour un planning au niveau de l'application
+     * @param planning Planning à mettre à jour
+     * @return Planning mis à jour
+     * @throws ArgumentException
+     * @throws DataBaseException
+     */
+    public Optional<Planning> updatePlanning(Planning planning) throws ArgumentException, DataBaseException {
+        checkBusiness(planning, true);
+        planning.setModificationDate(new Date());
+        return planningRepository.update(planning);
+    }// updatePlanning()
+
+    /**
      * Contrôle des règles métiers
-     * @param planningToInsert Planning à contrôler
+     * @param planning Planning à contrôler
+     * @param isUpdate Indique si le contrôle concerne la mise à jour d'un planning
      * @throws ArgumentException
      */
-    private void checkBusiness(Planning planningToInsert) throws ArgumentException{
+    private void checkBusiness(Planning planning, boolean isUpdate) throws ArgumentException{
         List<String> errors = new ArrayList<>();
-        if(planningToInsert == null){
+        if(planning == null){
             errors.add("Le planning est obligatoire");
         }else{
-            if(planningToInsert.getClasse() == null){
+            if(isUpdate && planning.getId() == null){
+                errors.add("L'identifiant du planning est obligatoire");
+            }
+            if(planning.getClasse() == null){
                 errors.add("La classe est obligatoire");
             }
-            if(planningToInsert.getClasse() != null && planningToInsert.getClasse().getId() == null){
+            if(planning.getClasse() != null && planning.getClasse().getId() == null){
                 errors.add("La classe est obligatoire");
             }
-            if(planningToInsert.getNom() == null || planningToInsert.getNom().isEmpty()){
+            if(planning.getNom() == null || planning.getNom().isEmpty()){
                 errors.add("Le nom du planning est obligatoire");
             }
-            if(planningToInsert.getSlots() == null || planningToInsert.getSlots().isEmpty()){
+            if(planning.getSlots() == null || planning.getSlots().isEmpty()){
                 errors.add("Un ou plusieurs slot(s) est/sont obligatoire(s)");
             }
         }

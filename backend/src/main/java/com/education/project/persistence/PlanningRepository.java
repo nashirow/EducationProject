@@ -80,4 +80,37 @@ public class PlanningRepository {
         }
     }// insert()
 
+    /**
+     * Met à jour le planning dans la base de données
+     * @param planning Planning à mettre à jour
+     * @return Planning mis à jour
+     * @throws DataBaseException
+     */
+    public Optional<Planning> update(Planning planning) throws DataBaseException{
+        String requestSql = "UPDATE planning SET nom = ?, idClasse = ?, modificationDate = ? WHERE id = ?";
+        try {
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
+            ps.setString(1, planning.getNom());
+            ps.setInt(2, planning.getClasse().getId());
+            ps.setTimestamp(3, new Timestamp(planning.getModificationDate().getTime()));
+            ps.setInt(4, planning.getId());
+            if(ps.executeUpdate() == 0){
+                throw new DataBaseException("Erreur technique : Il est impossible de mettre à jour le planning");
+            }
+
+            for(Slot slot : planning.getSlots()) {
+                requestSql = "UPDATE planning_has_slots SET idSlot = ? WHERE idPlanning = ?";
+                ps = this.connection.prepareStatement(requestSql);
+                ps.setInt(1, slot.getId());
+                ps.setInt(2, planning.getId());
+                if (ps.executeUpdate() == 0) {
+                    throw new DataBaseException("Erreur technique : Il est impossible de mettre à jour le planning");
+                }
+            }
+            return Optional.of(planning);
+        }catch(SQLException e){
+            LOGGER.error(e.getMessage(), e);
+            throw new DataBaseException("Erreur technique : Il est impossible de mettre à jour le planning");
+        }
+    }// update()
 }// PlanningRepository
