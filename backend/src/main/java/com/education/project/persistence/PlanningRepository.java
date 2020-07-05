@@ -128,7 +128,7 @@ public class PlanningRepository {
             int rowsDeleted = ps.executeUpdate();
             return rowsDeleted > 0;
         } catch (SQLException e) {
-            LOGGER.error("Erreur technique : impossible de supprimer le planning " + id + " de la base de données");
+            LOGGER.error("Erreur technique : impossible de supprimer le planning {} de la base de données",id,e);
             throw new DataBaseException("Erreur technique : impossible de supprimer le planning de la base de données");
         }
     }//deletePlanning()
