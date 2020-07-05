@@ -26,6 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -103,13 +104,15 @@ public class PlanningEndPoint {
     }// getPlanningById()
 
     /**
-     * Ce endpoint permet de récupérer tous les plannings en base de données
+     * Ce endpoint permet de récupérer tous les plannings en base de données en fonction des paramètres passés
+     * @param params paramètres d'un planning
+     * classeNom : nom de la classe d'un planning
      * @return Réponse HTTP
      */
     @GetMapping("/plannings")
-    public ResponseEntity<?> getPlannings(){
+    public ResponseEntity<?> getPlannings(@RequestParam Map<String,String> params){
         try {
-            List<Planning> resultPlannings = planningService.getPlannings();
+            List<Planning> resultPlannings = planningService.getPlannings(params);
             return new ResponseEntity<>(new ResponseEndPoint(resultPlannings,null),HttpStatus.OK);
         } catch (DataBaseException e) {
             return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);

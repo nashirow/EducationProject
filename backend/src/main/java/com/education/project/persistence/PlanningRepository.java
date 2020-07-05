@@ -26,6 +26,7 @@ import java.sql.*;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -213,27 +214,38 @@ public class PlanningRepository {
      * Cette fonction permet de récupérer tous les plannings dans la base de données
      * @return liste des plannings
      */
-    public List<Planning> getPlannings() throws DataBaseException {
+    public List<Planning> getPlannings(Map<String,String> params) throws DataBaseException {
         List<Planning> resultPlannings = new ArrayList<>();
-        String requestSql = "SELECT p.id AS pid, p.nom AS pnom, p.creationDate AS pcreationDate, p.modificationDate AS pmodificationDate, p.wednesdayUsed AS pwednesdayUsed, p.saturdayUsed AS psaturdayUsed," +
-                "p.idClasse AS pidClasse, c.nom AS cnom, c.creationDate AS ccreationDate, c.modificationDate AS cmodificationDate," +
-                "s.id AS slotId, s.comment AS slotComment, s.creationDate AS slotCreationDate, s.modificationDate AS slotModificationDate, " +
-                "s.couleurFond AS slotCouleurFond, s.couleurPolice AS slotCouleurPolice, " +
-                "j.id AS jourId, j.nom AS jourNom, e.id AS enseignantId, e.nom AS enseignantNom, e.prenom AS enseignantPrenom, e.creationDate AS enseignantCreationDate, e.modificationDate AS enseignantModificationDate, " +
-                "m.id AS matiereId, m.nom AS matiereNom,m.volumeHoraire AS matiereVolumeHoraire, m.description AS matiereDescription, m.creationDate AS matiereCreationDate, m.modificationDate AS matiereModificationDate, " +
-                "t.id AS timeslotId, t.startHour AS timeslotStartHour, t.endHour AS timeslotEndHour, " +
-                " sa.id AS salleId, sa.nom AS salleNom, sa.creationDate AS salleCreationDate, sa.modificationDate AS salleModificationDate " +
-                "FROM planning p " +
-                "INNER JOIN classe c ON c.id = p.idClasse " +
-                "INNER JOIN planning_has_slots phs ON phs.idPlanning = p.id " +
-                "INNER JOIN slot s ON phs.idSlot = s.id " +
-                "LEFT JOIN enseignant e ON s.idEnseignant = e.id " +
-                "INNER JOIN matiere m ON s.idMatiere = m.id " +
-                "INNER JOIN timeslot t ON s.idTimeslot = t.id " +
-                "LEFT JOIN salle sa ON s.idSalle = sa.id " +
-                "INNER JOIN jour j ON s.idJour = j.id ";
+        StringBuilder sb = new StringBuilder("SELECT p.id AS pid, p.nom AS pnom, p.creationDate AS pcreationDate, p.modificationDate AS pmodificationDate, p.wednesdayUsed AS pwednesdayUsed, p.saturdayUsed AS psaturdayUsed, ");
+        sb.append("p.idClasse AS pidClasse, c.nom AS cnom, c.creationDate AS ccreationDate, c.modificationDate AS cmodificationDate, ");
+        sb.append("s.id AS slotId, s.comment AS slotComment, s.creationDate AS slotCreationDate, s.modificationDate AS slotModificationDate, ");
+        sb.append("s.couleurFond AS slotCouleurFond, s.couleurPolice AS slotCouleurPolice, ");
+        sb.append("j.id AS jourId, j.nom AS jourNom, e.id AS enseignantId, e.nom AS enseignantNom, e.prenom AS enseignantPrenom, e.creationDate AS enseignantCreationDate, e.modificationDate AS enseignantModificationDate, ");
+        sb.append("m.id AS matiereId, m.nom AS matiereNom,m.volumeHoraire AS matiereVolumeHoraire, m.description AS matiereDescription, m.creationDate AS matiereCreationDate, m.modificationDate AS matiereModificationDate, ");
+        sb.append("t.id AS timeslotId, t.startHour AS timeslotStartHour, t.endHour AS timeslotEndHour, ");
+        sb.append(" sa.id AS salleId, sa.nom AS salleNom, sa.creationDate AS salleCreationDate, sa.modificationDate AS salleModificationDate ");
+        sb.append("FROM planning p ");
+        sb.append("INNER JOIN classe c ON c.id = p.idClasse ");
+        sb.append("INNER JOIN planning_has_slots phs ON phs.idPlanning = p.id ");
+        sb.append("INNER JOIN slot s ON phs.idSlot = s.id ");
+        sb.append("LEFT JOIN enseignant e ON s.idEnseignant = e.id ");
+        sb.append("INNER JOIN matiere m ON s.idMatiere = m.id ");
+        sb.append("INNER JOIN timeslot t ON s.idTimeslot = t.id ");
+        sb.append("LEFT JOIN salle sa ON s.idSalle = sa.id ");
+        sb.append("INNER JOIN jour j ON s.idJour = j.id ");
+        if(params != null){
+            if(params.containsKey("classeNom") && params.get("classeNom") != null && !params.get("classeNom").isEmpty()){
+                sb.append("WHERE c.nom LIKE ?");
+            }
+        }
+        String requestSql = sb.toString();
         try {
             PreparedStatement ps = this.connection.prepareStatement(requestSql);
+            if(params != null){
+                if(params.containsKey("classeNom") && params.get("classeNom") != null && !params.get("classeNom").isEmpty()){
+                    ps.setString(1, "%" + params.get("classeNom") + "%");
+                }
+            }
             ResultSet resultSet = ps.executeQuery();
             while(resultSet.next()){
                 Planning planning = new Planning();

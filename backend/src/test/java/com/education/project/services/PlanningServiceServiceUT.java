@@ -291,8 +291,8 @@ public class PlanningServiceServiceUT {
     @Test
     public void get_plannings_should_return_result_when_no_filters_given() throws DataBaseException {
         List<Planning> planningsFromBd = getFullPlannings();
-        Mockito.when(planningRepository.getPlannings()).thenReturn(planningsFromBd);
-        List<Planning> plannings = planningService.getPlannings();
+        Mockito.when(planningRepository.getPlannings(null)).thenReturn(planningsFromBd);
+        List<Planning> plannings = planningService.getPlannings(null);
         Assertions.assertThat(plannings).isNotNull();
         Assertions.assertThat(plannings).hasSize(2);
 
@@ -342,6 +342,50 @@ public class PlanningServiceServiceUT {
         }
     }//get_plannings_should_return_result_when_no_filters_given()
 
+    @Test
+    public void get_plannings_should_return_planning_CE2_when_class_name_is_CE2() throws DataBaseException {
+        List<Planning> planningsFromBd = getFullPlannings();
+        Map<String,String> params = new HashMap<>();
+        params.put("classeNom","CE2");
+        Mockito.when(planningRepository.getPlannings(params)).thenReturn(planningsFromBd.subList(0,1));
+        List<Planning> resultPlannings = planningService.getPlannings(params);
+        Assertions.assertThat(resultPlannings).isNotNull();
+        Assertions.assertThat(resultPlannings).hasSize(1);
+
+        Assertions.assertThat(resultPlannings.get(0)).isNotNull();
+        Assertions.assertThat(resultPlannings.get(0).getId()).isNotNull();
+        Assertions.assertThat(resultPlannings.get(0).getNom()).isEqualTo(planningsFromBd.get(0).getNom());
+        Assertions.assertThat(resultPlannings.get(0).getClasse()).isNotNull();
+        Assertions.assertThat(resultPlannings.get(0).getClasse().getNom()).isEqualTo(planningsFromBd.get(0).getClasse().getNom());
+        Assertions.assertThat(resultPlannings.get(0).getSlots()).isNotNull();
+        Assertions.assertThat(resultPlannings.get(0).getSlots()).isNotEmpty();
+        Assertions.assertThat(resultPlannings.get(0).getSlots()).hasSize(1);
+        Assertions.assertThat(resultPlannings.get(0).getCreationDate()).isNotEqualTo(resultPlannings.get(0).getModificationDate());
+        Assertions.assertThat(resultPlannings.get(0).isWednesdayUsed()).isTrue();
+        Assertions.assertThat(resultPlannings.get(0).isSaturdayUsed()).isFalse();
+        for(int i = 0; i < resultPlannings.get(i).getSlots().size() - 1  ; ++i){
+            Slot currentSlot = resultPlannings.get(i).getSlots().get(i);
+            Slot currentSlotFromBd = planningsFromBd.get(i).getSlots().get(i);
+            Assertions.assertThat(currentSlot.getId()).isEqualTo(currentSlotFromBd.getId());
+            Assertions.assertThat(currentSlot.getCouleurFond()).isEqualTo(currentSlotFromBd.getCouleurFond());
+            Assertions.assertThat(currentSlot.getCouleurPolice()).isEqualTo(currentSlotFromBd.getCouleurPolice());
+            Assertions.assertThat(currentSlot.getModificationDate()).isNotNull();
+            Assertions.assertThat(currentSlot.getCreationDate()).isNotNull();
+            Assertions.assertThat(currentSlot.getCreationDate()).isNotEqualTo(currentSlot.getModificationDate());
+            Assertions.assertThat(currentSlot.getEnseignant()).isNull();
+            Assertions.assertThat(currentSlot.getMatiere()).isNotNull();
+            Assertions.assertThat(currentSlot.getMatiere().getId()).isEqualTo(currentSlotFromBd.getMatiere().getId());
+            Assertions.assertThat(currentSlot.getMatiere().getNom()).isEqualTo(currentSlotFromBd.getMatiere().getNom());
+            Assertions.assertThat(currentSlot.getSalle()).isNull();
+            Assertions.assertThat(currentSlot.getTimeSlot()).isNotNull();
+            Assertions.assertThat(currentSlot.getTimeSlot().getStart().getHour()).isEqualTo(currentSlotFromBd.getTimeSlot().getStart().getHour());
+            Assertions.assertThat(currentSlot.getTimeSlot().getStart().getMinute()).isEqualTo(currentSlotFromBd.getTimeSlot().getStart().getMinute());
+            Assertions.assertThat(currentSlot.getTimeSlot().getEnd().getHour()).isEqualTo(currentSlotFromBd.getTimeSlot().getEnd().getHour());
+            Assertions.assertThat(currentSlot.getTimeSlot().getEnd().getMinute()).isEqualTo(currentSlotFromBd.getTimeSlot().getEnd().getMinute());
+            Assertions.assertThat(currentSlot.getComment()).isNull();
+        }
+    }//get_plannings_should_return_planning_CE2_when_class_name_is_CE2()
+
     private Planning planningToInsert(){
         Classe classe = new Classe(1, null, null, null);
         List<Slot> slots = Stream.of(new Slot(1), new Slot(2), new Slot(3))
@@ -389,7 +433,7 @@ public class PlanningServiceServiceUT {
         List<Planning> plannings = new ArrayList<>();
         Planning planning = new Planning();
         planning.setId(1);
-        planning.setClasse(new Classe(1, "CM1", new Date(1591366583), new Date()));
+        planning.setClasse(new Classe(1, "CE2", new Date(1591366583), new Date()));
         planning.setCreationDate(new Date(1591366583));
         planning.setModificationDate(new Date());
         planning.setNom("P1");
