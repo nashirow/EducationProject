@@ -50,6 +50,8 @@ public class PlanningServiceServiceUT {
 
     private Planning planningToUpdate;
 
+    private Planning planningToDelete;
+
     @Before
     public void setUp() throws DataBaseException {
         this.planningService = new PlanningService(planningRepository);
@@ -57,6 +59,7 @@ public class PlanningServiceServiceUT {
         this.planningInserted = planningToInsert();
         this.planningToUpdate = planningToUpdate();
         this.planningInserted.setId(1);
+        this.planningToDelete = planningToDelete();
         Mockito.when(this.planningRepository.insert(this.planningToInsert)).thenReturn(Optional.of(this.planningInserted));
         Mockito.when(this.planningRepository.update(this.planningToUpdate)).thenReturn(Optional.of(this.planningToUpdate));
     }// setUp()
@@ -224,6 +227,20 @@ public class PlanningServiceServiceUT {
                 .hasMessage("Un ou plusieurs slot(s) est/sont obligatoire(s)");
     }// update_planning_should_throw_argument_exception_when_slots_is_empty()
 
+    @Test
+    public void delete_planning_should_success_when_id_is_1() throws DataBaseException {
+        Mockito.when(planningService.deletePlanning(this.planningToDelete.getId())).thenReturn(true);
+        boolean result = planningService.deletePlanning(this.planningToDelete.getId());
+        Assertions.assertThat(result).isTrue();
+    }//delete_planning_should_success_when_id_is_1()
+
+    @Test
+    public void delete_planning_should_success_when_id_is_400() throws DataBaseException {
+        this.planningToDelete.setId(400);
+        boolean result = planningService.deletePlanning(this.planningToDelete.getId());
+        Assertions.assertThat(result).isFalse();
+    }//delete_planning_should_success_when_id_is_400
+
     private Planning planningToInsert(){
         Classe classe = new Classe(1, null, null, null);
         List<Slot> slots = Stream.of(new Slot(1), new Slot(2), new Slot(3))
@@ -243,4 +260,13 @@ public class PlanningServiceServiceUT {
         return planning;
     }// planningToUpdate()
 
+    private Planning planningToDelete(){
+        Classe classe = new Classe(1,"CE2",new Date(1593962116),new Date());
+        List<Slot> slots = Stream.of(new Slot(1), new Slot(2), new Slot(3))
+                .collect(Collectors.toList());
+        Planning planning = new Planning(1,"Planning CE2",classe,slots);
+        planning.setCreationDate(new Date(1593962116));
+        planning.setModificationDate(new Date());
+        return planning;
+    }//planningToDelete()
 }// PlanningServiceServiceUT

@@ -101,4 +101,12 @@ public class PlanningService {
         }
     }// checkBusiness()
 
+    /**
+     * Cette fonction permet de supprimer un planning en base de données grâce à son identifiant passé en paramètre
+     * @param id Identifiant du planning à supprimer
+     * @return boolean
+     */
+    public boolean deletePlanning(Integer id) throws DataBaseException {
+        return planningRepository.deletePlanning(id);
+    }//deletePlanning()
 }// PlanningService

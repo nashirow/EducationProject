@@ -113,4 +113,23 @@ public class PlanningRepository {
             throw new DataBaseException("Erreur technique : Il est impossible de mettre à jour le planning");
         }
     }// update()
+
+    /**
+     * Cette fonction permet de supprimer un planning de la base de données
+     * @param id identifiant du planning
+     * @return boolean
+     * @throws DataBaseException
+     */
+    public boolean deletePlanning(Integer id) throws DataBaseException {
+        String requestSql = "DELETE FROM planning WHERE id = ?";
+        try {
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
+            ps.setInt(1,id);
+            int rowsDeleted = ps.executeUpdate();
+            return rowsDeleted > 0;
+        } catch (SQLException e) {
+            LOGGER.error("Erreur technique : impossible de supprimer le planning " + id + " de la base de données");
+            throw new DataBaseException("Erreur technique : impossible de supprimer le planning de la base de données");
+        }
+    }//deletePlanning()
 }// PlanningRepository
