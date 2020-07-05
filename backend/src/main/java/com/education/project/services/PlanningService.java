@@ -22,10 +22,7 @@ import com.education.project.persistence.PlanningRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Ce service gère les fonctionnalités liées
@@ -118,4 +115,13 @@ public class PlanningService {
     public boolean deletePlanning(Integer id) throws DataBaseException {
         return planningRepository.deletePlanning(id);
     }//deletePlanning()
+
+    /**
+     * Cette fonction permet de retourner tous les plannings dans la base de données en fonction des paramètres (facultatifs)
+     * @param params paramètres du planning
+     * @return Liste des plannings
+     */
+    public List<Planning> getPlannings(Map<String,String> params) throws DataBaseException {
+        return planningRepository.getPlannings(params);
+    }//getPlannings()
 }// PlanningService
