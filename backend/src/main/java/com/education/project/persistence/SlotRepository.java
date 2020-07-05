@@ -24,6 +24,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -141,15 +144,10 @@ public class SlotRepository {
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()) {
                 Slot slot = new Slot();
-                Enseignant enseignant = new Enseignant(resultSet.getInt("enseignantId"), resultSet.getString("enseignantNom"),
-                        resultSet.getString("enseignantPrenom"), resultSet.getTimestamp("enseignantCreationDate"), resultSet.getTimestamp("enseignantModificationDate"));
-                Matiere matiere = new Matiere(resultSet.getInt("matiereId"), resultSet.getString("matiereNom"),
-                        resultSet.getString("matiereVolumeHoraire"), resultSet.getString("matiereDescription"),
-                        resultSet.getTimestamp("matiereCreationDate"), resultSet.getTimestamp("matiereModificationDate"));
-                TimeSlot timeSlot = new TimeSlot(resultSet.getInt("timeslotId"), resultSet.getTime("timeslotStartHour").toLocalTime(),
-                        resultSet.getTime("timeslotEndHour").toLocalTime());
-                Salle salle = new Salle(resultSet.getInt("salleId"), resultSet.getString("salleNom"), resultSet.getTimestamp("salleCreationDate"),
-                        resultSet.getTimestamp("salleModificationDate"));
+                Enseignant enseignant = new Enseignant(resultSet.getInt("enseignantId"), resultSet.getString("enseignantNom"), resultSet.getString("enseignantPrenom"), resultSet.getTimestamp("enseignantCreationDate"), resultSet.getTimestamp("enseignantModificationDate"));
+                Matiere matiere = new Matiere(resultSet.getInt("matiereId"), resultSet.getString("matiereNom"), resultSet.getString("matiereVolumeHoraire"), resultSet.getString("matiereDescription"), resultSet.getTimestamp("matiereCreationDate"), resultSet.getTimestamp("matiereModificationDate"));
+                TimeSlot timeSlot = new TimeSlot(resultSet.getInt("timeslotId"), resultSet.getTime("timeslotStartHour").toLocalTime(), resultSet.getTime("timeslotEndHour").toLocalTime());
+                Salle salle = new Salle(resultSet.getInt("salleId"), resultSet.getString("salleNom"), resultSet.getTimestamp("salleCreationDate"), resultSet.getTimestamp("salleModificationDate"));
                 slot.setEnseignant(enseignant);
                 slot.setMatiere(matiere);
                 slot.setTimeSlot(timeSlot);
@@ -323,4 +321,110 @@ public class SlotRepository {
             throw new DataBaseException("Erreur technique : impossible de compter le nombre de slots dans la base de données");
         }
     }//countSlot()
+
+    /**
+     * Cette fonction permet de récupérer les slots en base de données en fonction des informations passées en paramètres
+     * @param params informations liés aux slots
+     * @return les slots récupérés
+     */
+    public List<Slot> getSlots(Map<String, String> params) throws DataBaseException {
+        List<Slot> resultSlots = new ArrayList<>();
+        StringBuilder sb = new StringBuilder("SELECT s.id AS slotId, s.comment AS slotComment, s.creationDate AS slotCreationDate, s.modificationDate AS slotModificationDate, ");
+        sb.append("s.couleurFond AS slotCouleurFond, s.couleurPolice AS slotCouleurPolice, ");
+        sb.append("e.id AS enseignantId, e.nom AS enseignantNom, e.prenom AS enseignantPrenom, e.creationDate AS enseignantCreationDate, e.modificationDate AS enseignantModificationDate, ");
+        sb.append("m.id AS matiereId, m.nom AS matiereNom,m.volumeHoraire AS matiereVolumeHoraire, m.description AS matiereDescription, m.creationDate AS matiereCreationDate, m.modificationDate AS matiereModificationDate, ");
+        sb.append("t.id AS timeslotId, t.startHour AS timeslotStartHour, t.endHour AS timeslotEndHour, ");
+        sb.append(" sa.id AS salleId, sa.nom AS salleNom, sa.creationDate AS salleCreationDate, sa.modificationDate AS salleModificationDate ");
+        sb.append("FROM slot s ");
+        sb.append("LEFT JOIN enseignant e ON s.idEnseignant = e.id ");
+        sb.append("INNER JOIN matiere m ON s.idMatiere = m.id ");
+        sb.append("INNER JOIN timeslot t ON s.idTimeslot = t.id ");
+        sb.append("LEFT JOIN salle sa ON s.idSalle = sa.id ");
+        sb.append("WHERE TRUE ");
+        if (params != null && params.containsKey("couleurFond") && params.get("couleurFond") != null && !params.get("couleurFond").isEmpty()) {
+            sb.append(" AND s.couleurFond = :couleurFond ");
+        }
+        if (params != null && params.containsKey("couleurPolice") && params.get("couleurPolice") != null && !params.get("couleurFond").isEmpty()) {
+            sb.append("AND s.couleurPolice = :couleurPolice ");
+        }
+        if (params != null && params.containsKey("enseignantNom") && params.get("enseignantNom") != null && !params.get("enseignantNom").isEmpty()) {
+            sb.append("AND e.nom LIKE :enseignantNom ");
+        }
+        if (params != null && params.containsKey("enseignantPrenom") && params.get("enseignantPrenom") != null && !params.get("enseignantPrenom").isEmpty()) {
+            sb.append("AND e.prenom LIKE :enseignantPrenom ");
+        }
+        if (params != null && params.containsKey("matiereNom") && params.get("matiereNom") != null && !params.get("matiereNom").isEmpty()) {
+            sb.append("AND m.nom LIKE :matiereNom ");
+        }
+        if (params != null && params.containsKey("startHour") && params.get("startHour") != null && !params.get("startHour").isEmpty()) {
+            sb.append("AND t.startHour = :startHour ");
+        }
+        if (params != null && params.containsKey("endHour") && params.get("endHour") != null && !params.get("endHour").isEmpty()) {
+            sb.append("AND t.endHour = :endHour ");
+        }
+        if (params != null && params.containsKey("salleNom") && params.get("salleNom") != null && !params.get("salleNom").isEmpty()) {
+            sb.append("AND sa.nom LIKE :salleNom ");
+        }
+        sb.append("ORDER BY s.id ASC ");
+        if ((params != null && params.containsKey("page") && params.get("page") != null && !params.get("page").isEmpty()) && (params != null && params.containsKey("nbElementsPerPage") && params.get("nbElementsPerPage") != null && !params.get("nbElementsPerPage").isEmpty())) {
+            sb.append("LIMIT :nbElementsPerPage OFFSET :offset");
+        }
+        String requestSql = sb.toString();
+        try {
+            NamePreparedStatement ps = new NamePreparedStatement(this.connection, requestSql);
+            if (params != null && params.containsKey("couleurFond") && params.get("couleurFond") != null && !params.get("couleurFond").isEmpty()) {
+                ps.setString("couleurFond", params.get("couleurFond"));
+            }
+            if (params != null && params.containsKey("couleurPolice") && params.get("couleurPolice") != null && !params.get("couleurPolice").isEmpty()) {
+                ps.setString("couleurPolice", params.get("couleurPolice"));
+            }
+            if (params != null && params.containsKey("enseignantNom") && params.get("enseignantNom") != null && !params.get("enseignantNom").isEmpty()) {
+                ps.setString("enseignantNom", "%" + params.get("enseignantNom") + "%");
+            }
+            if (params != null && params.containsKey("enseignantPrenom") && params.get("enseignantPrenom") != null && !params.get("enseignantPrenom").isEmpty()) {
+                ps.setString("enseignantPrenom", "%" + params.get("enseignantPrenom") + "%");
+            }
+            if (params != null && params.containsKey("matiereNom") && params.get("matiereNom") != null && !params.get("matiereNom").isEmpty()) {
+                ps.setString("matiereNom", "%" + params.get("matiereNom") + "%");
+            }
+            if (params != null && params.containsKey("startHour") && params.get("startHour") != null && !params.get("startHour").isEmpty()) {
+                ps.setString("startHour",  params.get("startHour"));
+            }
+            if (params != null && params.containsKey("endHour") && params.get("endHour") != null && !params.get("endHour").isEmpty()) {
+                ps.setString("endHour", params.get("endHour"));
+            }
+            if (params != null && params.containsKey("salleNom") && params.get("salleNom") != null && !params.get("salleNom").isEmpty()) {
+                ps.setString("salleNom", "%" + params.get("salleNom") + "%");
+            }
+            if (params != null && params.containsKey("nbElementsPerPage") && params.get("nbElementsPerPage") != null && !params.get("nbElementsPerPage").isEmpty()) {
+                ps.setInt("nbElementsPerPage", Integer.valueOf(params.get("nbElementsPerPage")));
+            }
+            if ((params != null && params.containsKey("page") && params.get("page") != null && !params.get("page").isEmpty()) && (params != null && params.containsKey("nbElementsPerPage") && params.get("nbElementsPerPage") != null && !params.get("nbElementsPerPage").isEmpty())) {
+                ps.setInt("offset", (Integer.valueOf(params.get("page")) - 1) * (Integer.valueOf(params.get("nbElementsPerPage"))));
+            }
+            ResultSet resultSet = ps.executeQuery();
+            while (resultSet.next()) {
+                Enseignant enseignant = new Enseignant(resultSet.getInt("enseignantId"),resultSet.getString("enseignantNom"),resultSet.getString("enseignantPrenom"),resultSet.getTimestamp("enseignantCreationDate"),resultSet.getTimestamp("enseignantModificationDate"));
+                Matiere matiere = new Matiere(resultSet.getInt("matiereId"),resultSet.getString("matiereNom"),resultSet.getString("matiereVolumeHoraire"),resultSet.getString("matiereDescription"),resultSet.getTimestamp("matiereCreationDate"),resultSet.getTimestamp("matiereModificationDate"));
+                Salle salle = new Salle(resultSet.getInt("salleId"),resultSet.getString("salleNom"),resultSet.getTimestamp("salleCreationDate"),resultSet.getTimestamp("salleModificationDate"));
+                TimeSlot timeSlot = new TimeSlot(resultSet.getInt("timeslotId"),LocalTime.parse(resultSet.getString("timeslotStartHour")),LocalTime.parse(resultSet.getString("timeslotEndHour")));
+                Slot slot = new Slot();
+                slot.setId(resultSet.getInt("slotId"));
+                slot.setCouleurFond(resultSet.getString("slotCouleurFond"));
+                slot.setCouleurPolice(resultSet.getString("slotCouleurPolice"));
+                slot.setComment(resultSet.getString("slotComment"));
+                slot.setCreationDate(resultSet.getTimestamp("slotCreationDate"));
+                slot.setModificationDate(resultSet.getTimestamp("slotModificationDate"));
+                slot.setEnseignant(enseignant);
+                slot.setMatiere(matiere);
+                slot.setSalle(salle);
+                slot.setTimeSlot(timeSlot);
+                resultSlots.add(slot);
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Erreur techinque : impossible de récupérer les slots {} de la base de données", params.toString(),e);
+            throw new DataBaseException("Erreur technique : impossible de récupérer les slots de la base de données");
+        }
+        return resultSlots;
+    }//getSlots()
 }//SlotRepository()

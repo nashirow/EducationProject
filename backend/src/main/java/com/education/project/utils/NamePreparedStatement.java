@@ -53,6 +53,10 @@ public class NamePreparedStatement {
         preparedStatement.setTime(getIndex(name), value);
     }//setTime()
 
+    public void setInt(String name, Integer value) throws SQLException {
+        preparedStatement.setInt(getIndex(name), value);
+    }//setString()
+
     public PreparedStatement getPreparedStatement() {
         return preparedStatement;
     }//getPreparedStatement()
