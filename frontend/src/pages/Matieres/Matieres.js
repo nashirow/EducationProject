@@ -100,7 +100,7 @@ export const Disciplines = () => {
             <Button id='create-discipline' to='/' label='Créer une matière' />
         </div>
         <Table id='table-disciplines' header={header} data={disciplines} 
-            details='/' edit='/' delete={(id) => deleteDiscipline(id)}
+            details={process.env.REACT_APP_ENDPOINT_DETAILS_DISCIPLINE} edit='/' delete={(id) => deleteDiscipline(id)}
         />
         
     </main>);
