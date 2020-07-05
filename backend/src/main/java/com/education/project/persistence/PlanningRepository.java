@@ -235,7 +235,7 @@ public class PlanningRepository {
         sb.append("INNER JOIN jour j ON s.idJour = j.id ");
         if(params != null){
             if(params.containsKey("classeNom") && params.get("classeNom") != null && !params.get("classeNom").isEmpty()){
-                sb.append("WHERE c.nom LIKE ?");
+                sb.append("WHERE c.nom LIKE ? ");
             }
         }
         String requestSql = sb.toString();

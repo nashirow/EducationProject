@@ -106,7 +106,9 @@ public class PlanningEndPoint {
     /**
      * Ce endpoint permet de récupérer tous les plannings en base de données en fonction des paramètres passés
      * @param params paramètres d'un planning
-     * classeNom : nom de la classe d'un planning
+     * classeNom : Nom de la classe d'un planning (facultatif)
+     * page : N° de la page (facultatif)
+     * nbElementsPerPage : Nombre d'éléments par page (facultatif)
      * @return Réponse HTTP
      */
     @GetMapping("/plannings")
