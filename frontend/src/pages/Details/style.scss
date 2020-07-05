@@ -15,6 +15,12 @@
     }
 }
 
+#details-timeslot{
+    .details{
+        border: 1px solid $colorTimeSlots;
+    }
+}
+
 #details-teacher{
     .details{
         border: 1px solid $colorTeachers;
