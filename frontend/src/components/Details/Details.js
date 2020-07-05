@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 import React from 'react';
+import { isKeyDate, renderKey } from '../../utils/Utils';
 
 import './style.scss';
+import moment from 'moment';
 
 /**
  * Composant Details permettant d'afficher les détails d'une notion.
@@ -25,7 +27,16 @@ import './style.scss';
 export const Details = (props) => {
     return (<div className='details'>
         <ul>
-            {props && props.data && Object.entries(props.data).map(([key, value]) => <li key={key}>{key} : {value}</li>)}
+            {props && props.data 
+                && Object.entries(props.data).map(([key, value]) => 
+                {
+                    return (<li key={key}><label htmlFor={key}>{renderKey(key)} :</label>
+                        <span id={key}>
+                            {isKeyDate(key) ? moment(value).format(process.env.REACT_APP_DATE_FORMAT) : value}
+                        </span>
+                    </li>);
+                })
+            }
         </ul>
     </div>);
 };

@@ -45,7 +45,7 @@ export const DetailsClasse = () => {
     }, [id]);
 
     return(<main id='details-classe'>
-        <Breadcrumb elements={[{label: `Détails de la classe n° ${id}`, link: '' }]} />
+        <Breadcrumb elements={[{label: `Classes`, link: '/classes' }, {label: `Détails de la classe n° ${id}`, link: '' }]} />
         {!_.isEmpty(errors) && <Message typeMessage='errors' messages={errors} />}
         <div className='wrapper-details'>
             <Details data={classe} />
