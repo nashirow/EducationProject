@@ -24,6 +24,7 @@ import { Slots } from './pages/Slots/Slots';
 import { Rooms } from './pages/Rooms/Rooms';
 import { Disciplines } from './pages/Matieres/Matieres';
 import { Teachers } from './pages/Teachers/Teachers';
+import { DetailsTeacher } from './pages/Details/DetailsTeacher/DetailsTeacher';
 import { DetailsDiscipline } from './pages/Details/DetailsDisciplines/DetailsDiscipline';
 import { DetailsClasse } from './pages/Details/DetailsClasse/DetailsClasse';
 import { Options } from './pages/Options/Options';
@@ -60,6 +61,9 @@ function App() {
           </Route>
           <Route path="/disciplines">
             <Disciplines />
+          </Route>
+          <Route path={`${process.env.REACT_APP_ENDPOINT_DETAILS_TEACHER}/:id`}>
+            <DetailsTeacher />
           </Route>
           <Route path="/teachers">
             <Teachers />
