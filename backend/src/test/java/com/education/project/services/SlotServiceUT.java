@@ -1429,8 +1429,6 @@ public class SlotServiceUT {
         Assertions.assertThat(slots.get(0).getEnseignant().getCreationDate()).isNotNull();
         Assertions.assertThat(slots.get(0).getEnseignant().getModificationDate()).isNotNull();
         Assertions.assertThat(slots.get(0).getEnseignant().getCreationDate()).isNotEqualTo(slots.get(0).getEnseignant().getModificationDate());
-        Assertions.assertThat(slots.get(0).getEnseignant().getCreationDate()).isEqualTo(slotsFromBd.get(0).getEnseignant().getCreationDate());
-        Assertions.assertThat(slots.get(0).getEnseignant().getModificationDate()).isEqualTo(slotsFromBd.get(0).getEnseignant().getModificationDate());
         Assertions.assertThat(slots.get(0).getMatiere()).isNotNull();
         Assertions.assertThat(slots.get(0).getMatiere().getId()).isNotNull();
         Assertions.assertThat(slots.get(0).getMatiere().getNom()).isNotNull();

@@ -104,12 +104,23 @@ public class MatiereService {
 
     /**
      * Cette fonction permet de récupérer un ensemble de matières grâce à un nom et la couleur de police passés en paramètre
-     * @param nom Le nom permettant de récupérer un ensemble de matière
-     * @return List (toutes les matières si pas de nom et pas de couleur de police)
+     * @param nom Le nom de la matière ou expression incomplète (optionnel)
+     * @param page n° de la page (optionnel)
+     * @param nbElementsPerPage Nombre d'éléments par page (optionnel)
+     * @return Liste de matières
      */
-    public List<Matiere> getMatieres(String nom) throws DataBaseException {
-        return matiereRepository.findAll(nom);
+    public List<Matiere> getMatieres(String nom, Integer page, Integer nbElementsPerPage) throws DataBaseException {
+        return matiereRepository.findAll(nom, page, nbElementsPerPage);
     }//getMatieres()
+
+    /**
+     * Cette fonction permet de compter un ensemble de matières grâce à un nom et la couleur de police passés en paramètre
+     * @param nom Le nom de la matière ou expression incomplète (optionnel)
+     * @return nombre de matières
+     */
+    public long countMatieres(String nom) throws DataBaseException {
+        return matiereRepository.count(nom);
+    }// countMatieres()
 
     /**
      * La fonction permet de vérifier les règles métiers.

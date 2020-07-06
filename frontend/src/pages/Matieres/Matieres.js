@@ -23,6 +23,7 @@ import { Button } from '../../components/Button/Button';
 
 import './style.scss';
 import { handleResponse } from '../../utils/Utils';
+import { Pagination } from '../../components/Pagination/Pagination';
 
 /**
  * Page matières
@@ -31,6 +32,8 @@ export const Disciplines = () => {
 
     const [disciplines, setDisciplines] = useState([]);
     const [errors, setErrors] = useState([]);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
     const header = ['Identifiant', 'Nom', 'Actions'];
 
     /**
@@ -40,7 +43,7 @@ export const Disciplines = () => {
         const abortController = new AbortController();
         const fetchData = async () => {
             try{
-                let response = await fetch(`${process.env.REACT_APP_API_URL_DISCIPLINES}`, 
+                let response = await fetch(`${process.env.REACT_APP_API_URL_DISCIPLINES}?page=${page}&nbElementsPerPage=${process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE}`, 
                     { method: 'GET', signal: abortController.signal });
                 let json = await response.json();
                 response = await handleResponse(setErrors, response, json);;
@@ -62,9 +65,9 @@ export const Disciplines = () => {
      * Récupération de toutes les matières
      * @param {Object} optionsFetch options API Fetch
      */
-    const fetchAllDisciplines = async (optionsFetch) => {
+    const fetchAllDisciplines = async (numPage, optionsFetch) => {
         try{
-            let response = await fetch(`${process.env.REACT_APP_API_URL_DISCIPLINES}`, optionsFetch);
+            let response = await fetch(`${process.env.REACT_APP_API_URL_DISCIPLINES}?page=${numPage}&nbElementsPerPage=${process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE}`, optionsFetch);
             let json = await response.json();
             response = await handleResponse(setErrors, response, json);;
             
@@ -85,12 +88,21 @@ export const Disciplines = () => {
                 const response = await fetch(`${process.env.REACT_APP_API_URL_DELETE_DISCIPLINE}/${id}`, { method: 'DELETE' });
                 let json = await response.json()
                 await handleResponse(setErrors, response, json);
-                await fetchAllDisciplines({ method: 'GET' });  
+                await fetchAllDisciplines(page, { method: 'GET' });  
             }catch(err){
                 console.error(err);
                 setErrors([process.env.REACT_APP_GENERAL_ERROR]);
             }
         }
+    };
+
+    /**
+     * Callback pagination
+     * @param {Integer} numPage Numéro de la page à atteindre
+     */
+    const changePage = (numPage) => {
+        setPage(numPage);
+        fetchAllDisciplines(numPage, { method: 'GET' }); 
     };
     
     return(<main id="disciplines">
@@ -102,6 +114,6 @@ export const Disciplines = () => {
         <Table id='table-disciplines' header={header} data={disciplines} 
             details={process.env.REACT_APP_ENDPOINT_DETAILS_DISCIPLINE} edit='/' delete={(id) => deleteDiscipline(id)}
         />
-        
+        <Pagination currentPage={page} pagesCount={totalPages} action={changePage}/>
     </main>);
 };

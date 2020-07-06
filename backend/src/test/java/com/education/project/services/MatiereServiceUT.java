@@ -63,8 +63,8 @@ public class MatiereServiceUT {
          this.matiereGeographie.setId(1); this.matiereGeographie.setCreationDate(new Date()); this.matiereGeographie.setModificationDate(new Date());
          List<Matiere> results = new ArrayList<>();
          results.add(this.matiereFrancais); results.add(this.matiereGeographie); results.add(this.matiereMathematiques);
-         Mockito.when(matiereRepository.findAll("")).thenReturn(results);
-         Mockito.when(matiereRepository.findAll(null)).thenReturn(results);
+         Mockito.when(matiereRepository.findAll("", null, null)).thenReturn(results);
+         Mockito.when(matiereRepository.findAll(null, null, null)).thenReturn(results);
     }//setup()
 
 
@@ -368,9 +368,9 @@ public class MatiereServiceUT {
 
     @Test
     public void get_matieres_should_return_mathematiques_matiere_when_when_name_to_search_is_mathematiques() throws DataBaseException{
-        Mockito.when(matiereRepository.findAll("Mathématiques"))
+        Mockito.when(matiereRepository.findAll("Mathématiques", null, null))
                 .thenReturn(Collections.singletonList(this.matiereMathematiques));
-        List<Matiere> matieresFromBd = matiereService.getMatieres("Mathématiques");
+        List<Matiere> matieresFromBd = matiereService.getMatieres("Mathématiques", null, null);
         Assertions.assertThat(matieresFromBd).isNotEmpty();
         Assertions.assertThat(matieresFromBd).hasSize(1);
         Assertions.assertThat(matieresFromBd.get(0).getId()).isEqualTo(3);
@@ -382,8 +382,23 @@ public class MatiereServiceUT {
     }//get_matieres_should_return_mathematiques_matiere_when_when_name_to_search_is_mathematiques()
 
     @Test
+    public void get_matieres_should_return_mathematiques_matiere_when_when_name_to_search_is_mathematiques_and_with_pagination() throws DataBaseException{
+        Mockito.when(matiereRepository.findAll("Mathématiques", 1, 1))
+                .thenReturn(Collections.singletonList(this.matiereMathematiques));
+        List<Matiere> matieresFromBd = matiereService.getMatieres("Mathématiques", 1, 1);
+        Assertions.assertThat(matieresFromBd).isNotEmpty();
+        Assertions.assertThat(matieresFromBd).hasSize(1);
+        Assertions.assertThat(matieresFromBd.get(0).getId()).isEqualTo(3);
+        Assertions.assertThat(matieresFromBd.get(0).getNom()).isEqualTo("Mathématiques");
+        Assertions.assertThat(matieresFromBd.get(0).getVolumeHoraire()).isEqualTo("1H30");
+        Assertions.assertThat(matieresFromBd.get(0).getDescription()).isEqualTo("C'est la matière mathématiques");
+        Assertions.assertThat(matieresFromBd.get(0).getCreationDate()).isNotNull();
+        Assertions.assertThat(matieresFromBd.get(0).getModificationDate()).isNotNull();
+    }//get_matieres_should_return_mathematiques_matiere_when_when_name_to_search_is_mathematiques_and_with_pagination()
+
+    @Test
     public void get_list_matiere_should_return_all_matieres_sorted_by_asc_name_when_name_is_empty() throws DataBaseException{
-        List<Matiere> matieresFromBd = matiereService.getMatieres("");
+        List<Matiere> matieresFromBd = matiereService.getMatieres("", null, null);
         Assertions.assertThat(matieresFromBd).isNotEmpty();
         Assertions.assertThat(matieresFromBd).hasSize(3);
         Assertions.assertThat(matieresFromBd.get(0).getId()).isEqualTo(2);
@@ -408,7 +423,7 @@ public class MatiereServiceUT {
 
     @Test
     public void get_list_matiere_should_return_all_matieres_sorted_by_asc_name_when_name_is_null() throws DataBaseException{
-        List<Matiere> matieresFromBd = matiereService.getMatieres(null);
+        List<Matiere> matieresFromBd = matiereService.getMatieres(null, null, null);
         Assertions.assertThat(matieresFromBd).isNotEmpty();
         Assertions.assertThat(matieresFromBd).hasSize(3);
         Assertions.assertThat(matieresFromBd.get(0).getId()).isEqualTo(2);
@@ -433,19 +448,32 @@ public class MatiereServiceUT {
 
     @Test
     public void get_matieres_should_return_empty_list_when_name_does_not_exist() throws DataBaseException{
-        List<Matiere> matieresFromBd = matiereService.getMatieres("Tartampion");
+        List<Matiere> matieresFromBd = matiereService.getMatieres("Tartampion", null, null);
         Assertions.assertThat(matieresFromBd).isEmpty();
     }//get_matieres_should_return_empty_list_when_name_does_not_exist()
 
     @Test
     public void get_matieres_should_return_empty_list_when_name_is_mathematiques() throws DataBaseException{
-        List<Matiere> matieresFromBd = matiereService.getMatieres("Mathématiques");
+        List<Matiere> matieresFromBd = matiereService.getMatieres("Mathématiques", null, null);
         Assertions.assertThat(matieresFromBd).isEmpty();
     }//get_matieres_should_return_empty_list_when_name_is_mathematiques()
 
     @Test
     public void get_matieres_should_return_empty_list_when_name_is_sport() throws DataBaseException{
-        List<Matiere> matieresFromBd = matiereService.getMatieres("Sport");
+        List<Matiere> matieresFromBd = matiereService.getMatieres("Sport", null, null);
         Assertions.assertThat(matieresFromBd).isEmpty();
     }//get_matieres_should_return_empty_list_when_name_is_sport()
+
+    @Test
+    public void count_matieres_should_return_1_when_name_is_mathematiques() throws DataBaseException {
+        Mockito.when(matiereRepository.count("Mathématiques")).thenReturn(1L);
+        Assertions.assertThat(matiereService.countMatieres("Mathématiques")).isEqualTo(1L);
+    }// count_matieres_should_return_1_when_name_is_mathematiques()
+
+    @Test
+    public void count_matieres_should_return_0_when_name_is_anglais() throws DataBaseException {
+        Mockito.when(matiereRepository.count("Anglais")).thenReturn(0L);
+        Assertions.assertThat(matiereService.countMatieres("Anglais")).isEqualTo(0L);
+    }// count_matieres_should_return_0_when_name_is_anglais()
+
 }//MatiereServiceUT
