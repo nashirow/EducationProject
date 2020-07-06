@@ -29,6 +29,8 @@ import { DetailsDiscipline } from './pages/Details/DetailsDisciplines/DetailsDis
 import { DetailsClasse } from './pages/Details/DetailsClasse/DetailsClasse';
 import { Options } from './pages/Options/Options';
 import { DetailsTimeSlot } from './pages/Details/DetailsTimeSlot/DetailsTimeSlot';
+import { DetailsPlanning } from './pages/Details/DetailsPlanning/DetailsPlanning';
+import { DetailsSlot } from './pages/Details/DetailsSlot/DetailsSlot';
 import { DetailsRoom } from './pages/Details/DetailsRoom/DetailsRoom';
 
 /**
@@ -52,8 +54,14 @@ function App() {
           <Route path="/timeslots">
             <TimeSlots />
           </Route>
+          <Route path={`${process.env.REACT_APP_ENDPOINT_DETAILS_PLANNING}/:id`}>
+            <DetailsPlanning />
+          </Route>
           <Route path="/plannings">
             <Plannings />
+          </Route>
+          <Route path={`${process.env.REACT_APP_ENDPOINT_DETAILS_SLOT}/:id`}>
+            <DetailsSlot />
           </Route>
           <Route path="/slots">
             <Slots />
