@@ -74,6 +74,7 @@ public class TimeSlotService {
             if(ts.getStart() == null || ts.getEnd() == null){
                 errors.add("L'heure de début et l'heure de fin sont obligatoires");
             }else{
+                // TODO :  Vérifier que l'heure de début >= heure début planning
                 if(ts.getStart().equals(ts.getEnd()) || ts.getStart().isAfter(ts.getEnd())){
                     errors.add("L'heure de début ne doit pas être supérieur ou égal à l'heure de fin");
                 }

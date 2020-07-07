@@ -120,4 +120,15 @@ public class PlanningEndPoint {
             return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }//getPlannings()
+
+    @GetMapping("/planning/generate/{id}")
+    public ResponseEntity<?> generatePlanning(@PathVariable("id") Integer id){
+        try {
+            planningService.generatePlanning(id);
+            return new ResponseEntity<>(new ResponseEndPoint(null,null),HttpStatus.OK);
+        } catch (DataBaseException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }// generatePlanning()
+
 }// PlanningEndPoint

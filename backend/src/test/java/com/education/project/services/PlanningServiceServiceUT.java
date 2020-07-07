@@ -18,6 +18,7 @@ package com.education.project.services;
 import com.education.project.exceptions.ArgumentException;
 import com.education.project.exceptions.DataBaseException;
 import com.education.project.model.*;
+import com.education.project.persistence.OptionsRepository;
 import com.education.project.persistence.PlanningRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
@@ -40,6 +41,9 @@ public class PlanningServiceServiceUT {
     @Mock
     private PlanningRepository planningRepository;
 
+    @Mock
+    private OptionsRepository optionsRepository;
+
     private Planning planningToInsert;
 
     private Planning planningInserted;
@@ -50,7 +54,7 @@ public class PlanningServiceServiceUT {
 
     @Before
     public void setUp() throws DataBaseException {
-        this.planningService = new PlanningService(planningRepository);
+        this.planningService = new PlanningService(planningRepository, optionsRepository);
         this.planningToInsert = planningToInsert();
         this.planningInserted = planningToInsert();
         this.planningToUpdate = planningToUpdate();
@@ -414,6 +418,14 @@ public class PlanningServiceServiceUT {
         planning.setModificationDate(new Date());
         return planning;
     }//planningToDelete()
+
+    /*public void generate_planning_should_success_without_warnings_when_classics_options(){
+
+    }// generate_planning_should_success_when_classics_options()
+
+    private Optional<Planning> getClassicPlanningForGeneration(){
+
+    }// getPlanningForGeneration()*/
 
     private Optional<Planning> getFullPlanning(){
         Planning planning = new Planning();
