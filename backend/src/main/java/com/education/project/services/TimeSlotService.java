@@ -66,6 +66,12 @@ public class TimeSlotService {
         return timeSlotRepository.delete(id);
     }// delete()
 
+    /**
+     * Contrôle des règles de gestion
+     * @param ts TimeSlot
+     * @throws ArgumentException
+     * @throws DataBaseException
+     */
     private void checkBusiness(TimeSlot ts) throws ArgumentException, DataBaseException {
         List<String> errors = new ArrayList<>();
         if(ts == null){
@@ -74,7 +80,6 @@ public class TimeSlotService {
             if(ts.getStart() == null || ts.getEnd() == null){
                 errors.add("L'heure de début et l'heure de fin sont obligatoires");
             }else{
-                // TODO :  Vérifier que l'heure de début >= heure début planning
                 if(ts.getStart().equals(ts.getEnd()) || ts.getStart().isAfter(ts.getEnd())){
                     errors.add("L'heure de début ne doit pas être supérieur ou égal à l'heure de fin");
                 }
@@ -82,6 +87,9 @@ public class TimeSlotService {
                     long diff = ChronoUnit.MINUTES.between(ts.getEnd(), ts.getStart());
                     if(diff % options.getSplitPlanning() != 0){
                         errors.add("L'heure de fin et l'heure de début doivent être cohérents avec le découpage du planning");
+                    }
+                    if(ts.getStart().isBefore(options.getStartHourPlanning())){
+                        errors.add("L'heure de début doit être postérieur ou égal à l'heure de début d'un planning");
                     }
                 });
                 if(this.timeSlotRepository.exists(ts)){

@@ -104,7 +104,7 @@ public class PlanningEndPoint {
     }// getPlanningById()
 
     /**
-     * Ce endpoint permet de récupérer tous les plannings en base de données en fonction des paramètres passés
+     * Ce endpoint permet de récupérer tous les plannings de l'application en fonction des paramètres passés
      * @param params paramètres d'un planning
      * classeNom : Nom de la classe d'un planning (facultatif)
      * page : N° de la page (facultatif)
@@ -121,11 +121,15 @@ public class PlanningEndPoint {
         }
     }//getPlannings()
 
+    /**
+     * Ce endpoint permet de générer un planning à partir de son identifiant.
+     * @param id Identifiant du planning à générer
+     * @return Réponse HTTP
+     */
     @GetMapping("/planning/generate/{id}")
     public ResponseEntity<?> generatePlanning(@PathVariable("id") Integer id){
         try {
-            planningService.generatePlanning(id);
-            return new ResponseEntity<>(new ResponseEndPoint(null,null),HttpStatus.OK);
+            return new ResponseEntity<>(new ResponseEndPoint(planningService.generatePlanning(id),null),HttpStatus.OK);
         } catch (DataBaseException e) {
             return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
         }
