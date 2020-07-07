@@ -184,20 +184,31 @@ public class MatiereRepository {
     /**
      * Récupère toutes les matières en fonction de filtres
      * @param nom Nom de la matière recherchée (optionnel)
+     * @param page n° de la page (optionnel)
+     * @param nbElementsPerPage Nombre d'éléments par page (optionnel)
      * @return liste de matières
      */
-    public List<Matiere> findAll(String nom) throws DataBaseException {
+    public List<Matiere> findAll(String nom, Integer page, Integer nbElementsPerPage) throws DataBaseException {
         List<Matiere> results = new ArrayList<>();
         StringBuilder sb = new StringBuilder("SELECT * FROM matiere ");
         if(nom != null && !nom.isEmpty()){
             sb.append("WHERE nom LIKE ?");
         }
-        sb.append(" ORDER BY nom ASC");
+        sb.append(" ORDER BY nom ASC ");
+        if(page != null && nbElementsPerPage != null){
+            sb.append("LIMIT ? OFFSET ?");
+        }
         String requestSql = sb.toString();
         try {
             PreparedStatement ps = this.connexion.prepareStatement(requestSql);
+            int indiceNom = 0;
             if(nom != null && !nom.isEmpty()){
-                ps.setString(1, "%" + nom + "%");
+                ++indiceNom;
+                ps.setString(indiceNom, "%" + nom + "%");
+            }
+            if(page != null && nbElementsPerPage != null){
+                ps.setInt(indiceNom+1,nbElementsPerPage);
+                ps.setInt(indiceNom+2,(page-1) * nbElementsPerPage);
             }
             if(!ps.execute()){
                 LOGGER.error("Erreur technique : impossible de récupérer les matières");
@@ -223,4 +234,34 @@ public class MatiereRepository {
         }
         return results;
     }// findAll()
+
+    /**
+     * Compte le nombre total de matières
+     * @param nom Nom / Expression incomplète (optionnel)
+     * @return nombre total de matières
+     */
+    public long count(String nom) throws DataBaseException {
+        StringBuilder sb = new StringBuilder("SELECT COUNT(id) FROM matiere ");
+        if(nom != null && !nom.isEmpty()){
+            sb.append("WHERE nom LIKE ?");
+        }
+        String requestSql = sb.toString();
+        try {
+            PreparedStatement ps = this.connexion.prepareStatement(requestSql);
+            if(nom != null && !nom.isEmpty()){
+                ps.setString(1, "%" + nom + "%");
+            }
+            if(!ps.execute()){
+                LOGGER.error("Erreur technique : impossible de compter les matières");
+                throw new DataBaseException("Erreur technique : impossible de compter les matières");
+            }
+            ResultSet resultSet = ps.getResultSet();
+            resultSet.next();
+            return resultSet.getLong(1);
+        } catch (SQLException e) {
+            LOGGER.error("Erreur technique : impossible de récupérer les matières", e);
+            throw new DataBaseException("Erreur technique : impossible de récupérer les matières");
+        }
+    }// count()
+
 }//MatiereRepository

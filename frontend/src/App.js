@@ -29,6 +29,7 @@ import { DetailsDiscipline } from './pages/Details/DetailsDisciplines/DetailsDis
 import { DetailsClasse } from './pages/Details/DetailsClasse/DetailsClasse';
 import { Options } from './pages/Options/Options';
 import { DetailsTimeSlot } from './pages/Details/DetailsTimeSlot/DetailsTimeSlot';
+import { DetailsRoom } from './pages/Details/DetailsRoom/DetailsRoom';
 
 /**
  * Entrée de l'application + Gestion des routes
@@ -56,6 +57,9 @@ function App() {
           </Route>
           <Route path="/slots">
             <Slots />
+          </Route>
+          <Route path={`${process.env.REACT_APP_ENDPOINT_DETAILS_ROOM}/:id`}>
+            <DetailsRoom />
           </Route>
           <Route path="/rooms">
             <Rooms />

@@ -122,12 +122,30 @@ public class MatiereEndPoint {
      * @return Réponse HTTP.
      */
     @GetMapping("/matieres")
-    public ResponseEntity<?> getMatieres(@RequestParam(value = "name", required = false) String name){
+    public ResponseEntity<?> getMatieres(@RequestParam(value = "name", required = false) String name,
+                                         @RequestParam(value = "page", required = false) Integer page,
+                                         @RequestParam(value = "nbElementsPerPage", required = false) Integer nbElementsPerPage){
         try {
-            return new ResponseEntity<>(new ResponseEndPoint(this.matiereService.getMatieres(name),null), HttpStatus.OK);
+            return new ResponseEntity<>(new ResponseEndPoint(this.matiereService.getMatieres(name, page, nbElementsPerPage),null), HttpStatus.OK);
         } catch (DataBaseException e) {
             return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }//getMatieres()
+
+    /**
+     * Ce endpoint permet de récupérer toutes les matières à l'aide de filtres.
+     * @param name Nom de la matière à rechercher (optionnel)
+     * @return Réponse HTTP.
+     */
+    @GetMapping("/count/matieres")
+    public ResponseEntity<?> countMatieres(@RequestParam(value = "name", required = false) String name,
+                                         @RequestParam(value = "page", required = false) Integer page,
+                                         @RequestParam(value = "nbElementsPerPage", required = false) Integer nbElementsPerPage){
+        try {
+            return new ResponseEntity<>(new ResponseEndPoint(this.matiereService.getMatieres(name, page, nbElementsPerPage),null), HttpStatus.OK);
+        } catch (DataBaseException e) {
+            return new ResponseEntity<>(new ResponseEndPoint(null,e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }//countMatieres()
 
 }//MatiereEndPoint
