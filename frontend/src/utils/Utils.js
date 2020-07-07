@@ -32,6 +32,17 @@ export const renderKey = (key) => {
         modificationDate: 'Dernière date de modification',
         volumeHoraire: 'Volume horaire',
         description: 'Description',
+        start: 'Heure de début',
+        end: 'Heure de fin',
+        couleurFond: 'Couleur de fond (hexadécimal)',
+        couleurPolice: 'Couleur de police (hexadécimal)',
+        matiere: 'Matière',
+        timeSlot: 'Créneaux horaires',
+        salle: 'Salles',
+        comment: 'Commentaires',
+        jour: 'Jour',
+        plannings: 'Emplois du temps liés',
+        enseignant: 'Enseignant',
     };
     return mapping[key];
 };

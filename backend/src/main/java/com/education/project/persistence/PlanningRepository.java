@@ -247,13 +247,18 @@ public class PlanningRepository {
                 }
             }
             ResultSet resultSet = ps.executeQuery();
+
+            Planning planning = new Planning();
             while(resultSet.next()){
-                Planning planning = new Planning();
-                planning.setSlots(new ArrayList<>());
-                planning.setId(resultSet.getInt("pid"));
-                planning.setNom(resultSet.getString("pnom"));
-                planning.setModificationDate(resultSet.getTimestamp("pmodificationDate"));
-                planning.setCreationDate(resultSet.getTimestamp("pcreationDate"));
+                boolean noDoublons = checkNoDoublonsInResultList(resultPlannings, resultSet);
+                if(noDoublons) {
+                    planning = new Planning();
+                    planning.setId(resultSet.getInt("pid"));
+                    planning.setNom(resultSet.getString("pnom"));
+                    planning.setModificationDate(resultSet.getTimestamp("pmodificationDate"));
+                    planning.setCreationDate(resultSet.getTimestamp("pcreationDate"));
+                    planning.setSlots(new ArrayList<>());
+                }
                 Classe classe = new Classe(resultSet.getInt("pidClasse"), resultSet.getString("cnom"),resultSet.getTimestamp("ccreationDate"),resultSet.getTimestamp("cmodificationDate"));
                 Enseignant enseignant = new Enseignant(resultSet.getInt("enseignantId"), resultSet.getString("enseignantNom"), resultSet.getString("enseignantPrenom"), resultSet.getTimestamp("enseignantCreationDate"), resultSet.getTimestamp("enseignantModificationDate"));
                 Matiere matiere = new Matiere(resultSet.getInt("matiereId"), resultSet.getString("matiereNom"), resultSet.getString("matiereVolumeHoraire"), resultSet.getString("matiereDescription"), resultSet.getTimestamp("matiereCreationDate"), resultSet.getTimestamp("matiereModificationDate"));
@@ -271,10 +276,12 @@ public class PlanningRepository {
                 slot.setSalle(salle);
                 slot.setJour(jour);
                 planning.getSlots().add(slot);
-                planning.setClasse(classe);
-                planning.setSaturdayUsed(resultSet.getBoolean("psaturdayUsed"));
-                planning.setWednesdayUsed(resultSet.getBoolean("pwednesdayUsed"));
-                resultPlannings.add(planning);
+                if(noDoublons) {
+                    planning.setClasse(classe);
+                    planning.setSaturdayUsed(resultSet.getBoolean("psaturdayUsed"));
+                    planning.setWednesdayUsed(resultSet.getBoolean("pwednesdayUsed"));
+                    resultPlannings.add(planning);
+                }
             }
             return resultPlannings;
         } catch (SQLException e) {
@@ -282,4 +289,22 @@ public class PlanningRepository {
             throw new DataBaseException("Erreur technique impossible de récupérer les plannings dans la base de données");
         }
     }//getPlannings()
+
+    private boolean checkNoDoublonsInResultList(List<Planning> resultPlannings, ResultSet resultSet){
+        if(resultSet == null || resultPlannings == null){
+            return false;
+        }
+        return resultPlannings.stream()
+                .filter(p -> {
+                    try {
+                        return p.getId().equals(resultSet.getInt("pid"));
+                    } catch (SQLException e) {
+                        LOGGER.error(e.getMessage(), e);
+                    }
+                    return false;
+                })
+                .findAny()
+                .isEmpty();
+    }// checkNoDoublonsInResultList()
+
 }// PlanningRepository

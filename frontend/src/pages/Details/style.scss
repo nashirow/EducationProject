@@ -33,6 +33,12 @@
     }
 }
 
+#details-slot{
+    .details{
+        border: 1px solid $colorSlots;
+    }
+}
+
 #details-room{
     .details{
         border: 1px solid $colorRoom;

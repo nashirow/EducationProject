@@ -19,6 +19,21 @@ import { isKeyDate, renderKey } from '../../utils/Utils';
 import './style.scss';
 import moment from 'moment';
 
+const renderObject = (obj) => {
+    const rows = Object.entries(obj).map(([key, value]) => {
+        return (<li key={key}><label htmlFor={key}>{renderKey(key)} :</label>
+            <span id={key}>
+                {renderPrimaryType(key, value)}
+            </span>
+        </li>);
+    });
+    return (<ul className='row-details-object'>{rows}</ul>);
+};
+
+const renderPrimaryType = (key, value) => {
+    return (isKeyDate(key) ? moment(value).format(process.env.REACT_APP_DATE_FORMAT) : (value || '-'));
+};
+
 /**
  * Composant Details permettant d'afficher les détails d'une notion.
  * 
@@ -32,7 +47,8 @@ export const Details = (props) => {
                 {
                     return (<li key={key}><label htmlFor={key}>{renderKey(key)} :</label>
                         <span id={key}>
-                            {isKeyDate(key) ? moment(value).format(process.env.REACT_APP_DATE_FORMAT) : (value || '-')}
+                            {(typeof value === 'string' || typeof value ==='number') && renderPrimaryType(key, value)}
+                            {value instanceof Object && renderObject(value)}
                         </span>
                     </li>);
                 })

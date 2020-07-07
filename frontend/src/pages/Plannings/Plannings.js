@@ -20,7 +20,6 @@ import { Table } from '../../components/Table/Table';
 import { Message } from '../../components/Message/Message';
 import { Breadcrumb } from '../../components/Breadcrumb/Breadcrumb';
 import { Button } from '../../components/Button/Button';
-import { Pagination } from '../../components/Pagination/Pagination';
 
 import './style.scss';
 import { handleResponse } from '../../utils/Utils';
@@ -32,8 +31,6 @@ export const Plannings = () => {
 
     const [plannings, setPlannings] = useState([]);
     const [errors, setErrors] = useState([]);
-    const [page, setPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(0);
     const header = ['Identifiant', 'Nom', 'Actions'];
 
     /**
@@ -43,19 +40,12 @@ export const Plannings = () => {
         const abortController = new AbortController();
         const fetchData = async () => {
             try{
-                let response = await fetch(`${process.env.REACT_APP_API_URL_PLANNINGS}?page=${page}&nbElementsPerPage=${process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE}`, 
+                let response = await fetch(`${process.env.REACT_APP_API_URL_PLANNINGS}`, 
                     { method: 'GET', signal: abortController.signal });
                 let json = await response.json();
                 response = await handleResponse(setErrors, response, json);;
                 
                 setPlannings(json.value.map(val => [val.id, val.nom, null]) || []);
-
-                response = await fetch(`${process.env.REACT_APP_API_URL_COUNT_PLANNINGS}`, 
-                    { method: 'GET', signal: abortController.signal });
-                json = await response.json();
-                response = await handleResponse(setErrors, response, json);;
-                
-                setTotalPages(Math.ceil(json.value/parseInt(process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE)));
             }catch(err){
                 console.error(err);
                 setErrors([process.env.REACT_APP_GENERAL_ERROR]);
@@ -67,26 +57,19 @@ export const Plannings = () => {
             abortController.abort();
         };
 
-    }, [page, totalPages]);
+    }, []);
 
     /**
      * Récupération de tous les plannings
-     * @param {Integer} numPage n° de la page
      * @param {Object} optionsFetch options API Fetch
      */
-    const fetchAllPlannings = async (numPage, optionsFetch) => {
+    const fetchAllPlannings = async (optionsFetch) => {
         try{
-            let response = await fetch(`${process.env.REACT_APP_API_URL_PLANNINGS}?page=${numPage}&nbElementsPerPage=${process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE}`, optionsFetch);
+            let response = await fetch(`${process.env.REACT_APP_API_URL_PLANNINGS}`, optionsFetch);
             let json = await response.json();
             response = await handleResponse(setErrors, response, json);;
             
             setPlannings(json.value.map(val => [val.id, val.nom, null]) || []);
-
-            response = await fetch(`${process.env.REACT_APP_API_URL_COUNT_PLANNINGS}`, optionsFetch);
-            json = await response.json();
-            response = await handleResponse(setErrors, response, json);;
-            
-            setTotalPages(Math.ceil(json.value/parseInt(process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE)));
         }catch(err){
             console.error(err);
             setErrors([process.env.REACT_APP_GENERAL_ERROR]);
@@ -103,21 +86,12 @@ export const Plannings = () => {
                 const response = await fetch(`${process.env.REACT_APP_API_URL_DELETE_PLANNING}/${id}`, { method: 'DELETE' });
                 let json = await response.json()
                 await handleResponse(setErrors, response, json);
-                await fetchAllPlannings(page, { method: 'GET' });  
+                await fetchAllPlannings({ method: 'GET' });  
             }catch(err){
                 console.error(err);
                 setErrors([process.env.REACT_APP_GENERAL_ERROR]);
             }
         }
-    };
-
-    /**
-     * Callback pagination
-     * @param {Integer} numPage Numéro de la page à atteindre
-     */
-    const changePage = (numPage) => {
-        setPage(numPage);
-        fetchAllPlannings(numPage, { method: 'GET' }); 
     };
     
     return(<main id="plannings">
@@ -127,8 +101,7 @@ export const Plannings = () => {
             <Button id='create-planning' to='/' label='Créer un emploi du temps' />
         </div>
         <Table id='table-plannings' header={header} data={plannings} 
-            details='/' edit='/' delete={(id) => deletePlanning(id)}
+            details={process.env.REACT_APP_ENDPOINT_DETAILS_PLANNING} edit='/' delete={(id) => deletePlanning(id)}
         />
-        <Pagination currentPage={page} pagesCount={totalPages} action={changePage}/>
     </main>);
 };
