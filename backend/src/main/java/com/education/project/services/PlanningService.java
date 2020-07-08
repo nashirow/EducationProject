@@ -21,6 +21,7 @@ import com.education.project.exceptions.DataBaseException;
 import com.education.project.model.*;
 import com.education.project.persistence.OptionsRepository;
 import com.education.project.persistence.PlanningRepository;
+import com.education.project.utils.HtmlUtils;
 import com.education.project.utils.LocalTimeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -192,7 +193,20 @@ public class PlanningService {
                             firstTime = false;
                         } else if (!firstTime && j < slotsOfCurrentDay.size()) { // On s'occupe de tous les éléments sauf les derniers slots
                             if (j != prevIndex || slotsOfCurrentDay.get(j - 1).getTimeSlot().getEnd().equals(slotsOfCurrentDay.get(j).getTimeSlot().getStart())) {
-                                results[gardesFou.get(cursorColumn)][cursorColumn] = initSlot(slotsOfCurrentDay.get(j), rowspan);
+
+                                if(j > 0 && slotsOfCurrentDay.get(j - 1).getTimeSlot().getStart().equals(slotsOfCurrentDay.get(j).getTimeSlot().getStart())
+                                && slotsOfCurrentDay.get(j - 1).getTimeSlot().getEnd().equals(slotsOfCurrentDay.get(j).getTimeSlot().getEnd())){
+                                    // On divise la cellule en deux
+                                    String styleFirstCell = initStyle(slotsOfCurrentDay.get(j-1));
+                                    String styleLastCell = initStyle(slotsOfCurrentDay.get(j));
+                                    String commentFirstCell = slotsOfCurrentDay.get(j-1).getComment() != null ? "<div class=\"comment-slot\">" + slotsOfCurrentDay.get(j-1).getComment() + "</div>" : "";
+                                    String commentLastCell = slotsOfCurrentDay.get(j).getComment() != null ? "<div class=\"comment-slot\">" + slotsOfCurrentDay.get(j).getComment() + "</div>" : "";
+                                    results[gardesFou.get(cursorColumn)-1][cursorColumn] = "<td class=\"no-padding\"><div "+styleFirstCell+">" + HtmlUtils.removeTagsTd(results[gardesFou.get(cursorColumn)-1][cursorColumn])
+                                            + commentFirstCell + "</div><div "+styleLastCell+" class=\"group\">" + HtmlUtils.removeTagsTd(initSlot(slotsOfCurrentDay.get(j), rowspan)) + commentLastCell + "</div></td>";
+                                }else {
+                                    results[gardesFou.get(cursorColumn)][cursorColumn] = initSlot(slotsOfCurrentDay.get(j), rowspan);
+                                }
+
                                 ++j;
                                 prevIndex = j - 1;
                             } else if (j == prevIndex) {
@@ -261,6 +275,17 @@ public class PlanningService {
         return warnings;
     }//checkWarnings()
 
+    private String initStyle(Slot slot){
+        if(slot == null){
+            return "";
+        }
+        StringBuilder style = new StringBuilder("style=\"");
+        style.append("color : ").append(slot.getCouleurPolice()).append(";");
+        style.append("background-color : ").append(slot.getCouleurFond()).append(";");
+        style.append("\"");
+        return style.toString();
+    }// initStyle()
+
     /**
      * Initialisation d'une cellule Slot
      * @param slot Slot
@@ -272,13 +297,9 @@ public class PlanningService {
         if(slot == null){
             return sb.toString();
         }
-        StringBuilder style = new StringBuilder("style=\"");
-        style.append("color : ").append(slot.getCouleurPolice()).append(";");
-        style.append("background-color : ").append(slot.getCouleurFond()).append(";");
-        style.append("\"");
 
         sb.append("<td ");
-        sb.append(style);
+        sb.append(initStyle(slot));
         sb.append(" rowspan=\"");
         sb.append(rowspan);
         sb.append("\"><div>");

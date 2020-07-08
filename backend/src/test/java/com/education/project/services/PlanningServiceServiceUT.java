@@ -433,6 +433,16 @@ public class PlanningServiceServiceUT {
         Assertions.assertThat(planningGenerated.getWarnings().stream().filter(warn -> warn.equals("La matière Sport ne respecte pas son volume horaire hebdomadaire de 0H15")).findAny()).isPresent();
     }// generate_planning_should_success_with_classic_slots_and_obtain_warnings()
 
+    @Test
+    public void generate_planning_should_success_with_doublons() throws DataBaseException {
+        Mockito.when(planningRepository.findById(1)).thenReturn(this.getClassicPlanningForGenerationWithDoublons());
+        Mockito.when(optionsRepository.getOptions()).thenReturn(getOptions());
+        PlanningGenerated planningGenerated = planningService.generatePlanning(1);
+        Assertions.assertThat(planningGenerated.getContentHtml()).isEqualTo("<table><thead><tr><th></th><th>LUNDI</th></tr></thead><tr><td>08:00 - 09:00</td> <td class=\"no-padding\"><div style=\"color : #ccc;background-color : #ddd;\"><div>Français</div></div><div style=\"color : #ccc;background-color : #ddd;\" class=\"group\"><div>Sport</div></div></td> </tr><tr><td>09:00 - 10:00</td> <td style=\"color : #ccc;background-color : #ddd;\" rowspan=\"1\"><div>Mathématiques</div></td> </tr><tr><td>10:00 - 11:00</td> <td rowspan=\"1\"></td> </tr><tr><td>11:00 - 12:00</td> <td rowspan=\"1\"></td> </tr><tr><td>12:00 - 13:00</td> <td rowspan=\"1\"></td> </tr><tr><td>13:00 - 14:00</td> <td rowspan=\"1\"></td> </tr><tr><td>14:00 - 15:00</td> <td rowspan=\"1\"></td> </tr><tr><td>15:00 - 16:00</td> <td rowspan=\"1\"></td> </tr><tr><td>16:00 - 17:00</td> <td rowspan=\"1\"></td> </tr></table>");
+        Assertions.assertThat(planningGenerated.getId()).isEqualTo(1);
+        Assertions.assertThat(planningGenerated.getWarnings()).isEmpty();
+    }// generate_planning_should_success_with_doublons()
+
     private Optional<Options> getOptions() {
         Options options = new Options(60, LocalTime.of(8, 0), LocalTime.of(17, 0));
         return Optional.of(options);
@@ -466,10 +476,6 @@ public class PlanningServiceServiceUT {
         planning.setModificationDate(new Date());
         return planning;
     }//planningToDelete()
-
-    /*public void generate_planning_should_success_without_warnings_when_classics_options(){
-
-    }// generate_planning_should_success_when_classics_options()*/
 
     private Optional<Planning> getClassicPlanningForGeneration() {
         Planning planning = new Planning();
@@ -524,6 +530,25 @@ public class PlanningServiceServiceUT {
         p.setSlots(Stream.of(s1, s2).collect(Collectors.toList()));
         return Optional.of(p);
     }// getPlanningWithSlotsAwayForGeneration()
+
+    private Optional<Planning> getClassicPlanningForGenerationWithDoublons() {
+        Planning planning = new Planning();
+        planning.setId(1);
+        planning.setClasse(new Classe(1, "CM1", new Date(1591366583), new Date()));
+        planning.setCreationDate(new Date(1591366583));
+        planning.setModificationDate(new Date());
+        planning.setNom("P1");
+
+        Slot s1 = new Slot(1, null, new Date(1591366583), new Date(), "#ddd", "#ccc", new TimeSlot(1, LocalTime.of(8, 0), LocalTime.of(9, 0)), null, new Matiere(1, "Français", null, null, new Date(1591366583), new Date()), null);
+        s1.setJour(new Jour(1, "Lundi"));
+        Slot s2 = new Slot(2, null, new Date(1591366583), new Date(), "#ddd", "#ccc", new TimeSlot(1, LocalTime.of(9, 0), LocalTime.of(10, 0)), null, new Matiere(2, "Mathématiques", null, null, new Date(1591366583), new Date()), null);
+        s2.setJour(new Jour(1, "Lundi"));
+        Slot s3 = new Slot(3, null, new Date(1591366583), new Date(), "#ddd", "#ccc", new TimeSlot(1, LocalTime.of(9, 0), LocalTime.of(10, 0)), null, new Matiere(2, "Sport", null, null, new Date(1591366583), new Date()), null);
+        s3.setJour(new Jour(1, "Lundi"));
+
+        planning.setSlots(Stream.of(s1, s2, s3).collect(Collectors.toList()));
+        return Optional.of(planning);
+    }// getClassicPlanningForGenerationWithDoublons()
 
     private Optional<Planning> getFullPlanning() {
         Planning planning = new Planning();
