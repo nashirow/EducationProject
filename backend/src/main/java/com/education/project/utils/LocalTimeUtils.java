@@ -34,4 +34,18 @@ public class LocalTimeUtils {
         return String.valueOf(time);
     }// formatHour()
 
+    /**
+     * Convertit une heure au format HH:mm en minutes
+     * @param strHHmm heure HH:mm
+     * @return minutes
+     */
+    public static long hhmmToLong(String strHHmm){
+        long result = 0L;
+        if(strHHmm != null && !strHHmm.isEmpty()){
+            String[] components = strHHmm.split(":");
+            result = Long.parseLong(components[0]) * 60 + Long.parseLong(components[1]);
+        }
+        return result;
+    }// hhmmToLong()
+
 }// LocalTimeUtils

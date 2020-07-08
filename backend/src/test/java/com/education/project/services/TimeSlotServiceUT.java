@@ -77,6 +77,26 @@ public class TimeSlotServiceUT {
     }// insert_time_slot_should_throw_argument_exception_with_start_hour_gte_end_hour()
 
     @Test
+    public void insert_time_slot_should_throw_argument_exception_with_start_hour_lt_start_hour_options() throws DataBaseException {
+        Options optionsFromBD = new Options(60, LocalTime.of(10, 0), LocalTime.of(17,0));
+        Mockito.when(optionsRepository.getOptions()).thenReturn(Optional.of(optionsFromBD));
+        TimeSlot ts = new TimeSlot(LocalTime.of(9, 0), LocalTime.of(17, 0));
+        Assertions.assertThatCode(() -> this.timeSlotService.insert(ts))
+                .hasMessage("L'heure de début doit être postérieur ou égal à l'heure de début d'un planning")
+                .isInstanceOf(ArgumentException.class);
+    }// insert_time_slot_should_throw_argument_exception_with_start_hour_lt_start_hour_options()
+
+    @Test
+    public void insert_time_slot_should_throw_argument_exception_with_start_hour_gt_end_hour_options() throws DataBaseException {
+        Options optionsFromBD = new Options(60, LocalTime.of(18, 0), LocalTime.of(20,0));
+        Mockito.when(optionsRepository.getOptions()).thenReturn(Optional.of(optionsFromBD));
+        TimeSlot ts = new TimeSlot(LocalTime.of(21, 0), LocalTime.of(22, 0));
+        Assertions.assertThatCode(() -> this.timeSlotService.insert(ts))
+                .hasMessage("L'heure de fin doit être antérieur l'heure de fin d'un planning")
+                .isInstanceOf(ArgumentException.class);
+    }// insert_time_slot_should_throw_argument_exception_with_start_hour_gt_end_hour_options()
+
+    @Test
     public void insert_time_slot_should_throw_argument_exception_when_time_slot_is_null() {
         Assertions.assertThatCode(() -> this.timeSlotService.insert(null))
                 .hasMessage("Créneau horaire manquant")

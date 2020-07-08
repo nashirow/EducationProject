@@ -91,6 +91,9 @@ public class TimeSlotService {
                     if(ts.getStart().isBefore(options.getStartHourPlanning())){
                         errors.add("L'heure de début doit être postérieur ou égal à l'heure de début d'un planning");
                     }
+                    if(ts.getEnd().isAfter(options.getEndHourPlanning())){
+                        errors.add("L'heure de fin doit être antérieur l'heure de fin d'un planning");
+                    }
                 });
                 if(this.timeSlotRepository.exists(ts)){
                     errors.add("Ce créneau horaire existe déjà");

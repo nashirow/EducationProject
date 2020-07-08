@@ -79,7 +79,7 @@ public class PlanningEndPoint {
      * @return Réponse HTTP
      */
     @DeleteMapping("/planning/{id}")
-    public ResponseEntity<?> deletePlanning(@RequestParam Integer id){
+    public ResponseEntity<?> deletePlanning(@PathVariable("id") Integer id){
         try {
             boolean result = planningService.deletePlanning(id);
             return new ResponseEntity<>(new ResponseEndPoint(result,null),HttpStatus.OK);

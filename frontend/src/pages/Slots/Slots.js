@@ -46,14 +46,14 @@ export const Slots = () => {
                 let response = await fetch(`${process.env.REACT_APP_API_URL_SLOTS}?page=${page}&nbElementsPerPage=${process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE}`, 
                     { method: 'GET', signal: abortController.signal });
                 let json = await response.json();
-                response = await handleResponse(setErrors, response, json);;
+                response = await handleResponse(setErrors, response, json);
                 
                 setSlots(json.value.map(val => [val.id, val.matiere.nom, val.timeSlot.start, val.timeSlot.end, null]) || []);
 
                 response = await fetch(`${process.env.REACT_APP_API_URL_COUNT_SLOTS}`, 
                     { method: 'GET', signal: abortController.signal });
                 json = await response.json();
-                response = await handleResponse(setErrors, response, json);;
+                response = await handleResponse(setErrors, response, json);
                 
                 setTotalPages(Math.ceil(json.value/parseInt(process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE)));
             }catch(err){
@@ -78,13 +78,13 @@ export const Slots = () => {
         try{
             let response = await fetch(`${process.env.REACT_APP_API_URL_SLOTS}?page=${numPage}&nbElementsPerPage=${process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE}`, optionsFetch);
             let json = await response.json();
-            response = await handleResponse(setErrors, response, json);;
+            response = await handleResponse(setErrors, response, json);
             
             setSlots(json.value.map(val => [val.id, val.matiere.nom, val.timeSlot.start, val.timeSlot.end, null]) || []);
 
             response = await fetch(`${process.env.REACT_APP_API_URL_COUNT_SLOTS}`, optionsFetch);
             json = await response.json();
-            response = await handleResponse(setErrors, response, json);;
+            response = await handleResponse(setErrors, response, json);
             
             setTotalPages(Math.ceil(json.value/parseInt(process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE)));
         }catch(err){

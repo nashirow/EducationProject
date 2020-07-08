@@ -30,8 +30,9 @@ export const DetailsPlanning = () => {
                 let response = await fetch(`${process.env.REACT_APP_API_URL_GET_PLANNING_GENERATED}/${id}`, 
                     { method: 'GET', signal: abortController.signal });
                 let json = await response.json();
-                response = await handleResponse(setErrors, response, json);;
-                setPlanning(json.value);
+                response = await handleResponse(setErrors, response, json);
+                setPlanning(json.value.contentHtml);
+                setWarnings(json.value.warnings);
             }catch(err){
                 console.error(err);
                 setErrors([process.env.REACT_APP_GENERAL_ERROR]);
@@ -48,5 +49,6 @@ export const DetailsPlanning = () => {
         <Breadcrumb elements={[{label: `Emplois du temps`, link: '/plannings' }, {label: `Détails de l'emploi du temps n° ${id}`, link: '' }]} />
         {!_.isEmpty(errors) && <Message typeMessage='errors' messages={errors} />}
         {!_.isEmpty(warnings) && <Message typeMessage='warnings' messages={warnings} />}
+        <div style={{ marginTop: '30px' }} dangerouslySetInnerHTML={{ __html: planning }} />
     </main>);
 };

@@ -27,10 +27,15 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.education.project.utils.LocalTimeUtils.hhmmToLong;
 
 /**
  * Ce service gère les fonctionnalités liées
@@ -151,10 +156,11 @@ public class PlanningService {
      * @return Planning généré en HTML
      * @throws DataBaseException
      */
-    public String generatePlanning(int id) throws DataBaseException {
+    public PlanningGenerated generatePlanning(int id) throws DataBaseException {
         StringBuilder sb = new StringBuilder();
         Optional<Planning> optPlanning = planningRepository.findById(id);
         Optional<Options> optOptions = optionsRepository.getOptions();
+        List<String> warnings = new ArrayList<>();
         if (optPlanning.isPresent() && optOptions.isPresent()) {
             Planning planning = optPlanning.get();
             Options options = optOptions.get();
@@ -162,6 +168,7 @@ public class PlanningService {
             final int nbColumns = results[0].length;
             List<Integer> gardesFou = initGardesFou(nbColumns);
             Map<Integer, List<Slot>> slotsByDay = initSlotsByDay(planning);
+            warnings = checkWarnings(slotsByDay);
 
             long minutesBetween;
             for (int i = 0, cursorColumn = 1; i < results.length; ++i, ++cursorColumn) { // colonne 0 déjà remplie
@@ -212,8 +219,47 @@ public class PlanningService {
             sb.append("</table>");
             LOGGER.info("Code HTML du planning généré : {}", sb.toString()); // debug
         }
-        return sb.toString();
+        return new PlanningGenerated(id, sb.toString(), warnings);
     }// generatePlanning()
+
+    /**
+     * Cette fonction retourne un ensemble d'avertissements liés à des
+     * règles de gestion concernant le planning négligés.
+     * Exemple : Le non respect du volume horaire hebdomadaire de matières du planning
+     * @param slotsByDay Slots par jour
+     * @return liste d'avertissements
+     */
+    private List<String> checkWarnings(Map<Integer, List<Slot>> slotsByDay){
+        List<String> warnings = new ArrayList<>();
+        final Set<Matiere> matieres = new HashSet<>();
+        if(slotsByDay != null && !slotsByDay.isEmpty()){
+            // 1) Récupération de toutes les matières utilisées dans le planning
+            slotsByDay.forEach((day, slots) ->
+                matieres.addAll(slots.stream().map(slot -> slot.getMatiere())
+                        .collect(Collectors.toSet()))
+            );
+            // 2) Pour chaque matière (si son volume horaire est renseigné), on calcule
+            // ses heures disposées dans le planning :
+            matieres.forEach(matiere -> {
+                if(matiere.getVolumeHoraire() != null && !matiere.getVolumeHoraire().isEmpty()) {
+                    long sumOfWeek = 0L;
+                    for(Map.Entry<Integer, List<Slot>> entry : slotsByDay.entrySet()) {
+                        List<Slot> slots = entry.getValue();
+                        sumOfWeek += slots.stream()
+                                .filter(slot -> slot.getMatiere().getId().equals(matiere.getId()))
+                                .mapToLong(slot -> ChronoUnit.MINUTES.between(slot.getTimeSlot().getEnd(), slot.getTimeSlot().getStart()))
+                                .sum();
+                    }
+
+                    long volHebd = hhmmToLong(matiere.getVolumeHoraire());
+                    if(volHebd != sumOfWeek){
+                        warnings.add("La matière " + matiere.getNom() + " ne respecte pas son volume horaire hebdomadaire de " + matiere.getVolumeHoraire().replace(":", "H"));
+                    }
+                }
+            });
+        }
+        return warnings;
+    }//checkWarnings()
 
     /**
      * Initialisation d'une cellule Slot
