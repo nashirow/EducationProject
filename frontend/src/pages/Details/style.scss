@@ -44,3 +44,33 @@
         border: 1px solid $colorRoom;
     }
 }
+
+#details-planning{
+    table{
+        border-collapse: collapse;
+        margin: 0 auto;
+
+        td,th{
+            border: 1px solid $colorBlack;
+            width: 150px;
+            height: 45px;
+            text-align: center;
+            font-size: 12px;
+            padding: 10px 12px;
+        }
+
+        td{
+            div{
+                text-align: center;
+                padding: 1px;
+            }
+            .group{
+                border-top: 1px solid black;
+                padding: 1px;
+            }
+            .comment-slot{
+                font-style: italic;
+            }
+        }
+    }
+}

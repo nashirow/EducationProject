@@ -46,8 +46,14 @@ export const Disciplines = () => {
                 let response = await fetch(`${process.env.REACT_APP_API_URL_DISCIPLINES}?page=${page}&nbElementsPerPage=${process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE}`, 
                     { method: 'GET', signal: abortController.signal });
                 let json = await response.json();
-                response = await handleResponse(setErrors, response, json);;
+                response = await handleResponse(setErrors, response, json);
                 setDisciplines(json.value.map(val => [val.id, val.nom, null]) || []);
+            
+                response = await fetch(`${process.env.REACT_APP_API_URL_COUNT_DISCIPLINES}`, 
+                { method: 'GET', signal: abortController.signal });
+                json = await response.json();
+                response = await handleResponse(setErrors, response, json);
+                setTotalPages(Math.ceil(json.value/parseInt(process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE)));
             }catch(err){
                 console.error(err);
                 setErrors([process.env.REACT_APP_GENERAL_ERROR]);
@@ -59,7 +65,7 @@ export const Disciplines = () => {
             abortController.abort();
         };
 
-    }, []);
+    }, [page]);
 
     /**
      * Récupération de toutes les matières
@@ -69,9 +75,13 @@ export const Disciplines = () => {
         try{
             let response = await fetch(`${process.env.REACT_APP_API_URL_DISCIPLINES}?page=${numPage}&nbElementsPerPage=${process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE}`, optionsFetch);
             let json = await response.json();
-            response = await handleResponse(setErrors, response, json);;
-            
+            response = await handleResponse(setErrors, response, json);
             setDisciplines(json.value.map(val => [val.id, val.nom, null]) || []);
+
+            response = await fetch(`${process.env.REACT_APP_API_URL_COUNT_DISCIPLINES}`, optionsFetch);
+                json = await response.json();
+                response = await handleResponse(setErrors, response, json);
+                setTotalPages(Math.ceil(json.value/parseInt(process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE)));
         }catch(err){
             console.error(err);
             setErrors([process.env.REACT_APP_GENERAL_ERROR]);

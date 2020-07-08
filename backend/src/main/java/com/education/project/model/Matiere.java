@@ -16,6 +16,7 @@
 package com.education.project.model;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Cette classe représente une matière.
@@ -124,4 +125,19 @@ public class Matiere {
     public void setModificationDate(Date modificationDate) {
         this.modificationDate = modificationDate;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Matiere matiere = (Matiere) o;
+        return Objects.equals(id, matiere.id) &&
+                Objects.equals(nom, matiere.nom);
+    }// equals()
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nom);
+    }//hashCode()
+
 }//Matiere

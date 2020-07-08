@@ -50,16 +50,16 @@ public class MatiereServiceUT {
     @Before
     public void setup() throws DataBaseException {
          this.matiereService = new MatiereService(this.matiereRepository);
-         this.matiereToCreate = new Matiere("matiere","1H30","Prendre les élèves dyslexiques en groupe");
-         this.matiereToUpdate = new Matiere("matiere","1H30","la classe à modifier");
+         this.matiereToCreate = new Matiere("matiere","1:30","Prendre les élèves dyslexiques en groupe");
+         this.matiereToUpdate = new Matiere("matiere","1:30","la classe à modifier");
          this.matiereToUpdate.setId(1);
          this.matiereToUpdate.setCreationDate(new Date());
          this.matiereToUpdate.setModificationDate(new Date());
-         this.matiereMathematiques = new Matiere("Mathématiques","1H30","C'est la matière mathématiques");
+         this.matiereMathematiques = new Matiere("Mathématiques","1:30","C'est la matière mathématiques");
          this.matiereMathematiques.setId(3); this.matiereMathematiques.setCreationDate(new Date()); this.matiereMathematiques.setModificationDate(new Date());
-         this.matiereFrancais = new Matiere("Français","1H30","C'est la matière français");
+         this.matiereFrancais = new Matiere("Français","1:30","C'est la matière français");
          this.matiereFrancais.setId(2); this.matiereFrancais.setCreationDate(new Date()); this.matiereFrancais.setModificationDate(new Date());
-         this.matiereGeographie = new Matiere("Géographie","1H30","C'est la matière géographie");
+         this.matiereGeographie = new Matiere("Géographie","1:30","C'est la matière géographie");
          this.matiereGeographie.setId(1); this.matiereGeographie.setCreationDate(new Date()); this.matiereGeographie.setModificationDate(new Date());
          List<Matiere> results = new ArrayList<>();
          results.add(this.matiereFrancais); results.add(this.matiereGeographie); results.add(this.matiereMathematiques);
@@ -70,7 +70,7 @@ public class MatiereServiceUT {
 
     @Test
     public void insert_matiere_should_success_when_all_fields_filled() throws ArgumentException, DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","1H30","Prendre les élèves dyslexiques en groupe");
+        Matiere matiereFromBd = new Matiere("matiere","1:30","Prendre les élèves dyslexiques en groupe");
         matiereFromBd.setId(1);
         Mockito.when(matiereRepository.insert(Mockito.any(Matiere.class))).thenReturn(Optional.of(matiereFromBd));
         Optional<Matiere> optMatiereCreated = matiereService.insertMatiere(this.matiereToCreate);
@@ -78,7 +78,7 @@ public class MatiereServiceUT {
         optMatiereCreated.ifPresent((matiereCreated)-> {
             Assertions.assertThat(matiereCreated).isNotNull();
             Assertions.assertThat(matiereCreated.getNom()).isEqualTo("matiere");
-            Assertions.assertThat(matiereCreated.getVolumeHoraire()).isEqualTo("1H30");
+            Assertions.assertThat(matiereCreated.getVolumeHoraire()).isEqualTo("1:30");
             Assertions.assertThat(matiereCreated.getDescription()).isEqualTo("Prendre les élèves dyslexiques en groupe");
             Assertions.assertThat(matiereCreated.getId()).isEqualTo(1);
         });
@@ -102,7 +102,7 @@ public class MatiereServiceUT {
 
     @Test
     public void insert_matiere_should_success_when_description_length_is_between_10_and_255() throws ArgumentException, DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","1H30","Mathématiques");
+        Matiere matiereFromBd = new Matiere("matiere","1:30","Mathématiques");
         matiereFromBd.setId(1);
         Mockito.when(matiereRepository.insert(Mockito.any(Matiere.class))).thenReturn(Optional.of(matiereFromBd));
         Optional<Matiere> optMatiereCreated = matiereService.insertMatiere(this.matiereToCreate);
@@ -110,7 +110,7 @@ public class MatiereServiceUT {
         optMatiereCreated.ifPresent(matiereCreated -> {
             Assertions.assertThat(matiereCreated).isNotNull();
             Assertions.assertThat(matiereCreated.getNom()).isEqualTo("matiere");
-            Assertions.assertThat(matiereCreated.getVolumeHoraire()).isEqualTo("1H30");
+            Assertions.assertThat(matiereCreated.getVolumeHoraire()).isEqualTo("1:30");
             Assertions.assertThat(matiereCreated.getDescription()).isEqualTo("Mathématiques");
             Assertions.assertThat(matiereCreated.getId()).isEqualTo(1);
         });
@@ -138,7 +138,7 @@ public class MatiereServiceUT {
 
     @Test
     public void insert_matiere_should_success_when_name_matiere_is_between_3_and_40() throws ArgumentException, DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","1H30","Mathématiques");
+        Matiere matiereFromBd = new Matiere("matiere","1:30","Mathématiques");
         matiereFromBd.setId(1);
         Mockito.when(matiereRepository.insert(Mockito.any(Matiere.class))).thenReturn(Optional.of(matiereFromBd));
         Optional<Matiere> optMatiereCreated = matiereService.insertMatiere(this.matiereToCreate);
@@ -146,7 +146,7 @@ public class MatiereServiceUT {
         optMatiereCreated.ifPresent(matiereCreated -> {
             Assertions.assertThat(matiereCreated).isNotNull();
             Assertions.assertThat(matiereCreated.getNom()).isEqualTo("matiere");
-            Assertions.assertThat(matiereCreated.getVolumeHoraire()).isEqualTo("1H30");
+            Assertions.assertThat(matiereCreated.getVolumeHoraire()).isEqualTo("1:30");
             Assertions.assertThat(matiereCreated.getDescription()).isEqualTo("Mathématiques");
             Assertions.assertThat(matiereCreated.getId()).isEqualTo(1);
         });
@@ -170,7 +170,7 @@ public class MatiereServiceUT {
 
     @Test
     public void update_matiere_should_success_when_matiere_is_modified() throws DataBaseException, ArgumentException {
-        Matiere matiereFromBd = new Matiere("matiere","1H30","la classe à modifier");
+        Matiere matiereFromBd = new Matiere("matiere","1:30","la classe à modifier");
         matiereFromBd.setId(1);
         matiereFromBd.setCreationDate(new Date(1592149308));
         matiereFromBd.setModificationDate(new Date());
@@ -182,7 +182,7 @@ public class MatiereServiceUT {
             Assertions.assertThat(matiereModifier).isNotNull();
             Assertions.assertThat(matiereModifier.getId()).isEqualTo(1);
             Assertions.assertThat(matiereModifier.getNom()).isEqualTo("matiere");
-            Assertions.assertThat(matiereModifier.getVolumeHoraire()).isEqualTo("1H30");
+            Assertions.assertThat(matiereModifier.getVolumeHoraire()).isEqualTo("1:30");
             Assertions.assertThat(matiereModifier.getDescription()).isEqualTo("la classe à modifier");
             Assertions.assertThat(matiereModifier.getCreationDate().getTime()).isNotEqualTo(matiereModifier.getModificationDate().getTime());
         });
@@ -198,7 +198,7 @@ public class MatiereServiceUT {
 
     @Test
     public void update_matiere_should_throw_exception_when_name_matiere_is_null() throws DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","1H30","la classe à modifier");
+        Matiere matiereFromBd = new Matiere("matiere","1:30","la classe à modifier");
         matiereFromBd.setId(1);
         matiereFromBd.setCreationDate(new Date(1592149308));
         matiereFromBd.setModificationDate(new Date());
@@ -211,7 +211,7 @@ public class MatiereServiceUT {
 
     @Test
     public void update_matiere_should_throw_exception_when_matiere_is_empty() throws DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","1H30","la classe à modifier");
+        Matiere matiereFromBd = new Matiere("matiere","1:30","la classe à modifier");
         matiereFromBd.setId(1);
         matiereFromBd.setCreationDate(new Date(1592149308));
         matiereFromBd.setModificationDate(new Date());
@@ -224,7 +224,7 @@ public class MatiereServiceUT {
 
     @Test
     public void update_matiere_should_success_when_description_length_is_between_10_and_255() throws ArgumentException, DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","1H30","la classe à modifier");
+        Matiere matiereFromBd = new Matiere("matiere","1:30","la classe à modifier");
         matiereFromBd.setId(1);
         matiereFromBd.setCreationDate(new Date(1592149308));
         Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
@@ -235,7 +235,7 @@ public class MatiereServiceUT {
         optMatiereUpdated.ifPresent(matiereUpdated -> {
             Assertions.assertThat(matiereUpdated).isNotNull();
             Assertions.assertThat(matiereUpdated.getNom()).isEqualTo("matiere");
-            Assertions.assertThat(matiereUpdated.getVolumeHoraire()).isEqualTo("1H30");
+            Assertions.assertThat(matiereUpdated.getVolumeHoraire()).isEqualTo("1:30");
             Assertions.assertThat(matiereUpdated.getDescription()).isEqualTo("la classe à modifier");
             Assertions.assertThat(matiereUpdated.getId()).isEqualTo(1);
         });
@@ -243,7 +243,7 @@ public class MatiereServiceUT {
 
     @Test
     public void update_matiere_should_throw_exception_when_description_length_is_below_10() throws DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","1H30","la classe à modifier");
+        Matiere matiereFromBd = new Matiere("matiere","1:30","la classe à modifier");
         matiereFromBd.setId(1);
         matiereFromBd.setCreationDate(new Date(1592149308));
         Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
@@ -259,7 +259,7 @@ public class MatiereServiceUT {
         for (int i = 0; i < 300 ; ++i){
             sb.append("a");
         }
-        Matiere matiereFromBd = new Matiere("matiere","1H30","la classe à modifier");
+        Matiere matiereFromBd = new Matiere("matiere","1:30","la classe à modifier");
         matiereFromBd.setId(1);
         matiereFromBd.setCreationDate(new Date(1592149308));
         Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
@@ -271,7 +271,7 @@ public class MatiereServiceUT {
 
     @Test
     public void update_matiere_should_success_when_name_matiere_is_between_3_and_40() throws ArgumentException, DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","1H30","la classe à modifier");
+        Matiere matiereFromBd = new Matiere("matiere","1:30","la classe à modifier");
         matiereFromBd.setId(1);
         matiereFromBd.setCreationDate(new Date(1592149308));
         Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
@@ -281,7 +281,7 @@ public class MatiereServiceUT {
         optMatiereModified.ifPresent(matiereUpdated -> {
             Assertions.assertThat(matiereUpdated).isNotNull();
             Assertions.assertThat(matiereUpdated.getNom()).isEqualTo("matiere");
-            Assertions.assertThat(matiereUpdated.getVolumeHoraire()).isEqualTo("1H30");
+            Assertions.assertThat(matiereUpdated.getVolumeHoraire()).isEqualTo("1:30");
             Assertions.assertThat(matiereUpdated.getDescription()).isEqualTo("la classe à modifier");
             Assertions.assertThat(matiereUpdated.getId()).isEqualTo(1);
         });
@@ -289,7 +289,7 @@ public class MatiereServiceUT {
 
     @Test
     public void update_matiere_should_throw_exception_when_name_matiere_is_below_3() throws DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","1H30","la classe à modifier");
+        Matiere matiereFromBd = new Matiere("matiere","1:30","la classe à modifier");
         matiereFromBd.setId(1);
         matiereFromBd.setCreationDate(new Date(1592149308));
         Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
@@ -301,7 +301,7 @@ public class MatiereServiceUT {
 
     @Test
     public void update_matiere_should_throw_exception_when_name_matiere_is_above_40() throws DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","1H30","la classe à modifier");
+        Matiere matiereFromBd = new Matiere("matiere","1:30","la classe à modifier");
         matiereFromBd.setId(1);
         matiereFromBd.setCreationDate(new Date(1592149308));
         Mockito.when(matiereRepository.findById(1)).thenReturn(Optional.of(matiereFromBd));
@@ -343,7 +343,7 @@ public class MatiereServiceUT {
 
     @Test
     public void get_matiere_should_success_when_matiere_id_is_1() throws DataBaseException {
-        Matiere matiereFromBd = new Matiere("matiere","1H30","la classe à modifier");
+        Matiere matiereFromBd = new Matiere("matiere","1:30","la classe à modifier");
         matiereFromBd.setId(1);
         matiereFromBd.setCreationDate(new Date());
         matiereFromBd.setModificationDate(new Date());
@@ -375,7 +375,7 @@ public class MatiereServiceUT {
         Assertions.assertThat(matieresFromBd).hasSize(1);
         Assertions.assertThat(matieresFromBd.get(0).getId()).isEqualTo(3);
         Assertions.assertThat(matieresFromBd.get(0).getNom()).isEqualTo("Mathématiques");
-        Assertions.assertThat(matieresFromBd.get(0).getVolumeHoraire()).isEqualTo("1H30");
+        Assertions.assertThat(matieresFromBd.get(0).getVolumeHoraire()).isEqualTo("1:30");
         Assertions.assertThat(matieresFromBd.get(0).getDescription()).isEqualTo("C'est la matière mathématiques");
         Assertions.assertThat(matieresFromBd.get(0).getCreationDate()).isNotNull();
         Assertions.assertThat(matieresFromBd.get(0).getModificationDate()).isNotNull();
@@ -390,7 +390,7 @@ public class MatiereServiceUT {
         Assertions.assertThat(matieresFromBd).hasSize(1);
         Assertions.assertThat(matieresFromBd.get(0).getId()).isEqualTo(3);
         Assertions.assertThat(matieresFromBd.get(0).getNom()).isEqualTo("Mathématiques");
-        Assertions.assertThat(matieresFromBd.get(0).getVolumeHoraire()).isEqualTo("1H30");
+        Assertions.assertThat(matieresFromBd.get(0).getVolumeHoraire()).isEqualTo("1:30");
         Assertions.assertThat(matieresFromBd.get(0).getDescription()).isEqualTo("C'est la matière mathématiques");
         Assertions.assertThat(matieresFromBd.get(0).getCreationDate()).isNotNull();
         Assertions.assertThat(matieresFromBd.get(0).getModificationDate()).isNotNull();
@@ -403,19 +403,19 @@ public class MatiereServiceUT {
         Assertions.assertThat(matieresFromBd).hasSize(3);
         Assertions.assertThat(matieresFromBd.get(0).getId()).isEqualTo(2);
         Assertions.assertThat(matieresFromBd.get(0).getNom()).isEqualTo("Français");
-        Assertions.assertThat(matieresFromBd.get(0).getVolumeHoraire()).isEqualTo("1H30");
+        Assertions.assertThat(matieresFromBd.get(0).getVolumeHoraire()).isEqualTo("1:30");
         Assertions.assertThat(matieresFromBd.get(0).getDescription()).isEqualTo("C'est la matière français");
         Assertions.assertThat(matieresFromBd.get(0).getCreationDate()).isNotNull();
         Assertions.assertThat(matieresFromBd.get(0).getModificationDate()).isNotNull();
         Assertions.assertThat(matieresFromBd.get(1).getId()).isEqualTo(1);
         Assertions.assertThat(matieresFromBd.get(1).getNom()).isEqualTo("Géographie");
-        Assertions.assertThat(matieresFromBd.get(1).getVolumeHoraire()).isEqualTo("1H30");
+        Assertions.assertThat(matieresFromBd.get(1).getVolumeHoraire()).isEqualTo("1:30");
         Assertions.assertThat(matieresFromBd.get(1).getDescription()).isEqualTo("C'est la matière géographie");
         Assertions.assertThat(matieresFromBd.get(1).getCreationDate()).isNotNull();
         Assertions.assertThat(matieresFromBd.get(1).getModificationDate()).isNotNull();
         Assertions.assertThat(matieresFromBd.get(2).getId()).isEqualTo(3);
         Assertions.assertThat(matieresFromBd.get(2).getNom()).isEqualTo("Mathématiques");
-        Assertions.assertThat(matieresFromBd.get(2).getVolumeHoraire()).isEqualTo("1H30");
+        Assertions.assertThat(matieresFromBd.get(2).getVolumeHoraire()).isEqualTo("1:30");
         Assertions.assertThat(matieresFromBd.get(2).getDescription()).isEqualTo("C'est la matière mathématiques");
         Assertions.assertThat(matieresFromBd.get(2).getCreationDate()).isNotNull();
         Assertions.assertThat(matieresFromBd.get(2).getModificationDate()).isNotNull();
@@ -428,19 +428,19 @@ public class MatiereServiceUT {
         Assertions.assertThat(matieresFromBd).hasSize(3);
         Assertions.assertThat(matieresFromBd.get(0).getId()).isEqualTo(2);
         Assertions.assertThat(matieresFromBd.get(0).getNom()).isEqualTo("Français");
-        Assertions.assertThat(matieresFromBd.get(0).getVolumeHoraire()).isEqualTo("1H30");
+        Assertions.assertThat(matieresFromBd.get(0).getVolumeHoraire()).isEqualTo("1:30");
         Assertions.assertThat(matieresFromBd.get(0).getDescription()).isEqualTo("C'est la matière français");
         Assertions.assertThat(matieresFromBd.get(0).getCreationDate()).isNotNull();
         Assertions.assertThat(matieresFromBd.get(0).getModificationDate()).isNotNull();
         Assertions.assertThat(matieresFromBd.get(1).getId()).isEqualTo(1);
         Assertions.assertThat(matieresFromBd.get(1).getNom()).isEqualTo("Géographie");
-        Assertions.assertThat(matieresFromBd.get(1).getVolumeHoraire()).isEqualTo("1H30");
+        Assertions.assertThat(matieresFromBd.get(1).getVolumeHoraire()).isEqualTo("1:30");
         Assertions.assertThat(matieresFromBd.get(1).getDescription()).isEqualTo("C'est la matière géographie");
         Assertions.assertThat(matieresFromBd.get(1).getCreationDate()).isNotNull();
         Assertions.assertThat(matieresFromBd.get(1).getModificationDate()).isNotNull();
         Assertions.assertThat(matieresFromBd.get(2).getId()).isEqualTo(3);
         Assertions.assertThat(matieresFromBd.get(2).getNom()).isEqualTo("Mathématiques");
-        Assertions.assertThat(matieresFromBd.get(2).getVolumeHoraire()).isEqualTo("1H30");
+        Assertions.assertThat(matieresFromBd.get(2).getVolumeHoraire()).isEqualTo("1:30");
         Assertions.assertThat(matieresFromBd.get(2).getDescription()).isEqualTo("C'est la matière mathématiques");
         Assertions.assertThat(matieresFromBd.get(2).getCreationDate()).isNotNull();
         Assertions.assertThat(matieresFromBd.get(2).getModificationDate()).isNotNull();
