@@ -194,7 +194,7 @@ public class PlanningService {
                             if (j == slotsOfCurrentDay.size()) { // On s'occupe des cellules entre le dernier slot et la dernière heure du planning
                                 int k = gardesFou.get(cursorColumn) + rowspan;
                                 for (; k < results.length; ++k) {
-                                    results[k][cursorColumn] = "<td rowspan=\"" + 1 + "\"></td>";
+                                    results[k][cursorColumn] = "<td rowspan=\"1\"></td>";
                                 }
                             }
                             gardesFou.set(cursorColumn, gardesFou.get(cursorColumn) + rowspan);
