@@ -9,28 +9,6 @@ $colorWhite:#fff;
 $colorBlack:#000;
 $colorSaveButton: rgb(6, 89, 167);
 
-.wrapper-form{
-    .forms{
-        border-radius: 5px;
-        background-color: #f2f2f2;
-        padding: 20px;
-        width: 70%;
-        margin: 0 auto;
-        div{
-            margin: 20px 0;
-            input, select{
-                display: inline-block;
-                width: 100%;
-                padding: 8px;
-                margin-top: 5px;
-                box-sizing: border-box;
-            }
-        }
-        
-    }
-    
-}
-
 .no-padding{
     padding: 0 !important;
 }
