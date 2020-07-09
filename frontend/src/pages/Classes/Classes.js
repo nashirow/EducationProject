@@ -124,7 +124,7 @@ export const Classes = () => {
         <Breadcrumb elements={[{label: 'Classes', link: '' }]} />
         {!_.isEmpty(errors) && <Message typeMessage='errors' messages={errors} />}
         <div className='page-actions'>
-            <Button id='create-classe' to='/' label='Créer une classe' />
+            <Button id='create-classe' to='/classe' label='Créer une classe' />
         </div>
         <Table id='table-classes' header={header} data={classes} 
             details={process.env.REACT_APP_ENDPOINT_DETAILS_CLASSE} edit='/' delete={(id) => deleteClasse(id)}

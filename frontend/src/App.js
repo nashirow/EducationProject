@@ -32,6 +32,7 @@ import { DetailsTimeSlot } from './pages/Details/DetailsTimeSlot/DetailsTimeSlot
 import { DetailsPlanning } from './pages/Details/DetailsPlanning/DetailsPlanning';
 import { DetailsSlot } from './pages/Details/DetailsSlot/DetailsSlot';
 import { DetailsRoom } from './pages/Details/DetailsRoom/DetailsRoom';
+import { FormClasse } from './pages/Classes/FormClasse';
 
 /**
  * Entrée de l'application + Gestion des routes
@@ -47,6 +48,9 @@ function App() {
           </Route>
           <Route path="/classes">
             <Classes />
+          </Route>
+          <Route exact path="/classe">
+            <FormClasse />
           </Route>
           <Route path={`${process.env.REACT_APP_ENDPOINT_DETAILS_TIMESLOT}/:id`}>
             <DetailsTimeSlot />
