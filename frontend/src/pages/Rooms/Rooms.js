@@ -124,7 +124,7 @@ export const Rooms = () => {
         <Breadcrumb elements={[{label: 'Salles', link: '' }]} />
         {!_.isEmpty(errors) && <Message typeMessage='errors' messages={errors} />}
         <div className='page-actions'>
-            <Button id='create-room' to='/' label='Créer une salle' />
+            <Button id='create-room' to='/room' label='Créer une salle' />
         </div>
         <Table id='table-rooms' header={header} data={rooms} 
             details={process.env.REACT_APP_ENDPOINT_DETAILS_ROOM} edit='/' delete={(id) => deleteClasse(id)}

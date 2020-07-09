@@ -33,6 +33,8 @@ import { DetailsPlanning } from './pages/Details/DetailsPlanning/DetailsPlanning
 import { DetailsSlot } from './pages/Details/DetailsSlot/DetailsSlot';
 import { DetailsRoom } from './pages/Details/DetailsRoom/DetailsRoom';
 import { FormClasse } from './pages/Classes/FormClasse';
+import { FormTeachers } from './pages/Teachers/FormTeachers';
+import { FormRooms } from './pages/Rooms/FormRooms';
 
 /**
  * Entrée de l'application + Gestion des routes
@@ -76,6 +78,9 @@ function App() {
           <Route path="/rooms">
             <Rooms />
           </Route>
+          <Route path='/room'>
+            <FormRooms />
+          </Route>
           <Route path={`${process.env.REACT_APP_ENDPOINT_DETAILS_DISCIPLINE}/:id`}>
             <DetailsDiscipline />
           </Route>
@@ -87,6 +92,9 @@ function App() {
           </Route>
           <Route path="/teachers">
             <Teachers />
+          </Route>
+          <Route path="/teacher">
+            <FormTeachers />
           </Route>
           <Route path="/options">
             <Options />
