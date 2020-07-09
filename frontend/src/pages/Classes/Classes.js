@@ -53,7 +53,7 @@ export const Classes = () => {
                 response = await fetch(`${process.env.REACT_APP_API_URL_COUNT_CLASSES}`, 
                     { method: 'GET', signal: abortController.signal });
                 json = await response.json();
-                response = await handleResponse(setErrors, response, json);;
+                response = await handleResponse(setErrors, response, json);
                 
                 setTotalPages(Math.ceil(json.value/parseInt(process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE)));
             }catch(err){
@@ -78,13 +78,13 @@ export const Classes = () => {
         try{
             let response = await fetch(`${process.env.REACT_APP_API_URL_CLASSES}?page=${numPage}&nbElementsPerPage=${process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE}`, optionsFetch);
             let json = await response.json();
-            response = await handleResponse(setErrors, response, json);;
+            response = await handleResponse(setErrors, response, json);
             
             setClasses(json.value.map(val => [val.id, val.nom, null]) || []);
 
             response = await fetch(`${process.env.REACT_APP_API_URL_COUNT_CLASSES}`, optionsFetch);
             json = await response.json();
-            response = await handleResponse(setErrors, response, json);;
+            response = await handleResponse(setErrors, response, json);
             
             setTotalPages(Math.ceil(json.value/parseInt(process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE)));
         }catch(err){

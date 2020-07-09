@@ -43,7 +43,7 @@ export const Plannings = () => {
                 let response = await fetch(`${process.env.REACT_APP_API_URL_PLANNINGS}`, 
                     { method: 'GET', signal: abortController.signal });
                 let json = await response.json();
-                response = await handleResponse(setErrors, response, json);;
+                response = await handleResponse(setErrors, response, json);
                 
                 setPlannings(json.value.map(val => [val.id, val.nom, null]) || []);
             }catch(err){
@@ -67,7 +67,7 @@ export const Plannings = () => {
         try{
             let response = await fetch(`${process.env.REACT_APP_API_URL_PLANNINGS}`, optionsFetch);
             let json = await response.json();
-            response = await handleResponse(setErrors, response, json);;
+            response = await handleResponse(setErrors, response, json);
             
             setPlannings(json.value.map(val => [val.id, val.nom, null]) || []);
         }catch(err){

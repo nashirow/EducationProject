@@ -30,7 +30,7 @@ export const DetailsClasse = () => {
                 let response = await fetch(`${process.env.REACT_APP_API_URL_GET_CLASSE}/${id}`, 
                     { method: 'GET', signal: abortController.signal });
                 let json = await response.json();
-                response = await handleResponse(setErrors, response, json);;
+                response = await handleResponse(setErrors, response, json);
                 setClasse(json.value);
             }catch(err){
                 console.error(err);

@@ -46,14 +46,14 @@ export const Rooms = () => {
                 let response = await fetch(`${process.env.REACT_APP_API_URL_ROOMS}?page=${page}&nbElementsPerPage=${process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE}`, 
                     { method: 'GET', signal: abortController.signal });
                 let json = await response.json();
-                response = await handleResponse(setErrors, response, json);;
+                response = await handleResponse(setErrors, response, json);
                 
                 setRooms(json.value.map(val => [val.id, val.nom, null]) || []);
 
                 response = await fetch(`${process.env.REACT_APP_API_URL_COUNT_ROOMS}`, 
                     { method: 'GET', signal: abortController.signal });
                 json = await response.json();
-                response = await handleResponse(setErrors, response, json);;
+                response = await handleResponse(setErrors, response, json);
                 
                 setTotalPages(Math.ceil(json.value/parseInt(process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE)));
             }catch(err){
@@ -78,13 +78,13 @@ export const Rooms = () => {
         try{
             let response = await fetch(`${process.env.REACT_APP_API_URL_ROOMS}?page=${numPage}&nbElementsPerPage=${process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE}`, optionsFetch);
             let json = await response.json();
-            response = await handleResponse(setErrors, response, json);;
+            response = await handleResponse(setErrors, response, json);
             
             setRooms(json.value.map(val => [val.id, val.nom, null]) || []);
 
             response = await fetch(`${process.env.REACT_APP_API_URL_COUNT_ROOMS}`, optionsFetch);
             json = await response.json();
-            response = await handleResponse(setErrors, response, json);;
+            response = await handleResponse(setErrors, response, json);
             
             setTotalPages(Math.ceil(json.value/parseInt(process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE)));
         }catch(err){
