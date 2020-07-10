@@ -342,6 +342,22 @@ public class MatiereServiceUT {
     }//creation_matiere_should_throw_exception_when_matiere_name_already_exists()
 
     @Test
+    public void creation_matiere_should_throw_exception_when_volume_horaire_is_bad_formatted() throws DataBaseException {
+        this.matiereToCreate.setVolumeHoraire("1H30");
+        Assertions.assertThatThrownBy(() -> matiereService.insertMatiere(this.matiereToCreate))
+                .hasMessage("Le volume horaire hebdomadaire de la matière doit respecter le format HH:mm")
+                .isInstanceOf(ArgumentException.class);
+    }//creation_matiere_should_throw_exception_when_matiere_name_already_exists()
+
+    @Test
+    public void update_matiere_should_throw_exception_when_volume_horaire_is_bad_formatted() throws DataBaseException {
+        this.matiereToUpdate.setVolumeHoraire("1H30");
+        Assertions.assertThatThrownBy(() -> matiereService.updateMatiere(this.matiereToUpdate))
+                .hasMessage("Le volume horaire hebdomadaire de la matière doit respecter le format HH:mm")
+                .isInstanceOf(ArgumentException.class);
+    }//update_matiere_should_throw_exception_when_volume_horaire_is_bad_formatted()
+
+    @Test
     public void update_matiere_should_throw_exception_when_matiere_name_already_exists() throws DataBaseException {
         Mockito.when(matiereRepository.isExistByName(this.matiereToUpdate.getNom())).thenReturn(true);
         Assertions.assertThatThrownBy(() -> matiereService.updateMatiere(this.matiereToUpdate))

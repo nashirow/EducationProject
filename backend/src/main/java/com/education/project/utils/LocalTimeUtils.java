@@ -48,4 +48,23 @@ public class LocalTimeUtils {
         return result;
     }// hhmmToLong()
 
+    /**
+     * Vérifie si la chaîne de caractères est formatée correctement pour une heure locale.
+     * @param str chaîne à tester
+     * @return boolean
+     */
+    public static boolean checkStringIsFormattedForLocalTime(String str){
+        if(str == null || str.isEmpty() || !str.contains(":")){
+            return false;
+        }
+        String[] tmp = str.split(":");
+        if(tmp.length == 1 || tmp.length > 2){
+            return false;
+        }
+        if(tmp[0].length() > 2 && tmp[1].length() > 2){
+            return false;
+        }
+        return true;
+    }// checkStringIsFormattedForLocalTime()
+
 }// LocalTimeUtils
