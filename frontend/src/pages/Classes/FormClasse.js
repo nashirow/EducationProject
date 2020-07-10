@@ -46,7 +46,7 @@ export const FormClasse = () => {
 
         fetchData();
         return () => abortController.abort;
-    },[]);
+    },[id]);
 
     const submitForm = async () => {
         setErrors([]);
