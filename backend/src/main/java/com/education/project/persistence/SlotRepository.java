@@ -127,8 +127,9 @@ public class SlotRepository {
      * @return Le slot récupéré
      */
     public Optional<Slot> findById(int id) throws DataBaseException {
-        String requestSql = "SELECT s.id AS slotId,s.comment AS slotComment,s.creationDate AS slotCreationDate,s.modificationDate AS slotModificationDate," +
-                "s.couleurFond AS slotCouleurFond,s.couleurPolice AS slotCouleurPolice," +
+        String requestSql = "SELECT s.id AS slotId, s.comment AS slotComment,s.creationDate AS slotCreationDate,s.modificationDate AS slotModificationDate," +
+                " s.couleurFond AS slotCouleurFond,s.couleurPolice AS slotCouleurPolice," +
+                " j.id AS jid, j.nom AS jnom, " +
                 " e.id AS enseignantId,e.nom AS enseignantNom, e.prenom AS enseignantPrenom, e.creationDate AS enseignantCreationDate,e.modificationDate AS enseignantModificationDate," +
                 " m.id AS matiereId,m.nom AS matiereNom,m.volumeHoraire AS matiereVolumeHoraire,m.description AS matiereDescription,m.creationDate AS matiereCreationDate,m.modificationDate AS matiereModificationDate," +
                 " t.id AS timeslotId,t.startHour AS timeslotStartHour,t.endHour AS timeslotEndHour," +
@@ -137,6 +138,7 @@ public class SlotRepository {
                 "LEFT JOIN enseignant e ON s.idEnseignant = e.id " +
                 "INNER JOIN matiere m ON s.idMatiere = m.id " +
                 "INNER JOIN timeslot t ON s.idTimeslot = t.id " +
+                "INNER JOIN jour j ON s.idJour = j.id " +
                 "LEFT JOIN salle sa ON s.idSalle = sa.id " +
                 "WHERE s.id = ?;";
         try {
@@ -149,9 +151,11 @@ public class SlotRepository {
                 Matiere matiere = new Matiere(resultSet.getInt("matiereId"), resultSet.getString("matiereNom"), resultSet.getString("matiereVolumeHoraire"), resultSet.getString("matiereDescription"), resultSet.getTimestamp("matiereCreationDate"), resultSet.getTimestamp("matiereModificationDate"));
                 TimeSlot timeSlot = new TimeSlot(resultSet.getInt("timeslotId"), resultSet.getTime("timeslotStartHour").toLocalTime(), resultSet.getTime("timeslotEndHour").toLocalTime());
                 Salle salle = new Salle(resultSet.getInt("salleId"), resultSet.getString("salleNom"), resultSet.getTimestamp("salleCreationDate"), resultSet.getTimestamp("salleModificationDate"));
+                Jour jour = new Jour(resultSet.getInt("jid"), resultSet.getString("jnom"));
                 slot.setEnseignant(enseignant);
                 slot.setMatiere(matiere);
                 slot.setTimeSlot(timeSlot);
+                slot.setJour(jour);
                 slot.setSalle(salle);
                 slot.setId(resultSet.getInt("slotId"));
                 slot.setComment(resultSet.getString("slotComment"));

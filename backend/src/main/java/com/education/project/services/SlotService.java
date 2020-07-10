@@ -135,7 +135,7 @@ public class SlotService {
                 if (slotToInsert.getCouleurPolice() != null && !slotToInsert.getCouleurPolice().isEmpty() && !colorUtils.isHex(slotToInsert.getCouleurPolice())) {
                     errors.add("La couleur de la police doit être au format hexadécimal");
                 }
-                if (slotRepository.isExistByColorFond(slotToInsert)) {
+                if (!isUpdate && slotRepository.isExistByColorFond(slotToInsert)) {
                     errors.add("Il existe déjà un slot avec ce fond de couleur");
                 }
                 if(slotToInsert.getJour() != null && slotToInsert.getJour().getId() != null && slotToInsert.getTimeSlot() != null && slotRepository.countByJour(slotToInsert.getJour().getId(), slotToInsert.getTimeSlot()) > MAX_SLOTS_IN_SAME_TIMESLOT_AND_SAME_DAY){
