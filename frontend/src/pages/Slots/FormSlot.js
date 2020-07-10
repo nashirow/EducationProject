@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import _ from 'lodash';
 
 import { Breadcrumb } from '../../components/Breadcrumb/Breadcrumb';
@@ -24,6 +24,18 @@ export const FormSlot = () => {
 
     const [salle, setSalle] = useState('');
 
+    const [jour, setJour] = useState('');
+
+    const [salles, setSalles] = useState([]);
+
+    const [enseignants, setEnseignants] = useState([]);
+
+    const [matieres, setMatieres] = useState([]);
+
+    const [timeSlots, setTimeSlots] = useState([]);
+
+    const [jours, setJours] = useState([]);
+
     const [errors, setErrors] = useState([]);
 
     const updateState = (e) => {
@@ -48,6 +60,9 @@ export const FormSlot = () => {
         else if(e.target.name === 'salle'){
             setSalle(e.target.value);
         }
+        else if(e.target.name === 'jour'){
+            setJour(e.target.value);
+        }
     };
 
     const submitForm = async () => {
@@ -58,8 +73,9 @@ export const FormSlot = () => {
                     'Accept':'application/json',
                     'Content-Type':'application/json'
                 },
-                body: JSON.stringify({comment, couleurFond, couleurPolice, timeSlot, enseignant, matiere, salle})
+                body: JSON.stringify({comment, couleurFond, couleurPolice, timeSlot: {id: timeSlot}, enseignant: {id: enseignant}, matiere: {id: matiere}, salle: {id: salle}, jour: {id: jour}})
             });
+
             let json = await response.json();
             response = await handleResponse(setErrors, response, json, () => window.location.href = process.env.REACT_APP_ENDPOINT_SLOTS)
         }
@@ -73,11 +89,79 @@ export const FormSlot = () => {
         {label: {id:'label-comment', value:'Commentaire'}, type: 'text', name:'comment', value: comment, action: (e) => updateState(e) },
         {label: {id:'label-couleurFond', value:'Couleur du fond'}, type: 'text', name:'couleurFond', value: couleurFond, action: (e) => updateState(e) },
         {label: {id:'label-couleurPolice', value:'Couleur de la police'}, type: 'text', name:'couleurPolice', value: couleurPolice, action: (e) => updateState(e) },
-        {label: {id:'label-timeSlot', value:'Créneau horaire'}, type: 'text', name:'timeSlot', value: timeSlot, action: (e) => updateState(e) },
-        {label: {id:'label-enseignant', value:'Enseignant'}, type: 'text', name:'enseignant', value: enseignant, action: (e) => updateState(e) },
-        {label: {id:'label-matière', value:'Matière'}, type: 'text', name:'matière', value: matiere, action: (e) => updateState(e) },
-        {label: {id:'label-salle', value:'Salle'}, type: 'text', name:'salle', value: salle, action: (e) => updateState(e) }
+        {label: {id:'label-timeSlot', value:'Créneau horaire'}, type: 'select', name:'timeSlot', value: timeSlot, options: timeSlots, action: (e) => updateState(e) },
+        {label: {id:'label-enseignant', value:'Enseignant'}, type: 'select', name:'enseignant', value: enseignant, options: enseignants, action: (e) => updateState(e) },
+        {label: {id:'label-matiere', value:'Matière'}, type: 'select', name:'matiere', value: matiere, options: matieres, action: (e) => updateState(e) },
+        {label: {id:'label-salle', value:'Salle'}, type: 'select', name:'salle', value: salle, options: salles, action: (e) => updateState(e) },
+        {label: {id:'label-jour', value:'Jour'}, type: 'select', name:'jour', value: jour, options: jours, action: (e) => updateState(e) }
     ];
+
+    useEffect(() => {
+        const abortController = new AbortController();
+        const fetchData = async () => {
+
+            try{
+                let response = await fetch(`${process.env.REACT_APP_API_URL_ROOMS}`, { method: 'GET', signal: abortController.signal});
+                let json = await response.json();
+                response = await handleResponse(setErrors, response, json);
+                setSalles(json.value.map(val => ({value: val.id, label: val.nom})));
+                setSalle(json.value[0].id);
+            }catch(err){
+                console.error(err);
+                setErrors([process.env.REACT_APP_GENERAL_ERROR]);
+            }
+
+            try{
+                let response = await fetch(`${process.env.REACT_APP_API_URL_TEACHERS}`, { method: 'GET', signal: abortController.signal});
+                let json = await response.json();
+                response = await handleResponse(setErrors, response, json);
+                setEnseignants(json.value.map(val => ({value: val.id, label: `${val.nom} ${val.prenom}`})));
+                setEnseignant(json.value[0].id);
+            }catch(err){
+                console.error(err);
+                setErrors([process.env.REACT_APP_GENERAL_ERROR]);
+            }
+
+            try{
+                let response = await fetch(`${process.env.REACT_APP_API_URL_DISCIPLINES}`, { method: 'GET', signal: abortController.signal});
+                let json = await response.json();
+                response = await handleResponse(setErrors, response, json);
+                setMatieres(json.value.map(val => ({value: val.id, label: `${val.nom}`})));
+                setMatiere(json.value[0].id);
+            }catch(err){
+                console.error(err);
+                setErrors([process.env.REACT_APP_GENERAL_ERROR]);
+            }
+
+            try{
+                let response = await fetch(`${process.env.REACT_APP_API_URL_TIMESLOTS}`, { method: 'GET', signal: abortController.signal});
+                let json = await response.json();
+                response = await handleResponse(setErrors, response, json);
+                setTimeSlots(json.value.map(val => ({value: val.id, label: `${val.start} - ${val.end}`})));
+                setTimeSlot(json.value[0].id);
+            }catch(err){
+                console.error(err);
+                setErrors([process.env.REACT_APP_GENERAL_ERROR]);
+            }
+
+            try{
+                let response = await fetch(`${process.env.REACT_APP_API_URL_DAYS}`, { method: 'GET', signal: abortController.signal});
+                let json = await response.json();
+                response = await handleResponse(setErrors, response, json);
+                setJours(json.value.map(val => ({value: val.id, label: val.nom})));
+                setJour(json.value[0].id);
+            }catch(err){
+                console.error(err);
+                setErrors([process.env.REACT_APP_GENERAL_ERROR]);
+            }
+        };
+
+        fetchData();
+
+        return () => {
+            abortController.abort();
+        };
+    }, []);
 
     const submitParam = { type: 'button-submit-form', label: 'Enregistrer', id: 'save-slot', action: () => submitForm() };
 

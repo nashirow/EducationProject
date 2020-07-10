@@ -139,7 +139,7 @@ public class MatiereService {
             if(matiereRepository.isExistByName(matiere.getNom())){
                 erreurs.add("Cette matière existe déjà");
             }
-            if(matiere.getDescription() != null && (matiere.getDescription().length() < 10 || matiere.getDescription().length() > 255)){
+            if(matiere.getDescription() != null && !matiere.getDescription().isEmpty() && (matiere.getDescription().length() < 10 || matiere.getDescription().length() > 255)){
                 erreurs.add("La description doit être comprise entre 10 et 255 caractères");
             }
             if(matiere.getNom() != null && !matiere.getNom().isEmpty() && (matiere.getNom().length() < 3 || matiere.getNom().length() > 40)){
