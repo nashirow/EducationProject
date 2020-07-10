@@ -29,7 +29,7 @@ export const FormRooms = () => {
             body: JSON.stringify({nom}) 
         });
         let json = await response.json();
-        response = await handleResponse(setErrors, response, json, () => window.location.href='/rooms');
+        response = await handleResponse(setErrors, response, json, () => window.location.href = process.env.REACT_APP_ENDPOINT_ROOMS);
     };
 
     const paramsInputForm = [
@@ -40,7 +40,7 @@ export const FormRooms = () => {
 
     return(
         <main id='form-rooms'>
-            <Breadcrumb elements={[{label:'Salles', link: '/rooms'}, {label:pageName, link : ''}]} />
+            <Breadcrumb elements={[{label:'Salles', link: process.env.REACT_APP_ENDPOINT_ROOMS}, {label:pageName, link : ''}]} />
             {!_.isEmpty(errors) && <Message typeMessage='errors' messages={errors} />}
             <Form params={paramsInputForm} submitParams={submitParams}/>
         </main>  

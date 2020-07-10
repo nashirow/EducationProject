@@ -37,7 +37,7 @@ const [errors, setErrors] = useState([]);
       });
 
       let json = await response.json();
-      response = await handleResponse(setErrors, response, json, () => window.location.href='/teachers');
+      response = await handleResponse(setErrors, response, json, () => window.location.href = process.env.REACT_APP_ENDPOINT_TEACHERS);
     };
     
     const paramsInputForm = [
@@ -49,7 +49,7 @@ const [errors, setErrors] = useState([]);
 
   return(
       <main id="form-teachers">
-          <Breadcrumb elements={[{label:'Enseignants', link: '/teachers'}, {label:pageName, link : ''}]} />
+          <Breadcrumb elements={[{label:'Enseignants', link: process.env.REACT_APP_ENDPOINT_TEACHERS}, {label:pageName, link : ''}]} />
           {!_.isEmpty(errors) && <Message typeMessage='errors' messages={errors} />}
           <Form params={paramsInputForm} submitParams={submitParams} />            
       </main>

@@ -99,10 +99,12 @@ export const Plannings = () => {
         <Breadcrumb elements={[{label: 'Emplois du temps', link: '' }]} />
         {!_.isEmpty(errors) && <Message typeMessage='errors' messages={errors} />}
         <div className='page-actions'>
-            <Button id='create-planning' to='/' label='Créer un emploi du temps' />
+            <Button id='create-planning' to={process.env.REACT_APP_ENDPOINT_FORM_PLANNING} label='Créer un emploi du temps' />
         </div>
         <Table id='table-plannings' header={header} data={plannings} 
-            details={process.env.REACT_APP_ENDPOINT_DETAILS_PLANNING} edit='/' delete={(id) => deletePlanning(id)}
+            details={process.env.REACT_APP_ENDPOINT_DETAILS_PLANNING} 
+            edit={process.env.REACT_APP_ENDPOINT_FORM_PLANNING} 
+            delete={(id) => deletePlanning(id)}
         />
     </main>);
 };

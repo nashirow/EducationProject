@@ -20,7 +20,7 @@ export const FormClasse = () => {
     const submitParams = { type: 'button-submit-form', label: 'Enregistrer', id: 'save-classe', action: () => submitForm() };
 
     const redirectToClasses = () => {
-        window.location.href = '/classes';
+        window.location.href = process.env.REACT_APP_ENDPOINT_CLASSES;
     };
 
     const submitForm = async () => {
@@ -43,7 +43,7 @@ export const FormClasse = () => {
     };
 
     return (<main id="form-classe">
-        <Breadcrumb elements={[{label:'Classes', link: '/classes'},{label: pageName, link: '' }]} />
+        <Breadcrumb elements={[{label:'Classes', link: process.env.REACT_APP_ENDPOINT_CLASSES},{label: pageName, link: '' }]} />
         {!_.isEmpty(errors) && <Message typeMessage='errors' messages={errors} />}
         <Form params={inputForms} submitParams={submitParams} />
     </main>

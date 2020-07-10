@@ -63,7 +63,7 @@ export const Options = () => {
                 let response = await fetch(`${process.env.REACT_APP_API_URL_OPTIONS_SPLIT_VALUES_VALID}`, { method: 'GET', signal: abortController.signal});
                 let json = await response.json();
                 response = await handleResponse(setErrors, response, json);
-                setValuesSplitValid(json.value);
+                setValuesSplitValid(json.value.map(val => ({value: val, label: val})));
             }catch(err){
                 console.error(err);
                 setErrors([process.env.REACT_APP_GENERAL_ERROR]);

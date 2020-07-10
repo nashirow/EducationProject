@@ -40,14 +40,15 @@ export const Form = (props) => {
                 params && params.map((param, idx) => {
                     if(param.type === 'select'){
                         return (<div key={idx}>
-                            <select key={param.id} id={param.id} name={param.name} onChange={param.action} value={param.value}> 
-                                {param.options.map(val => <option key={val} value={val}>{val}</option>)}
+                            { param.label && <label key={param.label.id} id={param.label.id} htmlFor={param.id}>{param.label.value}</label> }
+                            <select multiple={param.multiple} key={param.id} id={param.id} name={param.name} onChange={param.action} value={param.value}> 
+                                {param.options.map(val => <option key={`option-${val.value}`} value={val.value}>{val.label}</option>)}
                             </select>
                         </div>)
                     }else{
                         return (<div key={idx}>
                             { param.label && <label key={param.label.id} id={param.label.id} htmlFor={param.id}>{param.label.value}</label> }
-                            <input key={param.id} type={param.type} id={param.id} name={param.name} value={param.value} onChange={param.action} />
+                            <input key={param.id} type={param.type} id={param.id} name={param.name} value={param.value} checked={param.checked} onChange={param.action} />
                         </div>);
                     }
                 })

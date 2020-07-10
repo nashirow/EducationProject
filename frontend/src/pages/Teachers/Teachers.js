@@ -126,7 +126,7 @@ export const Teachers = () => {
         <Breadcrumb elements={[{label: 'Enseignants', link: '' }]} />
         {!_.isEmpty(errors) && <Message typeMessage='errors' messages={errors} />}
         <div className='page-actions'>
-            <Button id='create-teachers' to='/teacher' label='Créer un enseignant' />
+            <Button id='create-teachers' to={process.env.REACT_APP_ENDPOINT_FORM_TEACHER} label='Créer un enseignant' />
         </div>
         <Table id='table-teachers' header={header} data={teachers} 
             details={process.env.REACT_APP_ENDPOINT_DETAILS_TEACHER} edit='/' delete={(id) => deleteTeacher(id)}
