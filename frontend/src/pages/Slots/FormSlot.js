@@ -66,14 +66,15 @@ export const FormSlot = () => {
     };
 
     const submitForm = async () => {
+        setErrors([]);
         try{
             let response = await fetch(process.env.REACT_APP_API_URL_CREATE_SLOT,{
                 method: 'POST',
                 headers:{
                     'Accept':'application/json',
-                    'Content-Type':'application/json'
+                    'Content-Type':'application/json',
                 },
-                body: JSON.stringify({comment, couleurFond, couleurPolice, timeSlot: {id: timeSlot}, enseignant: {id: enseignant}, matiere: {id: matiere}, salle: {id: salle}, jour: {id: jour}})
+                body: JSON.stringify({comment, couleurFond, couleurPolice, timeSlot: {id: timeSlot}, enseignant: {id: enseignant}, matiere: {id: matiere}, salle: {id: salle}, jour: {id: jour}}),
             });
 
             let json = await response.json();

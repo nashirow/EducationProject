@@ -51,6 +51,7 @@ const pageName = id ? `Mise à jour du planning n°${id}` : 'Création d\'un pla
     };
     
     const submitForm = async () => {
+      setErrors([]);
       const slots = slotsSelected.map(id => ({ id }) );
       let response;
         if(!id){
@@ -58,9 +59,9 @@ const pageName = id ? `Mise à jour du planning n°${id}` : 'Création d\'un pla
                 method: 'POST',
                 headers: {
                    'Accept':'application/json',
-                   'Content-Type':'application/json'
+                   'Content-Type':'application/json',
                 },
-                body: JSON.stringify({ nom, classe: { id: classe }, slots, wednesdayUsed, saturdayUsed })
+                body: JSON.stringify({ nom, classe: { id: classe }, slots, wednesdayUsed, saturdayUsed }),
             });
         }else{
             response = await fetch(process.env.REACT_APP_API_URL_UPDATE_PLANNING,{

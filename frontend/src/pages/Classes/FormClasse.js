@@ -24,12 +24,13 @@ export const FormClasse = () => {
     };
 
     const submitForm = async () => {
+        setErrors([]);
         try{
             let response = await fetch(process.env.REACT_APP_API_URL_CREATE_CLASSE,{
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({nom}),
             });

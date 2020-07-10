@@ -239,12 +239,11 @@ public class SlotRepository {
      * @throws DataBaseException
      */
     public long countByJour(int jourId, TimeSlot timeSlot) throws DataBaseException {
-        String requestSql = "SELECT COUNT(id) FROM slot INNER JOIN timeslot t ON s.idTimeslot = t.id  WHERE jourId = ? AND t. = ? AND t. = ?";
+        String requestSql = "SELECT COUNT(s.id) FROM slot s WHERE s.idJour = ? AND s.idTimeslot = ? ";
         try {
             PreparedStatement ps = this.connection.prepareStatement(requestSql);
             ps.setInt(1, jourId);
-            ps.setTime(2, Time.valueOf(timeSlot.getStart()));
-            ps.setTime(3, Time.valueOf(timeSlot.getEnd()));
+            ps.setInt(2, timeSlot.getId());
             ResultSet resultSet = ps.executeQuery();
             resultSet.next();
             return resultSet.getLong(1);

@@ -17,7 +17,6 @@ const [prenom, setPrenom] = useState('');
 const [errors, setErrors] = useState([]);
 
     const updateState = (e) => {
-
         if(e.target.name === 'nom'){
             setNom(e.target.value);
         }
@@ -27,14 +26,15 @@ const [errors, setErrors] = useState([]);
     };
     
     const submitForm = async () => {
+        setErrors([]);
         try{
             let response = await fetch(process.env.REACT_APP_API_URL_CREATE_TEACHER,{
                 method: 'POST',
                 headers: {
                    'Accept':'application/json',
-                   'Content-Type':'application/json'
+                   'Content-Type':'application/json',
                 },
-                body: JSON.stringify({ nom, prenom })
+                body: JSON.stringify({ nom, prenom }),
             });
       
             let json = await response.json();

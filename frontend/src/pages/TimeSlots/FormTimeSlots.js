@@ -25,15 +25,16 @@ export const FormTimeSlot = () => {
         }
     };
 
-    const submitForm = async () =>{
+    const submitForm = async () => {
+        setErrors([]);
         try{
             let response = await fetch(process.env.REACT_APP_API_URL_CREATE_TIMESLOT,{
                 method: 'POST',
                 headers:{
                     'Accept':'application/json',
-                    'Content-Type':'application/json'
+                    'Content-Type':'application/json',
                 },
-                body: JSON.stringify({start: startHour,end: endHour})
+                body: JSON.stringify({start: startHour,end: endHour}),
             });
             let json = await response.json();
             response = await handleResponse(setErrors, response, json, () => window.location.href = process.env.REACT_APP_ENDPOINT_TIMESLOTS);
