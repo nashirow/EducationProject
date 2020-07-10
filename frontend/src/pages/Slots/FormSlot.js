@@ -68,6 +68,34 @@ export const FormSlot = () => {
         }
     };
 
+    useEffect(() => {
+        const abortController = new AbortController();
+
+        const fetchData = async () => {
+            try{
+                if(id){
+                    let response = await fetch(`${process.env.REACT_APP_API_URL_GET_SLOT}/${id}`, { method: 'GET', signal: abortController.signal});
+                    let json = await response.json();
+                    response = await handleResponse(setErrors, response, json);
+                    setComment(json.value.comment);
+                    setCouleurFond(json.value.couleurFond);
+                    setCouleurPolice(json.value.couleurPolice);
+                    setTimeSlot(json.value.timeSlot);
+                    setEnseignant(json.value.enseignant);
+                    setMatiere(json.value.matiere);
+                    setSalle(json.value.salle);
+                    setJour(json.value.nom);
+                }
+            }catch(err){
+                console.error(err);
+                setErrors([process.env.REACT_APP_GENERAL_ERROR]);
+            }
+        };
+
+        fetchData();
+        return () => abortController.abort;
+    },[id]);
+
     const submitForm = async () => {
         setErrors([]);
         try{

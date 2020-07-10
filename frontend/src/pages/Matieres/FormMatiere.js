@@ -54,7 +54,7 @@ export const FormMatiere = () => {
 
         fetchData();
         return () => abortController.abort;
-    },[]);
+    },[id]);
 
     const submitForm = async () => {
         setErrors([]);

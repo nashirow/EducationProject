@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import _ from 'lodash';
 
 import { Message } from '../../components/Message/Message';
@@ -21,6 +21,27 @@ export const FormRooms = () => {
             setNom(e.target.value);
         }
     };
+
+    useEffect(() => {
+        const abortController = new AbortController();
+
+        const fetchData = async () => {
+            try{
+                if(id){
+                    let response = await fetch(`${process.env.REACT_APP_API_URL_GET_ROOM}/${id}`, { method: 'GET', signal: abortController.signal});
+                    let json = await response.json();
+                    response = await handleResponse(setErrors, response, json);
+                    setNom(json.value.nom);
+                }
+            }catch(err){
+                console.error(err);
+                setErrors([process.env.REACT_APP_GENERAL_ERROR]);
+            }
+        };
+
+        fetchData();
+        return () => abortController.abort;
+    },[id]);
 
     const submitForm = async () => {
         setErrors([]);

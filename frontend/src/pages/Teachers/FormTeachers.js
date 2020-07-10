@@ -48,7 +48,7 @@ const [errors, setErrors] = useState([]);
 
         fetchData();
         return () => abortController.abort;
-    },[]);
+    },[id]);
     
     const submitForm = async () => {
         setErrors([]);
