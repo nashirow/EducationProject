@@ -269,4 +269,24 @@ public class ClasseRepository {
                 new java.util.Date(modificationDateFromBd.getTime()));
     }// initClasse()
 
+    /**
+     * Vérifie que la classe est utilisée par d'autres plannings.
+     * @param id identifiant de la classe
+     * @return boolean
+     * @throws DataBaseException
+     */
+    public boolean isUsedByPlannings(int id) throws DataBaseException{
+        String requestSql = "SELECT COUNT(c.id) FROM classe c INNER JOIN planning p ON c.id = p.idClasse WHERE c.id = ?";
+        try {
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
+            ps.setInt(1, id);
+            ResultSet resultSet = ps.executeQuery();
+            resultSet.next();
+            return resultSet.getLong(1) > 0;
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new DataBaseException("Erreur technique : Impossible de vérifier que la classe avec l'identifiant " + id + " soit utilisée par d'autres plannings");
+        }
+    }// isUsedByPlannings()
+
 }// ClasseRepository

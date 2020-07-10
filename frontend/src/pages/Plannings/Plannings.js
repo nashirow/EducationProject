@@ -81,6 +81,7 @@ export const Plannings = () => {
      * @param {Integer} id Identifiant du planning à supprimer
      */
     const deletePlanning = async (id) => {
+        setErrors([]);
         if(window.confirm('Confirmez-vous la suppression du planning n°' + id + ' ?')){
             try{
                 const response = await fetch(`${process.env.REACT_APP_API_URL_DELETE_PLANNING}/${id}`, { method: 'DELETE' });

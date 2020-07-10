@@ -57,7 +57,7 @@ public class EnseignantRepository {
     /**
      * Connexion à la base de données
      */
-    private Connection connexion;
+    private Connection connection;
 
     private static final Logger LOGGER = LogManager.getLogger(EnseignantRepository.class);
     public EnseignantRepository (@Value("${db.driver}") String driver, @Value("${db.url}") String url,
@@ -69,7 +69,7 @@ public class EnseignantRepository {
 
         try {
             Class.forName(this.driver);
-            this.connexion = DriverManager.getConnection(this.url, this.user, this.password);
+            this.connection = DriverManager.getConnection(this.url, this.user, this.password);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(),e);
         }
@@ -85,7 +85,7 @@ public class EnseignantRepository {
     public Optional<Enseignant> insert(Enseignant enseignant) throws DataBaseException {
         String request = "INSERT INTO enseignant (nom,prenom,creationDate,modificationDate) VALUES (?,?,?,?)";
         try {
-            PreparedStatement preparedStatement = this.connexion.prepareStatement(request,Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement preparedStatement = this.connection.prepareStatement(request,Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, enseignant.getNom());
             preparedStatement.setString(2, enseignant.getPrenom());
             preparedStatement.setTimestamp(3, new java.sql.Timestamp(enseignant.getCreationDate().getTime()));
@@ -117,7 +117,7 @@ public class EnseignantRepository {
     public boolean isExistByName(String nom, String prenom) throws DataBaseException {
         String request = "SELECT COUNT(id) FROM enseignant WHERE nom = ? AND prenom = ?";
         try {
-            PreparedStatement preparedStatement = this.connexion.prepareStatement(request);
+            PreparedStatement preparedStatement = this.connection.prepareStatement(request);
             preparedStatement.setString(1,nom);
             preparedStatement.setString(2,prenom);
             ResultSet rs = preparedStatement.executeQuery();
@@ -136,7 +136,7 @@ public class EnseignantRepository {
     public boolean delete(int id) throws DataBaseException {
         String requestSql = "DELETE FROM enseignant where id = ?";
         try {
-            PreparedStatement ps = this.connexion.prepareStatement(requestSql);
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
             ps.setInt(1,id);
             long rowsDeleted = ps.executeUpdate();
             if(rowsDeleted > 0){
@@ -158,7 +158,7 @@ public class EnseignantRepository {
     public Optional<Enseignant> update(Enseignant enseignantToUpdate) throws DataBaseException {
         String requestSql = "UPDATE enseignant SET nom = ?, prenom = ?, modificationDate = ? WHERE id = ?";
         try {
-            PreparedStatement ps = this.connexion.prepareStatement(requestSql);
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
             ps.setString(1,enseignantToUpdate.getNom());
             ps.setString(2, enseignantToUpdate.getPrenom());
             ps.setTimestamp(3,new Timestamp(enseignantToUpdate.getModificationDate().getTime()));
@@ -187,7 +187,7 @@ public class EnseignantRepository {
     public Optional<Enseignant> findById(int id) throws DataBaseException {
         String requestSql = "SELECT * FROM enseignant WHERE id = ?";
         try {
-            PreparedStatement ps = this.connexion.prepareStatement(requestSql);
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
             ps.setInt(1, id);
             ResultSet resultSet = ps.executeQuery();
             resultSet.next();
@@ -231,7 +231,7 @@ public class EnseignantRepository {
         }
         String requestSql = sb.toString();
         try {
-            PreparedStatement ps = this.connexion.prepareStatement(requestSql);
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
             if(nom != null && !nom.isEmpty() && indiceNom == 1){
                 ps.setString(indiceNom,"%"+ nom +"%");
             }
@@ -277,7 +277,7 @@ public class EnseignantRepository {
         }
         String requestSql = sb.toString();
         try {
-            PreparedStatement ps = this.connexion.prepareStatement(requestSql);
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
             if(nom != null && !nom.isEmpty() && indiceNom == 1){
                 ps.setString(indiceNom,"%" + nom + "%");
             }
@@ -295,4 +295,25 @@ public class EnseignantRepository {
             throw new DataBaseException("Erreur technique : il est impossible de récupérer le nombre d'enseignants dans la base de données");
         }
     }
+
+    /**
+     * Vérifie que l'enseignant est utilisé par d'autres slots.
+     * @param id identifiant de l'enseignant
+     * @return boolean
+     * @throws DataBaseException
+     */
+    public boolean isUsedBySlots(int id) throws DataBaseException{
+        String requestSql = "SELECT COUNT(e.id) FROM enseignant e INNER JOIN slot s ON e.id = s.idEnseignant WHERE e.id = ?";
+        try {
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
+            ps.setInt(1, id);
+            ResultSet resultSet = ps.executeQuery();
+            resultSet.next();
+            return resultSet.getLong(1) > 0;
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new DataBaseException("Erreur technique : Impossible de vérifier que l'enseignant avec l'identifiant " + id + " soit utilisé par d'autres slots");
+        }
+    }// isUsedBySlots()
+
 }//EnseignantRepository

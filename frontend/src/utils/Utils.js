@@ -5,7 +5,11 @@
 export const handleResponse = async (callback, response, json, callbackConfirmation) => {
     if(!response.ok){
         console.log(response);
-        callback(response.status > 403 && response.status < 500 ? [process.env.REACT_APP_GENERAL_ERROR] : json.erreurs);
+        let listErrors = json.erreurs;
+        if(response.status === 500){
+            listErrors = [json.erreurs];
+        }
+        callback(response.status > 403 && response.status < 500 ? [process.env.REACT_APP_GENERAL_ERROR] : listErrors);
     }else if(response.ok && callbackConfirmation){
         callbackConfirmation();
     }

@@ -98,6 +98,7 @@ export const TimeSlots = () => {
      * @param {Integer} id Identifiant du créneau horaire à supprimer
      */
     const deleteTimeSlot = async (id) => {
+        setErrors([]);
         if(window.confirm('Confirmez-vous la suppression du créneau horaire n°' + id + ' ?')){
             try{
                 const response = await fetch(`${process.env.REACT_APP_API_URL_DELETE_TIMESLOT}/${id}`, { method: 'DELETE' });

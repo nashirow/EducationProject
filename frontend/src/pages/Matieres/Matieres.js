@@ -93,6 +93,7 @@ export const Disciplines = () => {
      * @param {Integer} id Identifiant de la matière à supprimer
      */
     const deleteDiscipline = async (id) => {
+        setErrors([]);
         if(window.confirm('Confirmez-vous la suppression de la matière n°' + id + ' ?')){
             try{
                 const response = await fetch(`${process.env.REACT_APP_API_URL_DELETE_DISCIPLINE}/${id}`, { method: 'DELETE' });

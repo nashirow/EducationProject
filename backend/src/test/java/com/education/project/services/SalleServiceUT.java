@@ -322,6 +322,14 @@ public class SalleServiceUT {
     }//delete_salle_should_success_when_id_is_30()
 
     @Test
+    public void delete_salle_should_throw_database_exception_when_salle_is_used_by_slot() throws DataBaseException {
+        Mockito.when(salleRepository.isUsedBySlots(3)).thenReturn(true);
+        Assertions.assertThatCode(() -> salleService.deleteSalle(3))
+                .hasMessage("Impossible de supprimer la salle : La salle que vous tentez de supprimer est peut-être utilisée par un ou plusieurs slot(s)")
+                .isInstanceOf(DataBaseException.class);
+    }//delete_salle_should_throw_database_exception_when_salle_is_used_by_slot()
+
+    @Test
     public void get_salle_should_return_salle_when_id_is_1() throws DataBaseException {
         Salle salleFromBd = initSalleFromBd();
         Mockito.when(salleRepository.findById(1)).thenReturn(Optional.of(salleFromBd));

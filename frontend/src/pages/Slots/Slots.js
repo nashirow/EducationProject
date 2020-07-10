@@ -98,6 +98,7 @@ export const Slots = () => {
      * @param {Integer} id Identifiant du slot à supprimer
      */
     const deleteSlot = async (id) => {
+        setErrors([]);
         if(window.confirm('Confirmez-vous la suppression du slot n°' + id + ' ?')){
             try{
                 const response = await fetch(`${process.env.REACT_APP_API_URL_DELETE_SLOT}/${id}`, { method: 'DELETE' });

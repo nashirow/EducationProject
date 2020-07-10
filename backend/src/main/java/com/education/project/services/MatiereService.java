@@ -86,11 +86,10 @@ public class MatiereService {
      * @return boolean
      */
     public boolean deleteMatiere(int id) throws DataBaseException {
-        boolean result = false;
-        if(matiereRepository.deleteMatiere(id)){
-             result = true;
+        if(matiereRepository.isUsedBySlots(id)){
+            throw new DataBaseException("Impossible de supprimer la matière : La matière que vous tentez de supprimer est peut-être utilisée par un ou plusieurs slot(s)");
         }
-        return result;
+        return matiereRepository.deleteMatiere(id);
     }//deleteMatiere()
 
     /**

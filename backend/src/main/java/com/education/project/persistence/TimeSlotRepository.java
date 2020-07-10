@@ -161,4 +161,25 @@ public class TimeSlotRepository {
             throw new DataBaseException("Erreur Technique : Impossible de récupérer les créneaux horaires");
         }
     }// findAll()
+
+    /**
+     * Vérifie que le créneau horaire est utilisé par d'autres slots.
+     * @param id identifiant du créneau horaire
+     * @return boolean
+     * @throws DataBaseException
+     */
+    public boolean isUsedBySlots(int id) throws DataBaseException{
+        String requestSql = "SELECT COUNT(ts.id) FROM timeslot ts INNER JOIN slot s ON ts.id = s.idTimeslot WHERE ts.id = ?";
+        try {
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
+            ps.setInt(1, id);
+            ResultSet resultSet = ps.executeQuery();
+            resultSet.next();
+            return resultSet.getLong(1) > 0;
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new DataBaseException("Erreur technique : Impossible de vérifier que le créneau horaire avec l'identifiant " + id + " soit utilisé par d'autres slots");
+        }
+    }// isUsedBySlots()
+
 }// TimeSlotRepository

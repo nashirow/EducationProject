@@ -98,6 +98,7 @@ export const Classes = () => {
      * @param {Integer} id Identifiant de la classe à supprimer
      */
     const deleteClasse = async (id) => {
+        setErrors([]);
         if(window.confirm('Confirmez-vous la suppression de la classe n°' + id + ' ?')){
             try{
                 const response = await fetch(`${process.env.REACT_APP_API_URL_DELETE_CLASSE}/${id}`, { method: 'DELETE' });

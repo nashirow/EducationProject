@@ -264,4 +264,25 @@ public class SalleRepository{
         }
         return Optional.empty();
     }//findById()
+
+    /**
+     * Vérifie que la salle est utilisée par d'autres slots.
+     * @param id identifiant de la salle
+     * @return boolean
+     * @throws DataBaseException
+     */
+    public boolean isUsedBySlots(int id) throws DataBaseException{
+        String requestSql = "SELECT COUNT(m.id) FROM salle m INNER JOIN slot s ON m.id = s.idSalle WHERE m.id = ?";
+        try {
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
+            ps.setInt(1, id);
+            ResultSet resultSet = ps.executeQuery();
+            resultSet.next();
+            return resultSet.getLong(1) > 0;
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new DataBaseException("Erreur technique : Impossible de vérifier que la salle avec l'identifiant " + id + " soit utilisée par d'autres slots");
+        }
+    }// isUsedBySlots()
+
 }//SalleRepository

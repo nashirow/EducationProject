@@ -98,6 +98,7 @@ export const Teachers = () => {
      * @param {Integer} id Identifiant de l'enseignant à supprimer
      */
     const deleteTeacher = async (id) => {
+        setErrors([]);
         if(window.confirm('Confirmez-vous la suppression de l\'enseignant n°' + id + ' ?')){
             try{
                 const response = await fetch(`${process.env.REACT_APP_API_URL_DELETE_TEACHER}/${id}`, { method: 'DELETE' });

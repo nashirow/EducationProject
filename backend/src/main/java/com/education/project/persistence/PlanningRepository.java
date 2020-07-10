@@ -127,12 +127,17 @@ public class PlanningRepository {
      * @throws DataBaseException
      */
     public boolean deletePlanning(Integer id) throws DataBaseException {
-        String requestSql = "DELETE FROM planning WHERE id = ?";
         try {
+            String requestSql = "DELETE FROM planning_has_slots WHERE idPlanning = ?";
             PreparedStatement ps = this.connection.prepareStatement(requestSql);
             ps.setInt(1, id);
             int rowsDeleted = ps.executeUpdate();
-            return rowsDeleted > 0;
+
+            requestSql = "DELETE FROM planning WHERE id = ?";
+            ps = this.connection.prepareStatement(requestSql);
+            ps.setInt(1, id);
+            rowsDeleted += ps.executeUpdate();
+            return rowsDeleted > 1;
         } catch (SQLException e) {
             LOGGER.error("Erreur technique : impossible de supprimer le planning {} de la base de données", id, e);
             throw new DataBaseException("Erreur technique : impossible de supprimer le planning de la base de données");

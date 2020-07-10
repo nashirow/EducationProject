@@ -123,6 +123,14 @@ public class ClasseServiceUT {
     }// delete_classe_should_success_when_id_890_is_given()
 
     @Test
+    public void delete_classe_should_throw_database_exception_when_classe_is_used_by_slot() throws DataBaseException {
+        Mockito.when(classeRepository.isUsedByPlannings(3)).thenReturn(true);
+        Assertions.assertThatCode(() -> classeService.deleteClass(3))
+                .hasMessage("Impossible de supprimer la classe : La classe que vous tentez de supprimer est peut-être utilisée par un ou plusieurs planning(s)")
+                .isInstanceOf(DataBaseException.class);
+    }// delete_classe_should_throw_database_exception_when_classe_is_used_by_slot()
+
+    @Test
     public void get_classe_should_return_result_when_id_is_1() throws DataBaseException {
         Classe classeFromBd = initClasseFromDataBase();
         classeFromBd.setModificationDate(new Date(1592848921));

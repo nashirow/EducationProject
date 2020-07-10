@@ -98,6 +98,7 @@ export const Rooms = () => {
      * @param {Integer} id Identifiant de la salle à supprimer
      */
     const deleteClasse = async (id) => {
+        setErrors([]);
         if(window.confirm('Confirmez-vous la suppression de la salle n°' + id + ' ?')){
             try{
                 const response = await fetch(`${process.env.REACT_APP_API_URL_DELETE_ROOM}/${id}`, { method: 'DELETE' });
