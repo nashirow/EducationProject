@@ -47,8 +47,8 @@ export const FormTimeSlot = () => {
     };
  
     const paramInputForm = [
-        {label: {id: 'label-startHour', value: 'Début du créneau horaire'}, type: 'text', name: 'startHour', value: startHour, action: (e) => updateState(e) },
-        {label: {id: 'label-endHour', value: 'Fin du créneau horaire'}, type: 'text', name: 'endHour', value: endHour, action: (e) => updateState(e) }
+        {label: {id: 'label-startHour', value: 'Début du créneau horaire'}, type: 'text', name: 'startHour', mandatory: true, value: startHour, action: (e) => updateState(e) },
+        {label: {id: 'label-endHour', value: 'Fin du créneau horaire'}, type: 'text', name: 'endHour', mandatory: true, value: endHour, action: (e) => updateState(e) }
     ];
     
     const submitParams = { type: 'button-submit-form', label: 'Enregistrer', id: 'save-timeslot', action: () => submitForm()};

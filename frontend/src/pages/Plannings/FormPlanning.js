@@ -126,9 +126,9 @@ const pageName = id ? `Mise à jour du planning n°${id}` : 'Création d\'un pla
     }, [id]);
     
     const paramsInputForm = [
-        { label: { id: 'label-nom', value: 'Nom' }, type: 'text', name: 'nom', value: nom, action: (e) => updateState(e) },
+        { label: { id: 'label-nom', value: 'Nom' }, type: 'text', name: 'nom', mandatory: true, value: nom, action: (e) => updateState(e) },
         { label: { value: 'Sélectionnez une classe ' }, type: 'select', id: 'classe', name: 'classe', value: classe, options: classes, action: (e) => updateState(e) },
-        { label: { value: 'Sélectionnez un ou plusieurs slots ' }, type: 'select', multiple: true, id: 'slots', name: 'slots', checked: slotsSelected, value: slotsSelected, options: slots, action: (e) => updateState(e) },
+        { label: { value: 'Sélectionnez un ou plusieurs slots ' }, type: 'select', multiple: true, id: 'slots', name: 'slots', mandatory: true, checked: slotsSelected, value: slotsSelected, options: slots, action: (e) => updateState(e) },
         { label: { id: 'label-wednesday-used', value: 'Activer le mercredi ?' }, type: 'checkbox', name: 'wednesdayUsed', checked: wednesdayUsed, action: (e) => updateState(e) },
         { label: { id: 'label-saturday-used', value: 'Activer le samedi ?' }, type: 'checkbox', name: 'saturdayUsed', checked:saturdayUsed , action: (e) => updateState(e) },
     ];

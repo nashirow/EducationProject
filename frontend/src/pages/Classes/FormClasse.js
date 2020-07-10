@@ -14,7 +14,7 @@ export const FormClasse = () => {
     const [errors, setErrors] = useState([]);
 
     const inputForms = [
-        { label: { id: 'label-nom', value: 'Nom' }, type: 'text', id: 'nom', name: 'nom', value: nom, action: (e) => updateState(e) },
+        { label: { id: 'label-nom', value: 'Nom' }, type: 'text', id: 'nom', name: 'nom', mandatory: true, value: nom, action: (e) => updateState(e) },
     ];
 
     const submitParams = { type: 'button-submit-form', label: 'Enregistrer', id: 'save-classe', action: () => submitForm() };

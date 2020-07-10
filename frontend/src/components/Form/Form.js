@@ -40,19 +40,20 @@ export const Form = (props) => {
                 params && params.map((param, idx) => {
                     if(param.type === 'select'){
                         return (<div key={idx}>
-                            { param.label && <label key={param.label.id} id={param.label.id} htmlFor={param.id}>{param.label.value}</label> }
+                            { param.label && <label key={param.label.id} id={param.label.id} htmlFor={param.id}>{param.label.value} {param.mandatory && <b className='mandatory'>*</b>}</label> }
                             <select multiple={param.multiple} key={param.id} id={param.id} name={param.name} onChange={param.action} value={param.value}> 
                                 {param.options.map(val => <option key={`option-${val.value}`} value={val.value}>{val.label}</option>)}
                             </select>
                         </div>)
                     }else{
                         return (<div key={idx}>
-                            { param.label && <label key={param.label.id} id={param.label.id} htmlFor={param.id}>{param.label.value}</label> }
-                            <input key={param.id} type={param.type} id={param.id} name={param.name} value={param.value} checked={param.checked} onChange={param.action} />
+                            { param.label && <label key={param.label.id} id={param.label.id} htmlFor={param.id}>{param.label.value} {param.mandatory && <b className='mandatory'>*</b>}</label> }
+                            <input key={param.id} type={param.type} placeholder={param.placeholder} id={param.id} name={param.name} value={param.value} checked={param.checked} onChange={param.action} />
                         </div>);
                     }
                 })
             }
+            {<div>{<b className='mandatory'>*</b>} Champs obligatoires </div>}
             {submitParams && (<div id="actions"><Button action={submitParams.action} id={submitParams.id} label={submitParams.label} /></div>) }
         </form>
     </div>);

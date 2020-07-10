@@ -47,8 +47,8 @@ const [errors, setErrors] = useState([]);
     };
     
     const paramsInputForm = [
-        { label: { id: 'label-nom', value: 'Nom' }, type: 'text', name: 'nom', value: nom, action: (e) => updateState(e) },
-        { label: { id: 'label-prenom', value: 'Prenom'}, type: 'text', name: 'prenom', value: prenom, action: (e) => updateState(e) }
+        { label: { id: 'label-nom', value: 'Nom' }, type: 'text', name: 'nom', mandatory: true, value: nom,  action: (e) => updateState(e) },
+        { label: { id: 'label-prenom', value: 'Prenom'}, type: 'text', name: 'prenom', mandatory: true, value: prenom, action: (e) => updateState(e) }
     ];
     
     const submitParams = { type: 'button-submit-form', label: 'Enregistrer', id: 'save-enseignant', action: () => submitForm() };

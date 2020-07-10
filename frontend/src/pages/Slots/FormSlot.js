@@ -88,13 +88,13 @@ export const FormSlot = () => {
  
     const paramInputForm = [
         {label: {id:'label-comment', value:'Commentaire'}, type: 'text', name:'comment', value: comment, action: (e) => updateState(e) },
-        {label: {id:'label-couleurFond', value:'Couleur du fond'}, type: 'text', name:'couleurFond', value: couleurFond, action: (e) => updateState(e) },
-        {label: {id:'label-couleurPolice', value:'Couleur de la police'}, type: 'text', name:'couleurPolice', value: couleurPolice, action: (e) => updateState(e) },
-        {label: {id:'label-timeSlot', value:'Créneau horaire'}, type: 'select', name:'timeSlot', value: timeSlot, options: timeSlots, action: (e) => updateState(e) },
-        {label: {id:'label-enseignant', value:'Enseignant'}, type: 'select', name:'enseignant', value: enseignant, options: enseignants, action: (e) => updateState(e) },
-        {label: {id:'label-matiere', value:'Matière'}, type: 'select', name:'matiere', value: matiere, options: matieres, action: (e) => updateState(e) },
-        {label: {id:'label-salle', value:'Salle'}, type: 'select', name:'salle', value: salle, options: salles, action: (e) => updateState(e) },
-        {label: {id:'label-jour', value:'Jour'}, type: 'select', name:'jour', value: jour, options: jours, action: (e) => updateState(e) }
+        {label: {id:'label-couleurFond', value:'Couleur du fond'}, type: 'text', placeholder: 'Exemple : #fff', name:'couleurFond', mandatory: true, value: couleurFond, action: (e) => updateState(e) },
+        {label: {id:'label-couleurPolice', value:'Couleur de la police'}, type: 'text', placeholder: 'Exemple : #000', name:'couleurPolice', mandatory: true, value: couleurPolice, action: (e) => updateState(e) },
+        {label: {id:'label-timeSlot', value:'Créneau horaire'}, type: 'select', name:'timeSlot', value: timeSlot, mandatory: true, options: timeSlots, action: (e) => updateState(e) },
+        {label: {id:'label-enseignant', value:'Enseignant'}, type: 'select', name:'enseignant', value: enseignant, mandatory: true, options: enseignants, action: (e) => updateState(e) },
+        {label: {id:'label-matiere', value:'Matière'}, type: 'select', name:'matiere', value: matiere, mandatory: true, options: matieres, action: (e) => updateState(e) },
+        {label: {id:'label-salle', value:'Salle'}, type: 'select', name:'salle', value: salle, mandatory: true, options: salles, action: (e) => updateState(e) },
+        {label: {id:'label-jour', value:'Jour'}, type: 'select', name:'jour', value: jour, mandatory: true, options: jours, action: (e) => updateState(e) }
     ];
 
     useEffect(() => {

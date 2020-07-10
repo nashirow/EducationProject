@@ -7,6 +7,9 @@
         padding: 20px;
         width: 70%;
         margin: 0 auto;
+        .mandatory{
+            color:red;
+        }
         div{
             margin: 20px 0;
             input, select{

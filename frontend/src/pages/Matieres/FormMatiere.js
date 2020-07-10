@@ -52,9 +52,9 @@ export const FormMatiere = () => {
 
 
     const paramsInputForm = [
-        { label: { id: 'label-nom', value: 'Nom'}, type: 'text', name: 'nom', value: nom, action: (e) => updateState(e) },
+        { label: { id: 'label-nom', value: 'Nom'}, type: 'text', name: 'nom', mandatory: true, value: nom, action: (e) => updateState(e) },
         { label: {id: 'label-description', value: 'Description'}, type: 'text', name: 'description', value: description, action: (e) => updateState(e) },
-        { label: {id: 'label-volumeHoraire', value:'Volume horaire'}, type: 'text', name: 'volume-horaire', value: volumeHoraire, action: (e) => updateState(e) }
+        { label: {id: 'label-volumeHoraire', value:'Volume horaire'}, type: 'text',  placeholder: 'Exemples : 1:00, 10:00, 0:30', mandatory: true, name: 'volume-horaire', value: volumeHoraire, action: (e) => updateState(e) }
     ];
 
     const submitParams = { type: 'button-submit-form', label: 'Enregistrer', id: 'save-matiere', action: () => submitForm() };
