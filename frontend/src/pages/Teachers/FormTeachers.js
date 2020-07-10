@@ -27,17 +27,23 @@ const [errors, setErrors] = useState([]);
     };
     
     const submitForm = async () => {
-      let response = await fetch(process.env.REACT_APP_API_URL_CREATE_TEACHER,{
-          method: 'POST',
-          headers: {
-             'Accept':'application/json',
-             'Content-Type':'application/json'
-          },
-          body: JSON.stringify({ nom, prenom })
-      });
-
-      let json = await response.json();
-      response = await handleResponse(setErrors, response, json, () => window.location.href = process.env.REACT_APP_ENDPOINT_TEACHERS);
+        try{
+            let response = await fetch(process.env.REACT_APP_API_URL_CREATE_TEACHER,{
+                method: 'POST',
+                headers: {
+                   'Accept':'application/json',
+                   'Content-Type':'application/json'
+                },
+                body: JSON.stringify({ nom, prenom })
+            });
+      
+            let json = await response.json();
+            response = await handleResponse(setErrors, response, json, () => window.location.href = process.env.REACT_APP_ENDPOINT_TEACHERS);
+        }
+        catch(err){
+            console.log(err);
+            setErrors([process.env.REACT_APP_GENERAL_ERROR]);
+        }
     };
     
     const paramsInputForm = [

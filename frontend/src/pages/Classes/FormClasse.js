@@ -24,16 +24,22 @@ export const FormClasse = () => {
     };
 
     const submitForm = async () => {
-        let response = await fetch(process.env.REACT_APP_API_URL_CREATE_CLASSE,{
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({nom}),
-        });
-        let json = await response.json();
-        response = await handleResponse(setErrors, response, json, redirectToClasses);
+        try{
+            let response = await fetch(process.env.REACT_APP_API_URL_CREATE_CLASSE,{
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({nom}),
+            });
+            let json = await response.json();
+            response = await handleResponse(setErrors, response, json, redirectToClasses);
+        }
+        catch(err){
+            console.log(err);
+            setErrors([process.env.REACT_APP_GENERAL_ERROR]);
+        }  
     };
 
     const updateState = (e) => {

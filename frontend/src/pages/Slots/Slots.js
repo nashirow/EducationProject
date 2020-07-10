@@ -125,7 +125,7 @@ export const Slots = () => {
         <Breadcrumb elements={[{label: 'Slots', link: '' }]} />
         {!_.isEmpty(errors) && <Message typeMessage='errors' messages={errors} />}
         <div className='page-actions'>
-            <Button id='create-slot' to='/' label='Créer un slot' />
+            <Button id='create-slot' to={process.env.REACT_APP_ENDPOINT_FORM_SLOT} label='Créer un slot' />
         </div>
         <Table id='table-slots' header={header} data={slots} 
             details={process.env.REACT_APP_ENDPOINT_DETAILS_SLOT} edit='/' delete={(id) => deleteSlot(id)}

@@ -120,7 +120,7 @@ export const Disciplines = () => {
         <Breadcrumb elements={[{label: 'Matières', link: '' }]} />
         {!_.isEmpty(errors) && <Message typeMessage='errors' messages={errors} />}
         <div className='page-actions'>
-            <Button id='create-discipline' to='/' label='Créer une matière' />
+            <Button id='create-discipline' to={process.env.REACT_APP_ENDPOINT_FORM_DISCIPLINE} label='Créer une matière' />
         </div>
         <Table id='table-disciplines' header={header} data={disciplines} 
             details={process.env.REACT_APP_ENDPOINT_DETAILS_DISCIPLINE} edit='/' delete={(id) => deleteDiscipline(id)}

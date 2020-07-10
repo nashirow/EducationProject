@@ -36,6 +36,9 @@ import { FormClasse } from './pages/Classes/FormClasse';
 import { FormTeachers } from './pages/Teachers/FormTeachers';
 import { FormRooms } from './pages/Rooms/FormRooms';
 import { FormPlanning } from './pages/Plannings/FormPlanning';
+import { FormMatiere } from './pages/Matieres/FormMatiere';
+import { FormTimeSlot } from './pages/TimeSlots/FormTimeSlots';
+import { FormSlot } from './pages/Slots/FormSlot';
 
 /**
  * Entrée de l'application + Gestion des routes
@@ -61,6 +64,9 @@ function App() {
           <Route path={`${process.env.REACT_APP_ENDPOINT_TIMESLOTS}`}>
             <TimeSlots />
           </Route>
+          <Route path={`${process.env.REACT_APP_ENDPOINT_FORM_TIMESLOT}`}>
+            <FormTimeSlot />
+          </Route>
           <Route path={`${process.env.REACT_APP_ENDPOINT_DETAILS_PLANNING}/:id`}>
             <DetailsPlanning />
           </Route>
@@ -72,6 +78,9 @@ function App() {
           </Route>
           <Route path={`${process.env.REACT_APP_ENDPOINT_DETAILS_SLOT}/:id`}>
             <DetailsSlot />
+          </Route>
+          <Route path ={`${process.env.REACT_APP_ENDPOINT_FORM_SLOT}`}>
+            <FormSlot />
           </Route>
           <Route path={`${process.env.REACT_APP_ENDPOINT_SLOTS}`}>
             <Slots />
@@ -90,6 +99,9 @@ function App() {
           </Route>
           <Route path={`${process.env.REACT_APP_ENDPOINT_DISCIPLINES}`}>
             <Disciplines />
+          </Route>
+          <Route path={`${process.env.REACT_APP_ENDPOINT_FORM_DISCIPLINE}`}>
+            <FormMatiere />
           </Route>
           <Route path={`${process.env.REACT_APP_ENDPOINT_DETAILS_TEACHER}/:id`}>
             <DetailsTeacher />

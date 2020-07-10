@@ -125,7 +125,7 @@ export const TimeSlots = () => {
         <Breadcrumb elements={[{label: 'Créneaux horaires', link: '' }]} />
         {!_.isEmpty(errors) && <Message typeMessage='errors' messages={errors} />}
         <div className='page-actions'>
-            <Button id='create-timeslots' to='/' label='Créer un créneau horaire' />
+            <Button id='create-timeslots' to={process.env.REACT_APP_ENDPOINT_FORM_TIMESLOT} label='Créer un créneau horaire' />
         </div>
         <Table id='table-timeslots' header={header} data={timeSlots} 
             edit='/' delete={(id) => deleteTimeSlot(id)}
