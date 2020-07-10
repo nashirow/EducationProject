@@ -129,7 +129,7 @@ export const Teachers = () => {
             <Button id='create-teachers' to={process.env.REACT_APP_ENDPOINT_FORM_TEACHER} label='Créer un enseignant' />
         </div>
         <Table id='table-teachers' header={header} data={teachers} 
-            details={process.env.REACT_APP_ENDPOINT_DETAILS_TEACHER} edit='/' delete={(id) => deleteTeacher(id)}
+            details={process.env.REACT_APP_ENDPOINT_DETAILS_TEACHER} edit={process.env.REACT_APP_ENDPOINT_FORM_TEACHER} delete={(id) => deleteTeacher(id)}
         />
         <Pagination currentPage={page} pagesCount={totalPages} action={changePage}/>
     </main>);

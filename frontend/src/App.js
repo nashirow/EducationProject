@@ -55,7 +55,7 @@ function App() {
           <Route path={`${process.env.REACT_APP_ENDPOINT_CLASSES}`}>
             <Classes />
           </Route>
-          <Route path={`${process.env.REACT_APP_ENDPOINT_FORM_CLASSE}`}>
+          <Route path={`${process.env.REACT_APP_ENDPOINT_FORM_CLASSE}/:id?`}>
             <FormClasse />
           </Route>
           <Route path={`${process.env.REACT_APP_ENDPOINT_DETAILS_TIMESLOT}/:id`}>
@@ -64,7 +64,7 @@ function App() {
           <Route path={`${process.env.REACT_APP_ENDPOINT_TIMESLOTS}`}>
             <TimeSlots />
           </Route>
-          <Route path={`${process.env.REACT_APP_ENDPOINT_FORM_TIMESLOT}`}>
+          <Route path={`${process.env.REACT_APP_ENDPOINT_FORM_TIMESLOT}/:id?`}>
             <FormTimeSlot />
           </Route>
           <Route path={`${process.env.REACT_APP_ENDPOINT_DETAILS_PLANNING}/:id`}>
@@ -79,7 +79,7 @@ function App() {
           <Route path={`${process.env.REACT_APP_ENDPOINT_DETAILS_SLOT}/:id`}>
             <DetailsSlot />
           </Route>
-          <Route path ={`${process.env.REACT_APP_ENDPOINT_FORM_SLOT}`}>
+          <Route path ={`${process.env.REACT_APP_ENDPOINT_FORM_SLOT}/:id?`}>
             <FormSlot />
           </Route>
           <Route path={`${process.env.REACT_APP_ENDPOINT_SLOTS}`}>
@@ -91,7 +91,7 @@ function App() {
           <Route path={`${process.env.REACT_APP_ENDPOINT_ROOMS}`}>
             <Rooms />
           </Route>
-          <Route path={`${process.env.REACT_APP_ENDPOINT_FORM_ROOM}`}>
+          <Route path={`${process.env.REACT_APP_ENDPOINT_FORM_ROOM}/:id?`}>
             <FormRooms />
           </Route>
           <Route path={`${process.env.REACT_APP_ENDPOINT_DETAILS_DISCIPLINE}/:id`}>
@@ -100,7 +100,7 @@ function App() {
           <Route path={`${process.env.REACT_APP_ENDPOINT_DISCIPLINES}`}>
             <Disciplines />
           </Route>
-          <Route path={`${process.env.REACT_APP_ENDPOINT_FORM_DISCIPLINE}`}>
+          <Route path={`${process.env.REACT_APP_ENDPOINT_FORM_DISCIPLINE}/:id?`}>
             <FormMatiere />
           </Route>
           <Route path={`${process.env.REACT_APP_ENDPOINT_DETAILS_TEACHER}/:id`}>
@@ -109,7 +109,7 @@ function App() {
           <Route path={`${process.env.REACT_APP_ENDPOINT_TEACHERS}`}>
             <Teachers />
           </Route>
-          <Route path={`${process.env.REACT_APP_ENDPOINT_FORM_TEACHER}`}>
+          <Route path={`${process.env.REACT_APP_ENDPOINT_FORM_TEACHER}/:id?`}>
             <FormTeachers />
           </Route>
           <Route path={`${process.env.REACT_APP_ENDPOINT_OPTIONS}`}>

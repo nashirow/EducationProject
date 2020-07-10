@@ -128,7 +128,7 @@ export const Slots = () => {
             <Button id='create-slot' to={process.env.REACT_APP_ENDPOINT_FORM_SLOT} label='Créer un slot' />
         </div>
         <Table id='table-slots' header={header} data={slots} 
-            details={process.env.REACT_APP_ENDPOINT_DETAILS_SLOT} edit='/' delete={(id) => deleteSlot(id)}
+            details={process.env.REACT_APP_ENDPOINT_DETAILS_SLOT} edit={process.env.REACT_APP_ENDPOINT_FORM_SLOT} delete={(id) => deleteSlot(id)}
         />
         <Pagination currentPage={page} pagesCount={totalPages} action={changePage}/>
     </main>);

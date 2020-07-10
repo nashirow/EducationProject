@@ -5,10 +5,13 @@ import { Breadcrumb } from '../../components/Breadcrumb/Breadcrumb';
 import { Form } from '../../components/Form/Form';
 import { handleResponse } from '../../utils/Utils';
 import { Message } from '../../components/Message/Message';
+import { useParams } from 'react-router-dom';
 
 export const FormSlot = () => {
 
-    const pageName= 'Création d\'un slot';
+    const {id} = useParams();
+
+    const pageName= id ? 'Mise à jour d\'un slot' : 'Création d\'un slot';
 
     const [comment, setComment] = useState('');
     
@@ -68,17 +71,31 @@ export const FormSlot = () => {
     const submitForm = async () => {
         setErrors([]);
         try{
-            let response = await fetch(process.env.REACT_APP_API_URL_CREATE_SLOT,{
-                method: 'POST',
-                headers:{
-                    'Accept':'application/json',
-                    'Content-Type':'application/json',
-                },
-                body: JSON.stringify({comment, couleurFond, couleurPolice, timeSlot: {id: timeSlot}, enseignant: {id: enseignant}, matiere: {id: matiere}, salle: {id: salle}, jour: {id: jour}}),
-            });
-
-            let json = await response.json();
-            response = await handleResponse(setErrors, response, json, () => window.location.href = process.env.REACT_APP_ENDPOINT_SLOTS)
+            if(!id){
+                let response = await fetch(process.env.REACT_APP_API_URL_CREATE_SLOT,{
+                    method: 'POST',
+                    headers:{
+                        'Accept':'application/json',
+                        'Content-Type':'application/json',
+                    },
+                    body: JSON.stringify({comment, couleurFond, couleurPolice, timeSlot: {id: timeSlot}, enseignant: {id: enseignant}, matiere: {id: matiere}, salle: {id: salle}, jour: {id: jour}}),
+                });
+    
+                let json = await response.json();
+                response = await handleResponse(setErrors, response, json, () => window.location.href = process.env.REACT_APP_ENDPOINT_SLOTS)
+            }
+            else{
+                let response = await fetch(process.env.REACT_APP_API_URL_UPDATE_SLOT,{
+                    method: 'PUT',
+                    headers:{
+                        'Accept':'application/json',
+                        'Content-Type':'application/json',
+                    },
+                    body: JSON.stringify({id,comment, couleurFond, couleurPolice, timeSlot: {id: timeSlot}, enseignant: {id: enseignant}, matiere: {id: matiere}, salle: {id: salle}, jour: {id: jour}}),
+                });
+                let json = await response.json();
+                response = await handleResponse(setErrors, response, json, () => window.location.href = process.env.REACT_APP_ENDPOINT_SLOTS)
+            }  
         }
         catch(err){
             console.log(err);

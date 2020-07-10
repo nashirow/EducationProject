@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import _ from 'lodash';
 
 import { Breadcrumb } from '../../components/Breadcrumb/Breadcrumb';
 import { handleResponse } from '../../utils/Utils';
 import { Message } from '../../components/Message/Message';
 import { Form } from '../../components/Form/Form';
+import { useParams } from 'react-router-dom';
 
 export const FormClasse = () => {
 
-    const pageName='Creation d\'une classe';
+    const { id } = useParams();
+    
+    const pageName= id ? 'Mise à jour d\'une classe' : 'Creation d\'une classe';
 
     const [nom, setNom] = useState('');
+
     const [errors, setErrors] = useState([]);
 
     const inputForms = [
@@ -23,19 +27,54 @@ export const FormClasse = () => {
         window.location.href = process.env.REACT_APP_ENDPOINT_CLASSES;
     };
 
+    useEffect(() => {
+        const abortController = new AbortController();
+
+        const fetchData = async () => {
+            try{
+                if(id){
+                    let response = await fetch(`${process.env.REACT_APP_API_URL_GET_CLASSE}/${id}`, { method: 'GET', signal: abortController.signal});
+                    let json = await response.json();
+                    response = await handleResponse(setErrors, response, json);
+                    setNom(json.value.nom);
+                }
+            }catch(err){
+                console.error(err);
+                setErrors([process.env.REACT_APP_GENERAL_ERROR]);
+            }
+        };
+
+        fetchData();
+        return () => abortController.abort;
+    },[]);
+
     const submitForm = async () => {
         setErrors([]);
         try{
-            let response = await fetch(process.env.REACT_APP_API_URL_CREATE_CLASSE,{
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({nom}),
-            });
-            let json = await response.json();
-            response = await handleResponse(setErrors, response, json, redirectToClasses);
+            if(!id){
+                let response = await fetch(process.env.REACT_APP_API_URL_CREATE_CLASSE,{
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({nom}),
+                });
+                let json = await response.json();
+                response = await handleResponse(setErrors, response, json, redirectToClasses);
+            }
+            else{
+                let response = await fetch(process.env.REACT_APP_API_URL_UPDATE_CLASSE,{
+                    method: 'PUT',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({id, nom}),
+                });
+                let json = await response.json();
+                response = await handleResponse(setErrors, response, json, redirectToClasses);
+            } 
         }
         catch(err){
             console.log(err);

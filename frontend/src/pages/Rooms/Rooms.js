@@ -128,7 +128,7 @@ export const Rooms = () => {
             <Button id='create-room' to={process.env.REACT_APP_ENDPOINT_FORM_ROOM} label='Créer une salle' />
         </div>
         <Table id='table-rooms' header={header} data={rooms} 
-            details={process.env.REACT_APP_ENDPOINT_DETAILS_ROOM} edit='/' delete={(id) => deleteClasse(id)}
+            details={process.env.REACT_APP_ENDPOINT_DETAILS_ROOM} edit={process.env.REACT_APP_ENDPOINT_FORM_ROOM} delete={(id) => deleteClasse(id)}
         />
         <Pagination currentPage={page} pagesCount={totalPages} action={changePage}/>
     </main>);

@@ -128,7 +128,7 @@ export const Classes = () => {
             <Button id='create-classe' to={process.env.REACT_APP_ENDPOINT_FORM_CLASSE} label='Créer une classe' />
         </div>
         <Table id='table-classes' header={header} data={classes} 
-            details={process.env.REACT_APP_ENDPOINT_DETAILS_CLASSE} edit='/' delete={(id) => deleteClasse(id)}
+            details={process.env.REACT_APP_ENDPOINT_DETAILS_CLASSE} edit={process.env.REACT_APP_ENDPOINT_FORM_CLASSE} delete={(id) => deleteClasse(id)}
         />
         <Pagination currentPage={page} pagesCount={totalPages} action={changePage}/>
     </main>);

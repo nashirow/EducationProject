@@ -5,8 +5,11 @@ import { Form } from '../../components/Form/Form';
 import { Breadcrumb } from '../../components/Breadcrumb/Breadcrumb';
 import { handleResponse } from '../../utils/Utils';
 import { Message } from '../../components/Message/Message';
+import { useParams } from 'react-router-dom';
 
 export const FormMatiere = () => {
+
+    const { id } = useParams();
 
     const [nom, setNom] = useState('');
 
@@ -16,7 +19,7 @@ export const FormMatiere = () => {
 
     const [errors, setErrors] = useState([]);
 
-    const pageName = 'Création d\'une matière';
+    const pageName = id ? 'Mise à jour d\'une matière' : 'Création d\'une matière';
 
     const updateState = (e) => {
         if(e.target.name === 'nom'){
@@ -33,16 +36,30 @@ export const FormMatiere = () => {
     const submitForm = async () => {
         setErrors([]);
         try{
-            let response = await fetch(process.env.REACT_APP_API_URL_CREATE_DISCIPLINE,{
-                method: 'POST',
-                headers:{
-                    'Accept':'application/json',
-                    'Content-Type':'application/json',
-                },
-                body: JSON.stringify({nom,description,volumeHoraire}),
-            });
-            let json = await response.json();
-            response = await handleResponse(setErrors, response, json, () => window.location.href = process.env.REACT_APP_ENDPOINT_DISCIPLINES)
+            if(!id){
+                let response = await fetch(process.env.REACT_APP_API_URL_CREATE_DISCIPLINE,{
+                    method: 'POST',
+                    headers:{
+                        'Accept':'application/json',
+                        'Content-Type':'application/json',
+                    },
+                    body: JSON.stringify({nom,description,volumeHoraire}),
+                });
+                let json = await response.json();
+                response = await handleResponse(setErrors, response, json, () => window.location.href = process.env.REACT_APP_ENDPOINT_DISCIPLINES)
+            }
+            else{
+                let response = await fetch(process.env.REACT_APP_API_URL_UPDATE_DISCIPLINE,{
+                    method: 'PUT',
+                    headers:{
+                        'Accept':'application/json',
+                        'Content-Type':'application/json',
+                    },
+                    body: JSON.stringify({id,nom,description,volumeHoraire}),
+                });
+                let json = await response.json();
+                response = await handleResponse(setErrors, response, json, () => window.location.href = process.env.REACT_APP_ENDPOINT_DISCIPLINES)
+            }
         }
         catch(err){
             console.log(err);

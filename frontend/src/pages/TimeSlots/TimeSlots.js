@@ -128,7 +128,7 @@ export const TimeSlots = () => {
             <Button id='create-timeslots' to={process.env.REACT_APP_ENDPOINT_FORM_TIMESLOT} label='Créer un créneau horaire' />
         </div>
         <Table id='table-timeslots' header={header} data={timeSlots} 
-            edit='/' delete={(id) => deleteTimeSlot(id)}
+            edit={process.env.REACT_APP_ENDPOINT_FORM_TIMESLOT} delete={(id) => deleteTimeSlot(id)}
         />
         <Pagination currentPage={page} pagesCount={totalPages} action={changePage}/>
     </main>);

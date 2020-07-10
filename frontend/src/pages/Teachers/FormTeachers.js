@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import _ from 'lodash';
 
 import { Breadcrumb } from '../../components/Breadcrumb/Breadcrumb';
 import { Form } from '../../components/Form/Form';
 import { handleResponse } from '../../utils/Utils';
 import { Message } from '../../components/Message/Message';
+import { useParams } from 'react-router-dom';
 
 export const FormTeachers = () => {
 
-const pageName='Création d\'un enseignant';
+const {id} = useParams();
+
+const pageName= id ? 'Mise à jour d\'un enseignant' : 'Création d\'un enseignant';
 
 const [nom, setNom] = useState('');
 
@@ -24,21 +27,56 @@ const [errors, setErrors] = useState([]);
             setPrenom(e.target.value);
         }
     };
+
+    useEffect(() => {
+        const abortController = new AbortController();
+
+        const fetchData = async () => {
+            try{
+                if(id){
+                    let response = await fetch(`${process.env.REACT_APP_API_URL_GET_TEACHER}/${id}`, { method: 'GET', signal: abortController.signal});
+                    let json = await response.json();
+                    response = await handleResponse(setErrors, response, json);
+                    setNom(json.value.nom);
+                    setPrenom(json.value.prenom);
+                }
+            }catch(err){
+                console.error(err);
+                setErrors([process.env.REACT_APP_GENERAL_ERROR]);
+            }
+        };
+
+        fetchData();
+        return () => abortController.abort;
+    },[]);
     
     const submitForm = async () => {
         setErrors([]);
         try{
-            let response = await fetch(process.env.REACT_APP_API_URL_CREATE_TEACHER,{
-                method: 'POST',
-                headers: {
-                   'Accept':'application/json',
-                   'Content-Type':'application/json',
-                },
-                body: JSON.stringify({ nom, prenom }),
-            });
-      
-            let json = await response.json();
-            response = await handleResponse(setErrors, response, json, () => window.location.href = process.env.REACT_APP_ENDPOINT_TEACHERS);
+            if(!id){
+                let response = await fetch(process.env.REACT_APP_API_URL_CREATE_TEACHER,{
+                    method: 'POST',
+                    headers: {
+                       'Accept':'application/json',
+                       'Content-Type':'application/json',
+                    },
+                    body: JSON.stringify({ nom, prenom }),
+                });
+                let json = await response.json();
+                response = await handleResponse(setErrors, response, json, () => window.location.href = process.env.REACT_APP_ENDPOINT_TEACHERS);
+            }
+            else{
+                let response = await fetch(process.env.REACT_APP_API_URL_UPDATE_TEACHER,{
+                    method: 'PUT',
+                    headers: {
+                       'Accept':'application/json',
+                       'Content-Type':'application/json',
+                    },
+                    body: JSON.stringify({id, nom, prenom }),
+                });
+                let json = await response.json();
+                response = await handleResponse(setErrors, response, json, () => window.location.href = process.env.REACT_APP_ENDPOINT_TEACHERS);
+            }    
         }
         catch(err){
             console.log(err);

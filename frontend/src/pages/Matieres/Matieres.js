@@ -123,7 +123,7 @@ export const Disciplines = () => {
             <Button id='create-discipline' to={process.env.REACT_APP_ENDPOINT_FORM_DISCIPLINE} label='Créer une matière' />
         </div>
         <Table id='table-disciplines' header={header} data={disciplines} 
-            details={process.env.REACT_APP_ENDPOINT_DETAILS_DISCIPLINE} edit='/' delete={(id) => deleteDiscipline(id)}
+            details={process.env.REACT_APP_ENDPOINT_DETAILS_DISCIPLINE} edit={process.env.REACT_APP_ENDPOINT_FORM_DISCIPLINE} delete={(id) => deleteDiscipline(id)}
         />
         <Pagination currentPage={page} pagesCount={totalPages} action={changePage}/>
     </main>);
