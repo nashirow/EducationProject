@@ -209,7 +209,7 @@ export const FormSlot = () => {
     const submitParam = { type: 'button-submit-form', label: 'Enregistrer', id: 'save-slot', action: () => submitForm() };
 
     return (<main id='form-slot'>
-            <Breadcrumb elements={[{label:'Créneaux horaires', link: process.env.REACT_APP_ENDPOINT_SLOTS}, {label:pageName, link : ''}]} />
+            <Breadcrumb elements={[{label:'Slots', link: process.env.REACT_APP_ENDPOINT_SLOTS}, {label:pageName, link : ''}]} />
             {!_.isEmpty(errors) && <Message typeMessage='errors' messages={errors} />}
             <Form params={paramInputForm} submitParams={submitParam} />
             </main>);
