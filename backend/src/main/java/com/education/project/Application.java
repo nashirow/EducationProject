@@ -36,6 +36,8 @@ public class Application {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins("http://localhost:3000")
+                        .allowedOrigins("http://localhost:5000")
+                        .allowedOrigins("http://hicham-azimani.ovh")
                         .allowedMethods("HEAD", "OPTIONS", "GET", "POST", "PUT", "PATCH", "DELETE");
             }
         };
