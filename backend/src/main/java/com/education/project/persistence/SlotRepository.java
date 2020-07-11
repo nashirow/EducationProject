@@ -220,11 +220,12 @@ public class SlotRepository {
      * @return boolean
      * @throws DataBaseException
      */
-    public boolean isExistByColorFond(Slot slotToInsert) throws DataBaseException {
-        String requestSql = "SELECT COUNT(id) FROM slot WHERE couleurFond = ?";
+    public boolean isExistByColorFondAndByDiscipline(Slot slotToInsert) throws DataBaseException {
+        String requestSql = "SELECT COUNT(id) FROM slot WHERE couleurFond = ? AND idMatiere != ?";
         try {
             PreparedStatement ps = this.connection.prepareStatement(requestSql);
             ps.setString(1, slotToInsert.getCouleurFond());
+            ps.setInt(2, slotToInsert.getMatiere().getId());
             ResultSet resultSet = ps.executeQuery();
             resultSet.next();
             return resultSet.getLong(1) > 0;
@@ -232,7 +233,7 @@ public class SlotRepository {
             LOGGER.error("Erreur technique : impossible de retrouver le slot possédant la couleur de fond{} en base de données ", slotToInsert.getCouleurFond(), e);
             throw new DataBaseException("Erreur technique : impossible de retrouver le slot de couleur de fond " + slotToInsert.getCouleurFond() + " en base de données");
         }
-    }//isExistByColorFond()
+    }//isExistByColorFondAndByDiscipline()
 
     /**
      * Cette fonction permet de compter le nombre de slots par jour et par créneau horaire.

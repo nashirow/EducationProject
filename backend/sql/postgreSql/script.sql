@@ -66,7 +66,6 @@ INSERT INTO jour (id, nom) VALUES (3, 'Mercredi');
 INSERT INTO jour (id, nom) VALUES (4, 'Jeudi');
 INSERT INTO jour (id, nom) VALUES (5, 'Vendredi');
 INSERT INTO jour (id, nom) VALUES (6, 'Samedi');
-INSERT INTO jour (id, nom) VALUES (7, 'Dimanche');
 
 CREATE TABLE timeslot (
     id SERIAL PRIMARY KEY NOT NULL,

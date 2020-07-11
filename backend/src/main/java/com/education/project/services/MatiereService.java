@@ -145,7 +145,7 @@ public class MatiereService {
             if(matiere.getNom() != null && !matiere.getNom().isEmpty() && (matiere.getNom().length() < 3 || matiere.getNom().length() > 40)){
                 erreurs.add("Le nom d'une matière doit contenir entre 3 et 40 caractères");
             }
-            if(matiere.getVolumeHoraire() != null && !LocalTimeUtils.checkStringIsFormattedForLocalTime(matiere.getVolumeHoraire())){
+            if(matiere.getVolumeHoraire() != null && !matiere.getVolumeHoraire().isEmpty() && !LocalTimeUtils.checkStringIsFormattedForLocalTime(matiere.getVolumeHoraire())){
                 erreurs.add("Le volume horaire hebdomadaire de la matière doit respecter le format HH:mm");
             }
         }

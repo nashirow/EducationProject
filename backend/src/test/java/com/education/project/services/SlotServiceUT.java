@@ -247,7 +247,7 @@ public class SlotServiceUT {
     @Test
     public void create_slot_should_throw_exception_when_slot_fond_color_already_exists() throws DataBaseException {
         this.slotToInsert.setCouleurFond("#fff");
-        Mockito.when(slotRepository.isExistByColorFond(this.slotToInsert)).thenReturn(true);
+        Mockito.when(slotRepository.isExistByColorFondAndByDiscipline(this.slotToInsert)).thenReturn(true);
         Assertions.assertThatThrownBy(() -> slotService.insertSlot(slotToInsert))
                 .hasMessage("Il existe déjà un slot avec ce fond de couleur")
                 .isInstanceOf(ArgumentException.class);
@@ -429,14 +429,6 @@ public class SlotServiceUT {
                 .isInstanceOf(ArgumentException.class);
     }//update_slot_should_throw_exception_when_police_color_type_is_CMYK_0_66_100_0()
 
-    @Test
-    public void update_slot_should_throw_exception_when_slot_fond_color_already_exists() throws DataBaseException {
-        this.slotToInsert.setCouleurFond("#fff");
-        Mockito.when(slotRepository.isExistByColorFond(this.slotToInsert)).thenReturn(true);
-        Assertions.assertThatThrownBy(() -> slotService.updateSlot(slotToInsert))
-                .hasMessage("Il existe déjà un slot avec ce fond de couleur")
-                .isInstanceOf(ArgumentException.class);
-    }//update_slot_should_throw_exception_when_slot_fond_color_already_exists
     @Test
     public void delete_slot_should_sucess_when_id_is_1() throws DataBaseException {
         Mockito.when(slotRepository.deleteSlot(this.slotToDelete.getId())).thenReturn(true);

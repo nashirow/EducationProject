@@ -72,7 +72,7 @@ export const FormSlot = () => {
         setErrors([]);
         try{
             const enseignantId = (enseignant === '-1' || enseignant === -1) ? null : enseignant;
-            const salleId = (salle === '-1' || salle === -1) ? null : enseignant;
+            const salleId = (salle === '-1' || salle === -1) ? null : salle;
             if(!id){
                 let response = await fetch(process.env.REACT_APP_API_URL_CREATE_SLOT,{
                     method: 'POST',
@@ -161,6 +161,7 @@ export const FormSlot = () => {
                 let json = await response.json();
                 response = await handleResponse(setErrors, response, json);
                 setTimeSlots(json.value.map(val => ({value: val.id, label: `${val.start} - ${val.end}`})));
+                setTimeSlot(json.value[0].id);
             }catch(err){
                 console.error(err);
                 setErrors([process.env.REACT_APP_GENERAL_ERROR]);
@@ -171,7 +172,7 @@ export const FormSlot = () => {
                 let json = await response.json();
                 response = await handleResponse(setErrors, response, json);
                 setJours(json.value.map(val => ({value: val.id, label: val.nom})));
-                setMatiere(json.value[0].id);
+                setJour(json.value[0].id);
             }catch(err){
                 console.error(err);
                 setErrors([process.env.REACT_APP_GENERAL_ERROR]);
@@ -212,4 +213,4 @@ export const FormSlot = () => {
             {!_.isEmpty(errors) && <Message typeMessage='errors' messages={errors} />}
             <Form params={paramInputForm} submitParams={submitParam} />
             </main>);
-}
+};

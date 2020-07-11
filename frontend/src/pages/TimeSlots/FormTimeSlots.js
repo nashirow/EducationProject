@@ -61,5 +61,5 @@ export const FormTimeSlot = () => {
             {!_.isEmpty(errors) && <Message typeMessage='errors' messages={errors} />}
             <Form params={paramInputForm} submitParams={submitParams} />
         </main>
-    )
+    );
 };

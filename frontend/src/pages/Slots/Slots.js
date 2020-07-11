@@ -34,7 +34,7 @@ export const Slots = () => {
     const [errors, setErrors] = useState([]);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
-    const header = ['Identifiant', 'Matière', 'Heure début', 'Heure fin', 'Actions'];
+    const header = ['Identifiant', 'Matière', 'Heure début', 'Heure fin', 'Jour', 'Actions'];
 
     /**
      * Successeur de ComponentDidMount
@@ -48,7 +48,7 @@ export const Slots = () => {
                 let json = await response.json();
                 response = await handleResponse(setErrors, response, json);
                 
-                setSlots(json.value.map(val => [val.id, val.matiere.nom, val.timeSlot.start, val.timeSlot.end, null]) || []);
+                setSlots(json.value.map(val => [val.id, val.matiere.nom, val.timeSlot.start, val.timeSlot.end, val.jour.nom, null]) || []);
 
                 response = await fetch(`${process.env.REACT_APP_API_URL_COUNT_SLOTS}`, 
                     { method: 'GET', signal: abortController.signal });
@@ -74,13 +74,13 @@ export const Slots = () => {
      * @param {Integer} numPage n° de la page
      * @param {Object} optionsFetch options API Fetch
      */
-    const fetchAllClasses = async (numPage, optionsFetch) => {
+    const fetchAllSlots = async (numPage, optionsFetch) => {
         try{
             let response = await fetch(`${process.env.REACT_APP_API_URL_SLOTS}?page=${numPage}&nbElementsPerPage=${process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE}`, optionsFetch);
             let json = await response.json();
             response = await handleResponse(setErrors, response, json);
             
-            setSlots(json.value.map(val => [val.id, val.matiere.nom, val.timeSlot.start, val.timeSlot.end, null]) || []);
+            setSlots(json.value.map(val => [val.id, val.matiere.nom, val.timeSlot.start, val.timeSlot.end, val.jour.nom, null]) || []);
 
             response = await fetch(`${process.env.REACT_APP_API_URL_COUNT_SLOTS}`, optionsFetch);
             json = await response.json();
@@ -104,7 +104,7 @@ export const Slots = () => {
                 const response = await fetch(`${process.env.REACT_APP_API_URL_DELETE_SLOT}/${id}`, { method: 'DELETE' });
                 let json = await response.json()
                 await handleResponse(setErrors, response, json);
-                await fetchAllClasses(page, { method: 'GET' });  
+                await fetchAllSlots(page, { method: 'GET' });  
             }catch(err){
                 console.error(err);
                 setErrors([process.env.REACT_APP_GENERAL_ERROR]);
@@ -118,7 +118,7 @@ export const Slots = () => {
      */
     const changePage = (numPage) => {
         setPage(numPage);
-        fetchAllClasses(numPage, { method: 'GET' }); 
+        fetchAllSlots(numPage, { method: 'GET' }); 
     };
     
     return(<main id="slots">
