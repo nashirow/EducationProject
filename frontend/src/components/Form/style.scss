@@ -1,0 +1,33 @@
+@import '../../common.scss';
+
+.wrapper-form{
+    .forms{
+        border-radius: 5px;
+        background-color: #f2f2f2;
+        padding: 20px;
+        width: 70%;
+        margin: 0 auto;
+        .mandatory{
+            color:red;
+        }
+        div{
+            margin: 20px 0;
+            input, select{
+                display: inline-block;
+                width: 100%;
+                padding: 8px;
+                margin-top: 5px;
+                box-sizing: border-box;
+            }
+        }
+        #actions{
+            text-align: center;
+            .button{
+                background-color: $colorSaveButton;
+                color: #fff;
+            }
+        }
+        
+    }
+    
+}

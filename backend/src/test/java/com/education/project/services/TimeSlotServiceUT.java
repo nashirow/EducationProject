@@ -144,12 +144,20 @@ public class TimeSlotServiceUT {
     public void delete_time_slot_should_return_true_if_id_is_1() throws DataBaseException {
         Mockito.when(timeSlotRepository.delete(1)).thenReturn(true);
         Assertions.assertThat(timeSlotService.delete(1)).isTrue();
-    }//delete_time_slot_should_return_true_if_id_is_1()
+    }// delete_time_slot_should_return_true_if_id_is_1()
 
     @Test
     public void delete_time_slot_should_return_false_if_id_is_2() throws DataBaseException {
         Assertions.assertThat(timeSlotService.delete(1)).isFalse();
-    }//delete_time_slot_should_return_false_if_id_is_2()
+    }// delete_time_slot_should_return_false_if_id_is_2()
+
+    @Test
+    public void delete_time_slot_should_throw_database_exception_when_time_slot_is_used_by_slot() throws DataBaseException {
+        Mockito.when(timeSlotRepository.isUsedBySlots(3)).thenReturn(true);
+        Assertions.assertThatCode(() -> timeSlotService.delete(3))
+                .hasMessage("Impossible de supprimer le créneau horaire : Le créneau horaire que vous tentez de supprimer est peut-être utilisé par ou plusieurs slot(s)")
+                .isInstanceOf(DataBaseException.class);
+    }// delete_time_slot_should_throw_database_exception_when_time_slot_is_used_by_slot()
 
     @Test
     public void get_time_slots_should_return_2_time_slots_without_pagination() throws DataBaseException{

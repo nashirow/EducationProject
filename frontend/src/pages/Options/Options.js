@@ -18,9 +18,9 @@ import _ from 'lodash';
 import { Breadcrumb } from '../../components/Breadcrumb/Breadcrumb';
 import { Message } from '../../components/Message/Message';
 import { handleResponse } from '../../utils/Utils';
-import { Button } from '../../components/Button/Button';
 
 import './style.scss';
+import { Form } from '../../components/Form/Form';
 
 /**
  * Page Options
@@ -33,6 +33,13 @@ export const Options = () => {
     const [endHourPlanning, setEndHourPlanning] = useState('');
     const [splitPlanning, setSplitPlanning] = useState('');
     const [valuesSplitValid, setValuesSplitValid] = useState(['En cours de chargement...']);
+
+    const inputForms = [
+        { label: { value: 'Heure de début d\'un emploi du temps' }, type: 'text', id: 'startHourPlanning', name: 'startHourPlanning', value: startHourPlanning, action: (e) => changeOptions(e) },
+        { label: { value: 'Heure de fin d\'un emploi du temps' }, type: 'text', id: 'endHourPlanning', name: 'endHourPlanning', value: endHourPlanning, action: (e) => changeOptions(e) },
+        { label: { value: 'Découpage en minutes d\'un emploi du temps' }, type: 'select', id: 'splitPlanning', name: 'splitPlanning', value: splitPlanning, options: valuesSplitValid, action: (e) => changeOptions(e) },
+    ];
+    const submitParams = { type: 'button-submit-form', label: 'Enregistrer', id: 'save-options', action: () => saveOptions() };
 
     /**
      * Successeur du ComponentDidMount
@@ -56,7 +63,7 @@ export const Options = () => {
                 let response = await fetch(`${process.env.REACT_APP_API_URL_OPTIONS_SPLIT_VALUES_VALID}`, { method: 'GET', signal: abortController.signal});
                 let json = await response.json();
                 response = await handleResponse(setErrors, response, json);
-                setValuesSplitValid(json.value);
+                setValuesSplitValid(json.value.map(val => ({value: val, label: val})));
             }catch(err){
                 console.error(err);
                 setErrors([process.env.REACT_APP_GENERAL_ERROR]);
@@ -133,26 +140,6 @@ export const Options = () => {
         <Breadcrumb elements={[{label: 'Options', link: '' }]} />
         {!_.isEmpty(errors) && <Message typeMessage='errors' messages={errors} />}
         {!_.isEmpty(confirmation) && <Message typeMessage='confirmation' messages={confirmation} />}
-        <div className='wrapper-form'>
-            <form id='form-options' className='forms'>
-                <div>
-                    <label htmlFor='startHourPlanning'>Heure de début d'un emploi du temps</label>
-                    <input type='text' id='startHourPlanning' name='startHourPlanning' onChange={(e) => changeOptions(e)} value={startHourPlanning} />
-                </div>
-                <div>
-                    <label htmlFor='endHourPlanning'>Heure de fin d'un emploi du temps</label>
-                    <input type='text' id='endHourPlanning' name='endHourPlanning' onChange={(e) => changeOptions(e)} value={endHourPlanning} />
-                </div>
-                <div>
-                    <label htmlFor='splitPlanning'>Découpage en minutes d'un emploi du temps</label>
-                    <select id='splitPlanning' name='splitPlanning' onChange={(e) => changeOptions(e)} value={splitPlanning}> 
-                        {valuesSplitValid.map(val => <option key={val} value={val}>{val}</option>)}
-                    </select>
-                </div>
-                <div id='actions'>
-                    <Button id='save-options' action={() => saveOptions()} label='Enregistrer' />
-                </div>
-            </form>
-        </div>
+        <Form params={inputForms} submitParams={submitParams} />
     </main>)
 };

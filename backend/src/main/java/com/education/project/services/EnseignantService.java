@@ -62,6 +62,9 @@ public class EnseignantService {
      * @return boolean
      */
     public boolean deleteEnseignant(int id) throws DataBaseException {
+        if(enseignantRepository.isUsedBySlots(id)){
+            throw new DataBaseException("Impossible de supprimer l'enseignant : L'enseignant que vous tentez de supprimer est peut-être utilisé par un ou plusieurs slot(s)");
+        }
         return enseignantRepository.delete(id);
     }//deleteEnseignant()
 

@@ -46,14 +46,14 @@ export const Rooms = () => {
                 let response = await fetch(`${process.env.REACT_APP_API_URL_ROOMS}?page=${page}&nbElementsPerPage=${process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE}`, 
                     { method: 'GET', signal: abortController.signal });
                 let json = await response.json();
-                response = await handleResponse(setErrors, response, json);;
+                response = await handleResponse(setErrors, response, json);
                 
                 setRooms(json.value.map(val => [val.id, val.nom, null]) || []);
 
                 response = await fetch(`${process.env.REACT_APP_API_URL_COUNT_ROOMS}`, 
                     { method: 'GET', signal: abortController.signal });
                 json = await response.json();
-                response = await handleResponse(setErrors, response, json);;
+                response = await handleResponse(setErrors, response, json);
                 
                 setTotalPages(Math.ceil(json.value/parseInt(process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE)));
             }catch(err){
@@ -78,13 +78,13 @@ export const Rooms = () => {
         try{
             let response = await fetch(`${process.env.REACT_APP_API_URL_ROOMS}?page=${numPage}&nbElementsPerPage=${process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE}`, optionsFetch);
             let json = await response.json();
-            response = await handleResponse(setErrors, response, json);;
+            response = await handleResponse(setErrors, response, json);
             
             setRooms(json.value.map(val => [val.id, val.nom, null]) || []);
 
             response = await fetch(`${process.env.REACT_APP_API_URL_COUNT_ROOMS}`, optionsFetch);
             json = await response.json();
-            response = await handleResponse(setErrors, response, json);;
+            response = await handleResponse(setErrors, response, json);
             
             setTotalPages(Math.ceil(json.value/parseInt(process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE)));
         }catch(err){
@@ -98,6 +98,7 @@ export const Rooms = () => {
      * @param {Integer} id Identifiant de la salle à supprimer
      */
     const deleteClasse = async (id) => {
+        setErrors([]);
         if(window.confirm('Confirmez-vous la suppression de la salle n°' + id + ' ?')){
             try{
                 const response = await fetch(`${process.env.REACT_APP_API_URL_DELETE_ROOM}/${id}`, { method: 'DELETE' });
@@ -124,10 +125,10 @@ export const Rooms = () => {
         <Breadcrumb elements={[{label: 'Salles', link: '' }]} />
         {!_.isEmpty(errors) && <Message typeMessage='errors' messages={errors} />}
         <div className='page-actions'>
-            <Button id='create-room' to='/' label='Créer une salle' />
+            <Button id='create-room' to={process.env.REACT_APP_ENDPOINT_FORM_ROOM} label='Créer une salle' />
         </div>
         <Table id='table-rooms' header={header} data={rooms} 
-            details={process.env.REACT_APP_ENDPOINT_DETAILS_ROOM} edit='/' delete={(id) => deleteClasse(id)}
+            details={process.env.REACT_APP_ENDPOINT_DETAILS_ROOM} edit={process.env.REACT_APP_ENDPOINT_FORM_ROOM} delete={(id) => deleteClasse(id)}
         />
         <Pagination currentPage={page} pagesCount={totalPages} action={changePage}/>
     </main>);

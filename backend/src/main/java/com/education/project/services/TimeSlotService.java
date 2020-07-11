@@ -63,6 +63,9 @@ public class TimeSlotService {
      * @throws DataBaseException
      */
     public boolean delete(int id) throws DataBaseException {
+        if(timeSlotRepository.isUsedBySlots(id)){
+            throw new DataBaseException("Impossible de supprimer le créneau horaire : Le créneau horaire que vous tentez de supprimer est peut-être utilisé par ou plusieurs slot(s)");
+        }
         return timeSlotRepository.delete(id);
     }// delete()
 

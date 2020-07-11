@@ -30,7 +30,7 @@ export const DetailsDiscipline = () => {
                 let response = await fetch(`${process.env.REACT_APP_API_URL_GET_DISCIPLINE}/${id}`, 
                     { method: 'GET', signal: abortController.signal });
                 let json = await response.json();
-                response = await handleResponse(setErrors, response, json);;
+                response = await handleResponse(setErrors, response, json);
                 setDiscipline(json.value);
             }catch(err){
                 console.error(err);

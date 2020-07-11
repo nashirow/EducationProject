@@ -192,7 +192,15 @@ public class EnseignantServiceUT {
         Mockito.when(enseignantRepository.delete(30)).thenReturn(false);
         boolean isDeleted = enseignantService.deleteEnseignant(30);
         Assertions.assertThat(isDeleted).isFalse();
-    }
+    }// delete_enseignant_should_sucess_when_enseignant_id_is_30()
+
+    @Test
+    public void delete_enseignant_should_throw_database_exception_when_enseignant_is_used_by_slot() throws DataBaseException {
+        Mockito.when(enseignantRepository.isUsedBySlots(3)).thenReturn(true);
+        Assertions.assertThatCode(() -> enseignantService.deleteEnseignant(3))
+                .hasMessage("Impossible de supprimer l'enseignant : L'enseignant que vous tentez de supprimer est peut-être utilisé par un ou plusieurs slot(s)")
+                .isInstanceOf(DataBaseException.class);
+    }// delete_enseignant_should_throw_database_exception_when_enseignant_is_used_by_slot()
 
     @Test
     public void get_enseignant_should_return_result_when_id_is_2() throws DataBaseException {

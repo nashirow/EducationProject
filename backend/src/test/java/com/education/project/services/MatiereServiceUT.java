@@ -326,12 +326,36 @@ public class MatiereServiceUT {
     }//delete_matiere_should_return_false_when_matiere_id_is_20()
 
     @Test
+    public void delete_matiere_should_throw_database_exception_when_matiere_is_used_by_slot() throws DataBaseException {
+        Mockito.when(matiereRepository.isUsedBySlots(3)).thenReturn(true);
+        Assertions.assertThatCode(() -> matiereService.deleteMatiere(3))
+                .hasMessage("Impossible de supprimer la matière : La matière que vous tentez de supprimer est peut-être utilisée par un ou plusieurs slot(s)")
+                .isInstanceOf(DataBaseException.class);
+    }//delete_matiere_should_throw_database_exception_when_matiere_is_used_by_slot()
+
+    @Test
     public void creation_matiere_should_throw_exception_when_matiere_name_already_exists() throws DataBaseException {
         Mockito.when(matiereRepository.isExistByName(this.matiereToCreate.getNom())).thenReturn(true);
         Assertions.assertThatThrownBy(() -> matiereService.insertMatiere(this.matiereToCreate))
                 .hasMessage("Cette matière existe déjà")
                 .isInstanceOf(ArgumentException.class);
     }//creation_matiere_should_throw_exception_when_matiere_name_already_exists()
+
+    @Test
+    public void creation_matiere_should_throw_exception_when_volume_horaire_is_bad_formatted() throws DataBaseException {
+        this.matiereToCreate.setVolumeHoraire("1H30");
+        Assertions.assertThatThrownBy(() -> matiereService.insertMatiere(this.matiereToCreate))
+                .hasMessage("Le volume horaire hebdomadaire de la matière doit respecter le format HH:mm")
+                .isInstanceOf(ArgumentException.class);
+    }//creation_matiere_should_throw_exception_when_matiere_name_already_exists()
+
+    @Test
+    public void update_matiere_should_throw_exception_when_volume_horaire_is_bad_formatted() throws DataBaseException {
+        this.matiereToUpdate.setVolumeHoraire("1H30");
+        Assertions.assertThatThrownBy(() -> matiereService.updateMatiere(this.matiereToUpdate))
+                .hasMessage("Le volume horaire hebdomadaire de la matière doit respecter le format HH:mm")
+                .isInstanceOf(ArgumentException.class);
+    }//update_matiere_should_throw_exception_when_volume_horaire_is_bad_formatted()
 
     @Test
     public void update_matiere_should_throw_exception_when_matiere_name_already_exists() throws DataBaseException {

@@ -53,7 +53,7 @@ export const Classes = () => {
                 response = await fetch(`${process.env.REACT_APP_API_URL_COUNT_CLASSES}`, 
                     { method: 'GET', signal: abortController.signal });
                 json = await response.json();
-                response = await handleResponse(setErrors, response, json);;
+                response = await handleResponse(setErrors, response, json);
                 
                 setTotalPages(Math.ceil(json.value/parseInt(process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE)));
             }catch(err){
@@ -78,13 +78,13 @@ export const Classes = () => {
         try{
             let response = await fetch(`${process.env.REACT_APP_API_URL_CLASSES}?page=${numPage}&nbElementsPerPage=${process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE}`, optionsFetch);
             let json = await response.json();
-            response = await handleResponse(setErrors, response, json);;
+            response = await handleResponse(setErrors, response, json);
             
             setClasses(json.value.map(val => [val.id, val.nom, null]) || []);
 
             response = await fetch(`${process.env.REACT_APP_API_URL_COUNT_CLASSES}`, optionsFetch);
             json = await response.json();
-            response = await handleResponse(setErrors, response, json);;
+            response = await handleResponse(setErrors, response, json);
             
             setTotalPages(Math.ceil(json.value/parseInt(process.env.REACT_APP_TABLE_NB_ELEMENTS_PER_PAGE)));
         }catch(err){
@@ -98,6 +98,7 @@ export const Classes = () => {
      * @param {Integer} id Identifiant de la classe à supprimer
      */
     const deleteClasse = async (id) => {
+        setErrors([]);
         if(window.confirm('Confirmez-vous la suppression de la classe n°' + id + ' ?')){
             try{
                 const response = await fetch(`${process.env.REACT_APP_API_URL_DELETE_CLASSE}/${id}`, { method: 'DELETE' });
@@ -124,10 +125,10 @@ export const Classes = () => {
         <Breadcrumb elements={[{label: 'Classes', link: '' }]} />
         {!_.isEmpty(errors) && <Message typeMessage='errors' messages={errors} />}
         <div className='page-actions'>
-            <Button id='create-classe' to='/' label='Créer une classe' />
+            <Button id='create-classe' to={process.env.REACT_APP_ENDPOINT_FORM_CLASSE} label='Créer une classe' />
         </div>
         <Table id='table-classes' header={header} data={classes} 
-            details={process.env.REACT_APP_ENDPOINT_DETAILS_CLASSE} edit='/' delete={(id) => deleteClasse(id)}
+            details={process.env.REACT_APP_ENDPOINT_DETAILS_CLASSE} edit={process.env.REACT_APP_ENDPOINT_FORM_CLASSE} delete={(id) => deleteClasse(id)}
         />
         <Pagination currentPage={page} pagesCount={totalPages} action={changePage}/>
     </main>);

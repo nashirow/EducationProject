@@ -98,6 +98,7 @@ export const TimeSlots = () => {
      * @param {Integer} id Identifiant du créneau horaire à supprimer
      */
     const deleteTimeSlot = async (id) => {
+        setErrors([]);
         if(window.confirm('Confirmez-vous la suppression du créneau horaire n°' + id + ' ?')){
             try{
                 const response = await fetch(`${process.env.REACT_APP_API_URL_DELETE_TIMESLOT}/${id}`, { method: 'DELETE' });
@@ -124,10 +125,10 @@ export const TimeSlots = () => {
         <Breadcrumb elements={[{label: 'Créneaux horaires', link: '' }]} />
         {!_.isEmpty(errors) && <Message typeMessage='errors' messages={errors} />}
         <div className='page-actions'>
-            <Button id='create-timeslots' to='/' label='Créer un créneau horaire' />
+            <Button id='create-timeslots' to={process.env.REACT_APP_ENDPOINT_FORM_TIMESLOT} label='Créer un créneau horaire' />
         </div>
         <Table id='table-timeslots' header={header} data={timeSlots} 
-            edit='/' delete={(id) => deleteTimeSlot(id)}
+             delete={(id) => deleteTimeSlot(id)}
         />
         <Pagination currentPage={page} pagesCount={totalPages} action={changePage}/>
     </main>);

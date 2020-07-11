@@ -112,6 +112,9 @@ public class SalleService {
      * @return boolean
      */
     public boolean deleteSalle(int id) throws DataBaseException {
+        if(salleRepository.isUsedBySlots(id)){
+            throw new DataBaseException("Impossible de supprimer la salle : La salle que vous tentez de supprimer est peut-être utilisée par un ou plusieurs slot(s)");
+        }
         return salleRepository.delete(id);
     }//deleteSalle()
 

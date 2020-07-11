@@ -98,6 +98,7 @@ export const Teachers = () => {
      * @param {Integer} id Identifiant de l'enseignant à supprimer
      */
     const deleteTeacher = async (id) => {
+        setErrors([]);
         if(window.confirm('Confirmez-vous la suppression de l\'enseignant n°' + id + ' ?')){
             try{
                 const response = await fetch(`${process.env.REACT_APP_API_URL_DELETE_TEACHER}/${id}`, { method: 'DELETE' });
@@ -125,10 +126,10 @@ export const Teachers = () => {
         <Breadcrumb elements={[{label: 'Enseignants', link: '' }]} />
         {!_.isEmpty(errors) && <Message typeMessage='errors' messages={errors} />}
         <div className='page-actions'>
-            <Button id='create-teachers' to='/' label='Créer un enseignant' />
+            <Button id='create-teachers' to={process.env.REACT_APP_ENDPOINT_FORM_TEACHER} label='Créer un enseignant' />
         </div>
         <Table id='table-teachers' header={header} data={teachers} 
-            details={process.env.REACT_APP_ENDPOINT_DETAILS_TEACHER} edit='/' delete={(id) => deleteTeacher(id)}
+            details={process.env.REACT_APP_ENDPOINT_DETAILS_TEACHER} edit={process.env.REACT_APP_ENDPOINT_FORM_TEACHER} delete={(id) => deleteTeacher(id)}
         />
         <Pagination currentPage={page} pagesCount={totalPages} action={changePage}/>
     </main>);

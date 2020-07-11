@@ -15,7 +15,6 @@
  */
 package com.education.project.persistence;
 
-import com.education.project.exceptions.ArgumentException;
 import com.education.project.exceptions.DataBaseException;
 import com.education.project.model.Matiere;
 import org.apache.logging.log4j.LogManager;
@@ -34,14 +33,14 @@ import java.util.Optional;
 @Repository
 public class MatiereRepository {
 
-    private Connection connexion;
+    private Connection connection;
 
     private static final Logger LOGGER = LogManager.getLogger(MatiereRepository.class);
 
     public MatiereRepository(@Value("${db.user}") String user, @Value("${db.password}") String password, @Value("${db.driver}") String driver, @Value("${db.url}") String url){
         try {
             Class.forName(driver);
-            this.connexion = DriverManager.getConnection(url,user,password);
+            this.connection = DriverManager.getConnection(url,user,password);
         } catch (Exception throwables) {
             throwables.printStackTrace();
         }
@@ -55,7 +54,7 @@ public class MatiereRepository {
     public Optional<Matiere> insert(Matiere matiere) throws DataBaseException {
         String request = "INSERT INTO matiere (nom,volumeHoraire,description,creationDate,modificationDate) VALUES (?,?,?,?,?)";
         try {
-            PreparedStatement preparedStatement = this.connexion.prepareStatement(request,Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement preparedStatement = this.connection.prepareStatement(request,Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1,matiere.getNom());
             preparedStatement.setString(2,matiere.getVolumeHoraire());
             preparedStatement.setString(3,matiere.getDescription());
@@ -87,7 +86,7 @@ public class MatiereRepository {
     public Optional<Matiere> update(Matiere matiere) throws DataBaseException {
         String request = "UPDATE matiere SET nom = ?, volumeHoraire = ?, description = ?, modificationDate = ? WHERE id = ? ";
         try{
-            PreparedStatement preparedStatement = this.connexion.prepareStatement(request);
+            PreparedStatement preparedStatement = this.connection.prepareStatement(request);
             preparedStatement.setString(1, matiere.getNom());
             preparedStatement.setString(2, matiere.getVolumeHoraire());
             preparedStatement.setString(3, matiere.getDescription());
@@ -115,7 +114,7 @@ public class MatiereRepository {
     public boolean deleteMatiere(int id) throws DataBaseException {
         String request = "DELETE FROM matiere WHERE id = ?";
         try {
-            PreparedStatement preparedStatement = this.connexion.prepareStatement(request);
+            PreparedStatement preparedStatement = this.connection.prepareStatement(request);
             preparedStatement.setInt(1,id);
             int nbRowsDeleted = preparedStatement.executeUpdate();
             if(nbRowsDeleted > 0){
@@ -138,7 +137,7 @@ public class MatiereRepository {
         if(id != null){
             try {
                 String request = "SELECT * FROM matiere WHERE id = ?";
-                PreparedStatement preparedStatement = this.connexion.prepareStatement(request);
+                PreparedStatement preparedStatement = this.connection.prepareStatement(request);
                 preparedStatement.setInt(1, id);
                 ResultSet rs = preparedStatement.executeQuery();
                 if(rs.next()){
@@ -166,7 +165,7 @@ public class MatiereRepository {
     public boolean isExistByName(String nom) throws DataBaseException {
         String request = "SELECT COUNT(*) FROM matiere WHERE nom = ?";
         try {
-            PreparedStatement preparedStatement = this.connexion.prepareStatement(request);
+            PreparedStatement preparedStatement = this.connection.prepareStatement(request);
             preparedStatement.setString(1,nom);
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
@@ -200,7 +199,7 @@ public class MatiereRepository {
         }
         String requestSql = sb.toString();
         try {
-            PreparedStatement ps = this.connexion.prepareStatement(requestSql);
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
             int indiceNom = 0;
             if(nom != null && !nom.isEmpty()){
                 ++indiceNom;
@@ -247,7 +246,7 @@ public class MatiereRepository {
         }
         String requestSql = sb.toString();
         try {
-            PreparedStatement ps = this.connexion.prepareStatement(requestSql);
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
             if(nom != null && !nom.isEmpty()){
                 ps.setString(1, "%" + nom + "%");
             }
@@ -263,5 +262,25 @@ public class MatiereRepository {
             throw new DataBaseException("Erreur technique : impossible de récupérer les matières");
         }
     }// count()
+
+    /**
+     * Vérifie que la matière est utilisée par d'autres slots.
+     * @param id identifiant de la matière
+     * @return boolean
+     * @throws DataBaseException
+     */
+    public boolean isUsedBySlots(int id) throws DataBaseException{
+        String requestSql = "SELECT COUNT(m.id) FROM matiere m INNER JOIN slot s ON m.id = s.idMatiere WHERE m.id = ?";
+        try {
+            PreparedStatement ps = this.connection.prepareStatement(requestSql);
+            ps.setInt(1, id);
+            ResultSet resultSet = ps.executeQuery();
+            resultSet.next();
+            return resultSet.getLong(1) > 0;
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new DataBaseException("Erreur technique : Impossible de vérifier que la matière avec l'identifiant " + id + " soit utilisée par d'autres slots");
+        }
+    }// isUsedBySlots()
 
 }//MatiereRepository

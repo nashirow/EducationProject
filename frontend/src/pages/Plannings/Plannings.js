@@ -43,7 +43,7 @@ export const Plannings = () => {
                 let response = await fetch(`${process.env.REACT_APP_API_URL_PLANNINGS}`, 
                     { method: 'GET', signal: abortController.signal });
                 let json = await response.json();
-                response = await handleResponse(setErrors, response, json);;
+                response = await handleResponse(setErrors, response, json);
                 
                 setPlannings(json.value.map(val => [val.id, val.nom, null]) || []);
             }catch(err){
@@ -67,7 +67,7 @@ export const Plannings = () => {
         try{
             let response = await fetch(`${process.env.REACT_APP_API_URL_PLANNINGS}`, optionsFetch);
             let json = await response.json();
-            response = await handleResponse(setErrors, response, json);;
+            response = await handleResponse(setErrors, response, json);
             
             setPlannings(json.value.map(val => [val.id, val.nom, null]) || []);
         }catch(err){
@@ -81,6 +81,7 @@ export const Plannings = () => {
      * @param {Integer} id Identifiant du planning à supprimer
      */
     const deletePlanning = async (id) => {
+        setErrors([]);
         if(window.confirm('Confirmez-vous la suppression du planning n°' + id + ' ?')){
             try{
                 const response = await fetch(`${process.env.REACT_APP_API_URL_DELETE_PLANNING}/${id}`, { method: 'DELETE' });
@@ -98,10 +99,12 @@ export const Plannings = () => {
         <Breadcrumb elements={[{label: 'Emplois du temps', link: '' }]} />
         {!_.isEmpty(errors) && <Message typeMessage='errors' messages={errors} />}
         <div className='page-actions'>
-            <Button id='create-planning' to='/' label='Créer un emploi du temps' />
+            <Button id='create-planning' to={process.env.REACT_APP_ENDPOINT_FORM_PLANNING} label='Créer un emploi du temps' />
         </div>
         <Table id='table-plannings' header={header} data={plannings} 
-            details={process.env.REACT_APP_ENDPOINT_DETAILS_PLANNING} edit='/' delete={(id) => deletePlanning(id)}
+            details={process.env.REACT_APP_ENDPOINT_DETAILS_PLANNING} 
+            edit={process.env.REACT_APP_ENDPOINT_FORM_PLANNING} 
+            delete={(id) => deletePlanning(id)}
         />
     </main>);
 };

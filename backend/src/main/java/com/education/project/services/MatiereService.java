@@ -19,6 +19,7 @@ import com.education.project.exceptions.ArgumentException;
 import com.education.project.exceptions.DataBaseException;
 import com.education.project.model.Matiere;
 import com.education.project.persistence.MatiereRepository;
+import com.education.project.utils.LocalTimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -86,11 +87,10 @@ public class MatiereService {
      * @return boolean
      */
     public boolean deleteMatiere(int id) throws DataBaseException {
-        boolean result = false;
-        if(matiereRepository.deleteMatiere(id)){
-             result = true;
+        if(matiereRepository.isUsedBySlots(id)){
+            throw new DataBaseException("Impossible de supprimer la matière : La matière que vous tentez de supprimer est peut-être utilisée par un ou plusieurs slot(s)");
         }
-        return result;
+        return matiereRepository.deleteMatiere(id);
     }//deleteMatiere()
 
     /**
@@ -139,11 +139,14 @@ public class MatiereService {
             if(matiereRepository.isExistByName(matiere.getNom())){
                 erreurs.add("Cette matière existe déjà");
             }
-            if(matiere.getDescription() != null && (matiere.getDescription().length() < 10 || matiere.getDescription().length() > 255)){
+            if(matiere.getDescription() != null && !matiere.getDescription().isEmpty() && (matiere.getDescription().length() < 10 || matiere.getDescription().length() > 255)){
                 erreurs.add("La description doit être comprise entre 10 et 255 caractères");
             }
             if(matiere.getNom() != null && !matiere.getNom().isEmpty() && (matiere.getNom().length() < 3 || matiere.getNom().length() > 40)){
                 erreurs.add("Le nom d'une matière doit contenir entre 3 et 40 caractères");
+            }
+            if(matiere.getVolumeHoraire() != null && !matiere.getVolumeHoraire().isEmpty() && !LocalTimeUtils.checkStringIsFormattedForLocalTime(matiere.getVolumeHoraire())){
+                erreurs.add("Le volume horaire hebdomadaire de la matière doit respecter le format HH:mm");
             }
         }
         if(!erreurs.isEmpty()){

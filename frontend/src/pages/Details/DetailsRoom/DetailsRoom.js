@@ -30,7 +30,7 @@ export const DetailsRoom = () => {
                 let response = await fetch(`${process.env.REACT_APP_API_URL_GET_ROOM}/${id}`, 
                     { method: 'GET', signal: abortController.signal });
                 let json = await response.json();
-                response = await handleResponse(setErrors, response, json);;
+                response = await handleResponse(setErrors, response, json);
                 setRoom(json.value);
             }catch(err){
                 console.error(err);

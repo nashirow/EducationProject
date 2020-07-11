@@ -53,13 +53,15 @@ public class PlanningRepository {
      * @throws DataBaseException
      */
     public Optional<Planning> insert(Planning planningToInsert) throws DataBaseException {
-        String requestSql = "INSERT INTO planning (nom, idClasse, creationDate, modificationDate) VALUES (?, ?, ?, ?)";
+        String requestSql = "INSERT INTO planning (nom, idClasse, creationDate, modificationDate, wednesdayUsed, saturdayUsed) VALUES (?, ?, ?, ?, ?, ?)";
         try {
             PreparedStatement ps = this.connection.prepareStatement(requestSql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, planningToInsert.getNom());
             ps.setInt(2, planningToInsert.getClasse().getId());
             ps.setTimestamp(3, new Timestamp(planningToInsert.getCreationDate().getTime()));
             ps.setTimestamp(4, new Timestamp(planningToInsert.getModificationDate().getTime()));
+            ps.setBoolean(5, planningToInsert.isWednesdayUsed());
+            ps.setBoolean(6, planningToInsert.isSaturdayUsed());
             if (ps.executeUpdate() == 0) {
                 throw new DataBaseException("Erreur technique : Il est impossible de créér le planning");
             }
@@ -68,15 +70,7 @@ public class PlanningRepository {
             Integer idGenerated = generatedKeys.getInt(1);
             planningToInsert.setId(idGenerated);
 
-            for (Slot slot : planningToInsert.getSlots()) {
-                requestSql = "INSERT INTO planning_has_slots (idPlanning, idSlot) VALUES (?, ?)";
-                ps = this.connection.prepareStatement(requestSql);
-                ps.setInt(1, idGenerated);
-                ps.setInt(2, slot.getId());
-                if (ps.executeUpdate() == 0) {
-                    throw new DataBaseException("Erreur technique : Il est impossible de créér le planning");
-                }
-            }
+            bindPlanningWithSlots(planningToInsert, idGenerated);
             return Optional.of(planningToInsert);
         } catch (SQLException e) {
             LOGGER.error(e.getMessage(), e);
@@ -92,26 +86,27 @@ public class PlanningRepository {
      * @throws DataBaseException
      */
     public Optional<Planning> update(Planning planning) throws DataBaseException {
-        String requestSql = "UPDATE planning SET nom = ?, idClasse = ?, modificationDate = ? WHERE id = ?";
+        String requestSql = "UPDATE planning SET nom = ?, idClasse = ?, modificationDate = ?, wednesdayUsed = ?, saturdayUsed = ? WHERE id = ?";
         try {
             PreparedStatement ps = this.connection.prepareStatement(requestSql);
             ps.setString(1, planning.getNom());
             ps.setInt(2, planning.getClasse().getId());
             ps.setTimestamp(3, new Timestamp(planning.getModificationDate().getTime()));
-            ps.setInt(4, planning.getId());
+            ps.setBoolean(4, planning.isWednesdayUsed());
+            ps.setBoolean(5, planning.isSaturdayUsed());
+            ps.setInt(6, planning.getId());
             if (ps.executeUpdate() == 0) {
                 throw new DataBaseException("Erreur technique : Il est impossible de mettre à jour le planning");
             }
 
-            for (Slot slot : planning.getSlots()) {
-                requestSql = "UPDATE planning_has_slots SET idSlot = ? WHERE idPlanning = ?";
-                ps = this.connection.prepareStatement(requestSql);
-                ps.setInt(1, slot.getId());
-                ps.setInt(2, planning.getId());
-                if (ps.executeUpdate() == 0) {
-                    throw new DataBaseException("Erreur technique : Il est impossible de mettre à jour le planning");
-                }
+            requestSql = "DELETE FROM planning_has_slots WHERE idPlanning = ?";
+            ps = this.connection.prepareStatement(requestSql);
+            ps.setInt(1, planning.getId());
+            if (ps.executeUpdate() == 0) {
+                throw new DataBaseException("Erreur technique : Il est impossible de mettre à jour le planning");
             }
+
+            bindPlanningWithSlots(planning, planning.getId());
             return Optional.of(planning);
         } catch (SQLException e) {
             LOGGER.error(e.getMessage(), e);
@@ -127,12 +122,17 @@ public class PlanningRepository {
      * @throws DataBaseException
      */
     public boolean deletePlanning(Integer id) throws DataBaseException {
-        String requestSql = "DELETE FROM planning WHERE id = ?";
         try {
+            String requestSql = "DELETE FROM planning_has_slots WHERE idPlanning = ?";
             PreparedStatement ps = this.connection.prepareStatement(requestSql);
             ps.setInt(1, id);
             int rowsDeleted = ps.executeUpdate();
-            return rowsDeleted > 0;
+
+            requestSql = "DELETE FROM planning WHERE id = ?";
+            ps = this.connection.prepareStatement(requestSql);
+            ps.setInt(1, id);
+            rowsDeleted += ps.executeUpdate();
+            return rowsDeleted > 1;
         } catch (SQLException e) {
             LOGGER.error("Erreur technique : impossible de supprimer le planning {} de la base de données", id, e);
             throw new DataBaseException("Erreur technique : impossible de supprimer le planning de la base de données");
@@ -258,5 +258,25 @@ public class PlanningRepository {
             throw new DataBaseException("Erreur technique impossible de récupérer les plannings dans la base de données");
         }
     }//getPlannings()
+
+    /**
+     * Associe un planning à des slots
+     * @param planning planning à créer ou à mettre à jour
+     * @param planningId Identifiant du planning à créer ou à mettre à jour
+     * @throws SQLException
+     * @throws DataBaseException
+     */
+    private void bindPlanningWithSlots(Planning planning, int planningId) throws SQLException, DataBaseException {
+        String requestSql = "INSERT INTO planning_has_slots (idPlanning, idSlot) VALUES (?, ?)";
+        PreparedStatement ps = this.connection.prepareStatement(requestSql);
+        for (Slot slot : planning.getSlots()) {
+            ps.setInt(1, planningId);
+            ps.setInt(2, slot.getId());
+            ps.addBatch();
+        }
+        if (ps.executeBatch().length == 0) {
+            throw new DataBaseException("Erreur technique : Il est impossible de créér le planning");
+        }
+    }// bindPlanningWithSlots()
 
 }// PlanningRepository

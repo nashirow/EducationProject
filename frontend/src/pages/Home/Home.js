@@ -25,28 +25,28 @@ import './style.scss';
  */
 export const Home = () => {
     return(<main id="home">
-        <Link className='home-cta' to='/classes'>
+        <Link className='home-cta' to={process.env.REACT_APP_ENDPOINT_CLASSES}>
             <HomeCTA label='Classes' class='cta' id='cta-classe' icon='fa fa-superscript' />
         </Link>
-        <Link className='home-cta' to='/timeslots'>
+        <Link className='home-cta' to={process.env.REACT_APP_ENDPOINT_TIMESLOTS}>
             <HomeCTA label='Créneaux horaires' class='cta' id='cta-hours' icon='fa fa-clock-o' />
         </Link>
-        <Link className='home-cta' to='/teachers'>
+        <Link className='home-cta' to={process.env.REACT_APP_ENDPOINT_TEACHERS}>
             <HomeCTA label='Enseignants' class='cta' id='cta-teachers' icon='fa fa-address-book' />
         </Link>
-        <Link className='home-cta' to='/disciplines'>
+        <Link className='home-cta' to={process.env.REACT_APP_ENDPOINT_DISCIPLINES}>
             <HomeCTA label='Matières' class='cta' id='cta-disciplines' icon='fa fa-book' />
         </Link>
-        <Link className='home-cta' to='/options'>
+        <Link className='home-cta' to={process.env.REACT_APP_ENDPOINT_OPTIONS}>
             <HomeCTA label='Options' class='cta' id='cta-options' icon='fa fa-cog' />
         </Link>
-        <Link className='home-cta' to='/plannings'>
+        <Link className='home-cta' to={process.env.REACT_APP_ENDPOINT_PLANNINGS}>
             <HomeCTA label='Emplois du temps' class='cta' id='cta-planning' icon='fa fa-calendar' />
         </Link>
-        <Link className='home-cta' to='/rooms'>
+        <Link className='home-cta' to={process.env.REACT_APP_ENDPOINT_ROOMS}>
             <HomeCTA label='Salles' class='cta' id='cta-room' icon='fa fa-university' />
         </Link>
-        <Link className='home-cta' to='/slots'>
+        <Link className='home-cta' to={process.env.REACT_APP_ENDPOINT_SLOTS}>
             <HomeCTA label='Slots' class='cta' id='cta-slots' icon='fa fa-list-alt' />
         </Link>
     </main>);

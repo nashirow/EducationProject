@@ -23,7 +23,7 @@ import './style.scss';
  * @param {Object} props 
  */
 const renderButtonWithLinks = (props) => {
-    return (<Link to='/'>
+    return (<Link to={props.to}>
         {props && props.label}
     </Link>);
 };

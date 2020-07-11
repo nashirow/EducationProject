@@ -85,6 +85,9 @@ public class ClasseService {
      * @throws DataBaseException
      */
     public boolean deleteClass(int id) throws DataBaseException {
+        if(classeRepository.isUsedByPlannings(id)){
+            throw new DataBaseException("Impossible de supprimer la classe : La classe que vous tentez de supprimer est peut-être utilisée par un ou plusieurs planning(s)");
+        }
         return classeRepository.delete(id);
     }// deleteClass()
 

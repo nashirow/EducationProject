@@ -93,6 +93,7 @@ export const Disciplines = () => {
      * @param {Integer} id Identifiant de la matière à supprimer
      */
     const deleteDiscipline = async (id) => {
+        setErrors([]);
         if(window.confirm('Confirmez-vous la suppression de la matière n°' + id + ' ?')){
             try{
                 const response = await fetch(`${process.env.REACT_APP_API_URL_DELETE_DISCIPLINE}/${id}`, { method: 'DELETE' });
@@ -119,10 +120,10 @@ export const Disciplines = () => {
         <Breadcrumb elements={[{label: 'Matières', link: '' }]} />
         {!_.isEmpty(errors) && <Message typeMessage='errors' messages={errors} />}
         <div className='page-actions'>
-            <Button id='create-discipline' to='/' label='Créer une matière' />
+            <Button id='create-discipline' to={process.env.REACT_APP_ENDPOINT_FORM_DISCIPLINE} label='Créer une matière' />
         </div>
         <Table id='table-disciplines' header={header} data={disciplines} 
-            details={process.env.REACT_APP_ENDPOINT_DETAILS_DISCIPLINE} edit='/' delete={(id) => deleteDiscipline(id)}
+            details={process.env.REACT_APP_ENDPOINT_DETAILS_DISCIPLINE} edit={process.env.REACT_APP_ENDPOINT_FORM_DISCIPLINE} delete={(id) => deleteDiscipline(id)}
         />
         <Pagination currentPage={page} pagesCount={totalPages} action={changePage}/>
     </main>);
