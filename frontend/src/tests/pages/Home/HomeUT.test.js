@@ -40,10 +40,6 @@ describe('Testing Home page', () => {
         expect(wrapper.find('#cta-classe i.fa-superscript').exists()).toBeTruthy();
     });
 
-    test('CTA Classe should have link /classes', () => {
-        expect(wrapper.find('a[href="/classes"]').exists()).toBeTruthy();
-    });
-
     test('CTA Hours must be present', () => {
         expect(wrapper.find('#cta-hours').exists()).toBeTruthy();
     });
