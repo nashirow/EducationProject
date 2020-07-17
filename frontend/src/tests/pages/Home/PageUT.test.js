@@ -22,11 +22,11 @@ import { BrowserRouter } from 'react-router-dom';
 
 let wrapper;
 
-beforeEach(() => {
-    wrapper = mount(<BrowserRouter><Classes /></BrowserRouter>);
-});
-
 describe('Testing main page Classes', () => {
+
+    beforeEach(() => {
+        wrapper = mount(<BrowserRouter><Classes /></BrowserRouter>);
+    });
 
     test('Classes page should have identifiant classes', () => {
         expect(wrapper.find('#classes').exists()).toBeTruthy();

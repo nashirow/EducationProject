@@ -22,11 +22,11 @@ import '../../configure';
 
 let wrapper;
 
-beforeEach(() => {
-    wrapper = mount(<BrowserRouter><Breadcrumb /></BrowserRouter>);
-});
-
 describe('Testing Breadcrumb component', () => {
+
+    beforeEach(() => {
+        wrapper = mount(<BrowserRouter><Breadcrumb /></BrowserRouter>);
+    });
 
     test('Breadcrumb should have class name breadcrumb', () => {
         expect(wrapper.find('.breadcrumb').exists()).toBeTruthy();
@@ -40,7 +40,7 @@ describe('Testing Breadcrumb component', () => {
         const elements = [{label: 'A', link: '/a'}, {label: 'B', link: '/b'}];
         wrapper = mount(<BrowserRouter><Breadcrumb elements={elements} /></BrowserRouter>);
         const breadcrumb = wrapper.find('.breadcrumb').html();
-        expect(breadcrumb).toBe('<ul class="breadcrumb"><li><a href="/"><i class="fa fa-home"></i></a></li><li class=""><a href="/a">A</a></li><li class="current">B</li></ul>');
+        expect(breadcrumb).toBe('<ul class="breadcrumb"><li><a href="/home-key"><i class="fa fa-home"></i></a></li><li class=""><a href="/a">A</a></li><li class="current">B</li></ul>');
     });
 
 });

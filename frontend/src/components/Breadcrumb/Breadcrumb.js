@@ -25,7 +25,7 @@ import './style.scss';
  */
 export const Breadcrumb = (props) => {
     return (<ul className='breadcrumb'>
-        <li><Link to='/' ><i className='fa fa-home' /></Link></li>
+        <li><Link to={'home-key'} ><i className='fa fa-home' /></Link></li>
             {props && props.elements && 
                 props.elements.map((elem,idx) => 
                     <li className={idx === props.elements.length - 1 ? 'current' : ''} 

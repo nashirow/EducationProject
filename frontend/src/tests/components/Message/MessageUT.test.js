@@ -23,11 +23,12 @@ let wrapper;
 
 const messages = ['message A', 'message B'];
 
-beforeEach(() => {
-    wrapper = mount(<Message messages={messages} />);
-});
-
 describe('Testing Message Component', () => {
+
+    beforeEach(() => {
+        wrapper = mount(<Message messages={messages} />);
+    });
+    
 
     test('Message Component should display two messages when messages given as props', () => {
         expect(wrapper.find('.message ul li')).toHaveLength(messages.length);

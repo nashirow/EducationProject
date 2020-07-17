@@ -21,11 +21,12 @@ import '../../configure';
 
 let wrapper;
 
-beforeEach(() => {
-    wrapper = mount(<Details />);
-});
 
 describe('Testing Details component', () => {
+
+    beforeEach(() => {
+        wrapper = mount(<Details />);
+    });
 
     test('Details should have classname details', () => {
         expect(wrapper.find('.details').exists()).toBeTruthy();

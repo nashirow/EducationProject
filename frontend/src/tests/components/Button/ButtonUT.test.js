@@ -22,11 +22,12 @@ import '../../configure';
 
 let wrapper;
 
-beforeEach(() => {
-    wrapper = mount(<BrowserRouter><Button /></BrowserRouter>);
-});
 
 describe('Testing Button Component', () => {
+  
+    beforeEach(() => {
+        wrapper = mount(<BrowserRouter><Button /></BrowserRouter>);
+    });
 
     test('Button component should have a class button', () => {
         expect(wrapper.find('.button').exists()).toBeTruthy();
