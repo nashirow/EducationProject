@@ -21,11 +21,12 @@ import '../../configure';
 
 let wrapper;
 
-beforeEach(() => {
-    wrapper = mount(<Pagination currentPage={1} pagesCount={2} action={() => {}} />);
-});
 
 describe('Testing Message Component', () => {
+
+    beforeEach(() => {
+        wrapper = mount(<Pagination currentPage={1} pagesCount={2} action={() => {}} />);
+    });
 
     test('Pagination with 2 pages at the current page 1 should display 2 pages and the page 1 should have class active', () => {
         const html = wrapper.find('.pagination').html();

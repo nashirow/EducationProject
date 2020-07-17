@@ -21,11 +21,12 @@ import '../../configure';
 
 let wrapper;
 
-beforeEach(() => {
-    wrapper = mount(<HomeCTA label='toto' class='cta' id='titi' icon='fa fa-toto' />); 
-});
 
 describe(('Testing Home CTA'), () => {
+
+    beforeEach(() => {
+        wrapper = mount(<HomeCTA label='toto' class='cta' id='titi' icon='fa fa-toto' />); 
+    });
 
     test('HomeCTA must be present', () => {
         expect(wrapper.find(".home-cta").exists()).toBeTruthy();

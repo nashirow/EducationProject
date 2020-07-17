@@ -30,13 +30,14 @@ const data = [['Value', 'Another Value'], ['Cool', 'Zen']];
 
 const dataWithActions = [['Value', 'Another Value', null], ['Cool', 'Zen', null]];
 
-beforeEach(() => {
-    wrapperTable = mount(<Table id='table-classes' className='table-classes' 
-                                header={header} foot={foot} data={data} />);
-    wrapperTableWithoutProps = mount(<Table />);
-});
 
 describe('Testing component Table', () => {
+
+    beforeEach(() => {
+        wrapperTable = mount(<Table id='table-classes' className='table-classes' 
+                                    header={header} foot={foot} data={data} />);
+        wrapperTableWithoutProps = mount(<Table />);
+    });
 
     test('Component table should have id present when prop id is given', () => {
         expect(wrapperTable.find('table#table-classes').exists()).toBeTruthy();

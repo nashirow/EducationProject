@@ -21,11 +21,13 @@ import '../../configure';
 
 let wrapper;
 
-beforeEach(() => {
-    wrapper = mount(<Header />);
-});
 
 describe(('Testing Header'), () => {
+
+    beforeEach(() => {
+        wrapper = mount(<Header />);
+    });
+    
     test('Header must be present', () => {
         expect(wrapper.find("#header").exists()).toBeTruthy();
     });

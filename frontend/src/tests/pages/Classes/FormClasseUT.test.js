@@ -20,21 +20,22 @@ import { BrowserRouter } from 'react-router-dom';
 
 import '../../configure';
 
-let wrapper;
 
-beforeEach(() => {
-    wrapper = mount(<BrowserRouter><FormClasse /></BrowserRouter>);
-}); 
+let wrapper; 
 
 describe('testing page formclasse', () => {
-    
+
+    beforeEach(() => {
+        wrapper = mount(<BrowserRouter><FormClasse /></BrowserRouter>);
+    });
+
     test('form must be present in the page', () => {
         expect(wrapper.find('form').exists()).toBeTruthy();
     });
 
     test('form should have a label containing Nom', () => {
         expect(wrapper.find('#label-nom').exists()).toBeTruthy();
-        expect(wrapper.find('#label-nom').text()).toBe('Nom');
+        expect(wrapper.find('#label-nom').text()).toBe('Nom *');
     });
 
     test('form should have an input', () => {

@@ -21,11 +21,11 @@ import '../../configure';
 
 let wrapper;
 
-beforeEach(() => {
-    wrapper = mount(<Form />);
-});
-
 describe('Testing component Form', () => {
+
+    beforeEach(() => {
+        wrapper = mount(<Form />);
+    });
 
     test('Form component should have classe .wrapper-form', () => {
         const isWrapperFormExists = wrapper.find('div.wrapper-form').exists();
@@ -56,7 +56,7 @@ describe('Testing component Form', () => {
         const submitParams = { type: 'button-submit-form', label: 'Enregistrer', id: 'save-classe', action: () => { console.log() } };
         wrapper = mount(<Form params={params} submitParams={submitParams} id='form-test' />);
         const htmlFormGenerated = wrapper.find('#form-test').html();
-        expect(htmlFormGenerated).toBe('<div class="wrapper-form"><form class="forms"><div><label id="label-nom" for="nom">Nom</label><input type="text" id="nom" name="nom" value=""></div><div><label id="label-password" for="password">Mot de passe</label><input type="password" id="password" name="password" value=""></div><div id="actions"><div id="save-classe" class="button">Enregistrer</div></div></form></div>');
+        expect(htmlFormGenerated).toBe('<div class="wrapper-form"><form class="forms"><div><label id="label-nom" for="nom">Nom </label><input type="text" id="nom" name="nom" value=""></div><div><label id="label-password" for="password">Mot de passe </label><input type="password" id="password" name="password" value=""></div><div><b class="mandatory">*</b> Champs obligatoires </div><div id="actions"><div id="save-classe" class="button">Enregistrer</div></div></form></div>');
     });
 
 });
